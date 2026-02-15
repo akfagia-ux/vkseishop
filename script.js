@@ -57,6 +57,40 @@ window.onclick = (event) => {
     if (event.target === chatModal) {
         chatModal.style.display = 'none';
     }
+    if (event.target === teamModal) {
+        teamModal.style.display = 'none';
+    }
+    if (event.target === topBuyersModal) {
+        topBuyersModal.style.display = 'none';
+    }
+};
+
+// Модальное окно работников
+const teamModal = document.getElementById('teamModal');
+const openTeamBtn = document.getElementById('openTeamBtn');
+const closeTeamBtn = document.querySelector('.close-team');
+
+openTeamBtn.onclick = (e) => {
+    e.preventDefault();
+    teamModal.style.display = 'block';
+};
+
+closeTeamBtn.onclick = () => {
+    teamModal.style.display = 'none';
+};
+
+// Модальное окно лучших покупателей
+const topBuyersModal = document.getElementById('topBuyersModal');
+const openTopBuyersBtn = document.getElementById('openTopBuyersBtn');
+const closeBuyersBtn = document.querySelector('.close-buyers');
+
+openTopBuyersBtn.onclick = (e) => {
+    e.preventDefault();
+    topBuyersModal.style.display = 'block';
+};
+
+closeBuyersBtn.onclick = () => {
+    topBuyersModal.style.display = 'none';
 };
 
 // Чат с ботом

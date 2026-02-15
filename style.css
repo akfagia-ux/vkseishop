@@ -442,6 +442,40 @@ footer h2 {
 
 
 /* Секция команды */
+.team-modal-content {
+    max-width: 800px;
+}
+
+.team-modal-content h2 {
+    color: #ff0000;
+    padding: 20px;
+    margin: 0;
+    border-bottom: 2px solid #cc0000;
+    text-align: center;
+}
+
+.close-team {
+    color: #ffcccc;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.close-team:hover {
+    color: #ff0000;
+}
+
+.team-modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 40px;
+}
+
 .team {
     padding: 60px 0;
 }
@@ -502,4 +536,41 @@ footer h2 {
     .team-grid {
         grid-template-columns: 1fr;
     }
+    
+    .team-modal-grid {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+}
+
+
+/* Лучшие покупатели */
+.close-buyers {
+    color: #ffcccc;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.close-buyers:hover {
+    color: #ff0000;
+}
+
+.buyer-card {
+    position: relative;
+}
+
+.buyer-badge {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #1a0000;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 1.1em;
+    display: inline-block;
 }
