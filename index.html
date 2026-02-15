@@ -13,6 +13,7 @@
             <nav>
                 <a href="#services">Услуги</a>
                 <a href="#reviews">Отзывы</a>
+                <a href="#" id="openChatBtn">Чат</a>
             </nav>
         </div>
     </header>
@@ -48,9 +49,9 @@
                     </div>
 
                     <div class="service-card">
-                        <h3>Топ редукс бесплатный</h3>
-                        <p>Бесплатная услуга</p>
-                        <a href="https://t.me/reduxx67" target="_blank" class="btn">Получить</a>
+                        <h3>Redux by vksei</h3>
+                        <p>Специальная услуга</p>
+                        <a href="https://t.me/reduxx67" target="_blank" class="btn">Перейти</a>
                     </div>
 
                     <div class="service-card">
@@ -81,6 +82,28 @@
 
 
     </main>
+
+    <!-- Модальное окно чата -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content chat-modal-content">
+            <span class="close">&times;</span>
+            <h2>Чат с ботом</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message bot-message">
+                        <p>Привет! Я бот VkseiShop. Используй команды:</p>
+                        <p><strong>!vksei</strong> - информация о владельце</p>
+                        <p><strong>!цена</strong> - информация о ценах</p>
+                        <p><strong>!redux</strong> - ссылка на Redux</p>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Напиши команду..." />
+                    <button id="chatSend" class="btn">Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="container">

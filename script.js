@@ -27,7 +27,7 @@ reviews.forEach(review => {
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
-        if (href !== '#') {
+        if (href !== '#' && href.startsWith('#')) {
             e.preventDefault();
             const target = document.querySelector(href);
             if (target) {
@@ -37,4 +37,83 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             }
         }
     });
+});
+
+// Модальное окно чата
+const chatModal = document.getElementById('chatModal');
+const openChatBtn = document.getElementById('openChatBtn');
+const closeBtn = document.querySelector('.close');
+
+openChatBtn.onclick = (e) => {
+    e.preventDefault();
+    chatModal.style.display = 'block';
+};
+
+closeBtn.onclick = () => {
+    chatModal.style.display = 'none';
+};
+
+window.onclick = (event) => {
+    if (event.target === chatModal) {
+        chatModal.style.display = 'none';
+    }
+};
+
+// Чат с ботом
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+
+// Команды бота
+const botCommands = {
+    '!vksei': 'Vksei - ютубер и стример. Создатель VkseiShop! 🎮',
+    '!цена': 'Все цены указаны при нажатии на услугу. Перейди в раздел "Услуги" и выбери интересующую тебя услугу! 💰',
+    '!redux': 'Redux by vksei: https://t.me/reduxx67 📱'
+};
+
+function addMessage(text, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+    messageDiv.innerHTML = `<p>${text}</p>`;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getBotResponse(userMessage) {
+    const message = userMessage.trim().toLowerCase();
+    
+    // Проверяем команды
+    if (botCommands[message]) {
+        return botCommands[message];
+    }
+    
+    // Если команда не найдена
+    if (message.startsWith('!')) {
+        return 'Неизвестная команда. Доступные команды: !vksei, !цена, !redux';
+    }
+    
+    // Обычное сообщение
+    return 'Используй команды: !vksei, !цена, !redux для получения информации! 😊';
+}
+
+function sendMessage() {
+    const message = chatInput.value.trim();
+    
+    if (message) {
+        addMessage(message, true);
+        chatInput.value = '';
+        
+        setTimeout(() => {
+            const response = getBotResponse(message);
+            addMessage(response, false);
+        }, 500);
+    }
+}
+
+chatSend.addEventListener('click', sendMessage);
+
+chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
 });
