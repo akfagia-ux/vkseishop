@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VkseiShop - Магазин игровых услуг</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>VkseiShop</h1>
+            <nav>
+                <a href="#services">Услуги</a>
+                <a href="#reviews">Отзывы</a>
+                <a href="#" id="loginBtn">Войти</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h2>Магазин игровых услуг и аккаунтов</h2>
+                <p>Качественные услуги для GTA 5 RP и Steam аккаунты</p>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <div class="container">
+                <h2>Наши услуги</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3>Отсижу деморган GTA 5 RP</h3>
+                        <p>Любой сервер</p>
+                        <a href="https://funpay.com/lots/offer?id=63844588" target="_blank" class="btn">Заказать</a>
+                    </div>
+
+                    <div class="service-card">
+                        <h3>Steam аккаунт Вксея</h3>
+                        <p>Готовый аккаунт Steam</p>
+                        <a href="https://funpay.com/lots/offer?id=63709012" target="_blank" class="btn">Купить</a>
+                    </div>
+
+                    <div class="service-card">
+                        <h3>Скрипт на деморган GTA 5 RP</h3>
+                        <p>Автоматизация процесса</p>
+                        <a href="https://funpay.com/lots/offer?id=63880075" target="_blank" class="btn">Приобрести</a>
+                    </div>
+
+                    <div class="service-card">
+                        <h3>Остальные услуги</h3>
+                        <p>Все доступные предложения</p>
+                        <a href="https://funpay.com/users/13881930/" target="_blank" class="btn">Нажми</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reviews" class="reviews">
+            <div class="container">
+                <h2>Отзывы за последние 30 дней</h2>
+                <div class="reviews-stats">
+                    <div class="stat">
+                        <span class="stat-number">20</span>
+                        <span class="stat-label">отзывов</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">5/5</span>
+                        <span class="stat-label">рейтинг</span>
+                    </div>
+                </div>
+                <div class="reviews-grid" id="reviewsContainer"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 VkseiShop. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Вход / Регистрация</h2>
+            <form id="authForm">
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Пароль" required>
+                <button type="submit" class="btn">Войти</button>
+                <p class="switch-auth">Нет аккаунта? <a href="#" id="switchToRegister">Зарегистрироваться</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
