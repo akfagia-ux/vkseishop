@@ -1,144 +1,3 @@
-// Элементы DOM
-const modal = document.getElementById('loginModal');
-const loginBtn = document.getElementById('loginBtn');
-const closeBtn = document.querySelector('.close');
-const authForm = document.getElementById('authForm');
-const authTitle = document.getElementById('authTitle');
-const authSubmitBtn = document.getElementById('authSubmitBtn');
-const switchAuth = document.getElementById('switchAuth');
-const switchText = document.getElementById('switchText');
-const authError = document.getElementById('authError');
-const userProfile = document.getElementById('userProfile');
-const userStatus = document.getElementById('userStatus');
-const logoutBtn = document.getElementById('logoutBtn');
-
-let isLoginMode = true;
-
-// Модальное окно
-loginBtn.onclick = () => {
-    modal.style.display = 'block';
-};
-
-closeBtn.onclick = () => {
-    modal.style.display = 'none';
-    authError.textContent = '';
-};
-
-window.onclick = (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-        authError.textContent = '';
-    }
-};
-
-// Переключение между входом и регистрацией
-switchAuth.onclick = (e) => {
-    e.preventDefault();
-    isLoginMode = !isLoginMode;
-    
-    if (isLoginMode) {
-        authTitle.textContent = 'Вход';
-        authSubmitBtn.textContent = 'Войти';
-        switchText.textContent = 'Нет аккаунта?';
-        switchAuth.textContent = 'Зарегистрироваться';
-    } else {
-        authTitle.textContent = 'Регистрация';
-        authSubmitBtn.textContent = 'Зарегистрироваться';
-        switchText.textContent = 'Уже есть аккаунт?';
-        switchAuth.textContent = 'Войти';
-    }
-    authError.textContent = '';
-};
-
-// Обработка формы
-authForm.onsubmit = async (e) => {
-    e.preventDefault();
-    authError.textContent = '';
-    
-    const email = document.getElementById('authEmail').value;
-    const password = document.getElementById('authPassword').value;
-    
-    try {
-        if (isLoginMode) {
-            // Вход
-            await auth.signInWithEmailAndPassword(email, password);
-            showSuccess('Вы успешно вошли!');
-        } else {
-            // Регистрация
-            await auth.createUserWithEmailAndPassword(email, password);
-            showSuccess('Регистрация успешна!');
-        }
-        
-        authForm.reset();
-        modal.style.display = 'none';
-    } catch (error) {
-        showError(error);
-    }
-};
-
-// Выход
-logoutBtn.onclick = async () => {
-    try {
-        await auth.signOut();
-        modal.style.display = 'none';
-    } catch (error) {
-        console.error('Ошибка выхода:', error);
-    }
-};
-
-// Отслеживание состояния пользователя
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        // Пользователь вошел
-        userStatus.textContent = user.email;
-        document.getElementById('userEmail').textContent = user.email;
-        authForm.style.display = 'none';
-        userProfile.style.display = 'block';
-    } else {
-        // Пользователь вышел
-        userStatus.textContent = 'Войти';
-        authForm.style.display = 'flex';
-        userProfile.style.display = 'none';
-    }
-});
-
-// Показать ошибку
-function showError(error) {
-    let message = 'Произошла ошибка';
-    
-    switch (error.code) {
-        case 'auth/email-already-in-use':
-            message = 'Этот email уже используется';
-            break;
-        case 'auth/invalid-email':
-            message = 'Неверный формат email';
-            break;
-        case 'auth/weak-password':
-            message = 'Пароль слишком слабый (минимум 6 символов)';
-            break;
-        case 'auth/user-not-found':
-            message = 'Пользователь не найден';
-            break;
-        case 'auth/wrong-password':
-            message = 'Неверный пароль';
-            break;
-        default:
-            message = error.message;
-    }
-    
-    authError.textContent = message;
-}
-
-// Показать успех
-function showSuccess(message) {
-    authError.style.color = '#4ade80';
-    authError.textContent = message;
-    setTimeout(() => {
-        authError.textContent = '';
-        authError.style.color = '#ef4444';
-    }, 3000);
-}
-
 // Генерация отзывов
 const reviews = [
     { author: 'Игрок123', rating: 5, text: 'Отличная работа! Быстро отсидел деморган, рекомендую!' },
@@ -168,7 +27,7 @@ reviews.forEach(review => {
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
-        if (href !== '#' && href !== '#loginBtn') {
+        if (href !== '#') {
             e.preventDefault();
             const target = document.querySelector(href);
             if (target) {
@@ -178,4 +37,63 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             }
         }
     });
+});
+
+// Чат
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+
+// Автоответы бота
+const botResponses = {
+    'привет': 'Привет! Чем могу помочь?',
+    'цена': 'Цены на все услуги указаны на FunPay. Нажми на интересующую услугу выше!',
+    'деморган': 'Отсижу деморган на любом сервере GTA 5 RP. Быстро и качественно!',
+    'аккаунт': 'Продаю свой Steam аккаунт. Все подробности по ссылке выше!',
+    'скрипт': 'Скрипт на автоматическое отсиживание деморгана. Очень удобно!',
+    'помощь': 'Я могу рассказать о наших услугах: деморган, аккаунты Steam, скрипты. Что тебя интересует?',
+    'спасибо': 'Пожалуйста! Обращайся если будут вопросы! 😊',
+    'default': 'Спасибо за сообщение! Для заказа услуг перейди по ссылкам выше или напиши мне в соцсетях!'
+};
+
+function addMessage(text, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+    messageDiv.innerHTML = `<p>${text}</p>`;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getBotResponse(userMessage) {
+    const message = userMessage.toLowerCase();
+    
+    for (let key in botResponses) {
+        if (message.includes(key)) {
+            return botResponses[key];
+        }
+    }
+    
+    return botResponses['default'];
+}
+
+function sendMessage() {
+    const message = chatInput.value.trim();
+    
+    if (message) {
+        addMessage(message, true);
+        chatInput.value = '';
+        
+        setTimeout(() => {
+            const response = getBotResponse(message);
+            addMessage(response, false);
+        }, 500);
+    }
+}
+
+chatSend.addEventListener('click', sendMessage);
+
+chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
 });
