@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VkseiShop - Магазин игровых услуг</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <header>
@@ -13,7 +18,9 @@
             <nav>
                 <a href="#services">Услуги</a>
                 <a href="#reviews">Отзывы</a>
-                <a href="#" id="loginBtn">Войти</a>
+                <a href="#" id="loginBtn">
+                    <span id="userStatus">Войти</span>
+                </a>
             </nav>
         </div>
     </header>
@@ -84,16 +91,26 @@
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Вход / Регистрация</h2>
+            <h2 id="authTitle">Вход</h2>
             <form id="authForm">
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Пароль" required>
-                <button type="submit" class="btn">Войти</button>
-                <p class="switch-auth">Нет аккаунта? <a href="#" id="switchToRegister">Зарегистрироваться</a></p>
+                <input type="email" id="authEmail" placeholder="Email" required>
+                <input type="password" id="authPassword" placeholder="Пароль (минимум 6 символов)" required>
+                <div id="authError" class="error-message"></div>
+                <button type="submit" class="btn" id="authSubmitBtn">Войти</button>
+                <p class="switch-auth">
+                    <span id="switchText">Нет аккаунта?</span> 
+                    <a href="#" id="switchAuth">Зарегистрироваться</a>
+                </p>
             </form>
+            <div id="userProfile" style="display: none;">
+                <h2>Добро пожаловать!</h2>
+                <p id="userEmail"></p>
+                <button class="btn" id="logoutBtn">Выйти</button>
+            </div>
         </div>
     </div>
 
+    <script src="firebase-config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

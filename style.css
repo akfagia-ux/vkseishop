@@ -291,3 +291,32 @@ footer {
         gap: 30px;
     }
 }
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.9em;
+    min-height: 20px;
+    text-align: center;
+}
+
+#userProfile {
+    text-align: center;
+}
+
+#userProfile h2 {
+    color: #a78bfa;
+    margin-bottom: 15px;
+}
+
+#userProfile p {
+    color: #e9d5ff;
+    margin-bottom: 20px;
+}
+
+#userStatus {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
