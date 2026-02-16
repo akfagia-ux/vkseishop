@@ -36,6 +36,12 @@
                 <h2>Наши услуги</h2>
                 <div class="services-grid">
                     <div class="service-card">
+                        <h3>Fortnite пополнение V-Bucks</h3>
+                        <p>Быстрое и безопасное пополнение</p>
+                        <button class="btn" onclick="openFortniteOrder()">Оформить</button>
+                    </div>
+
+                    <div class="service-card">
                         <h3>Отсижу деморган GTA 5 RP</h3>
                         <p>Любой сервер</p>
                         <a href="https://funpay.com/lots/offer?id=63844588" target="_blank" class="btn">Заказать</a>
@@ -142,6 +148,65 @@
                     <button id="chatSend" class="btn">Отправить</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно заказа Fortnite -->
+    <div id="fortniteModal" class="modal">
+        <div class="modal-content order-modal-content">
+            <span class="close-fortnite">&times;</span>
+            <h2>🎮 Fortnite пополнение V-Bucks</h2>
+            <form id="fortniteForm" class="order-form">
+                <div class="form-group">
+                    <label>Выберите сумму V-Bucks:</label>
+                    <select id="vbucksAmount" required>
+                        <option value="">Выберите...</option>
+                        <option value="1000">1000 V-Bucks - 500₽</option>
+                        <option value="2800">2800 V-Bucks - 1200₽</option>
+                        <option value="5000">5000 V-Bucks - 2000₽</option>
+                        <option value="13500">13500 V-Bucks - 5000₽</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Логин Epic Games:</label>
+                    <input type="text" id="epicLogin" placeholder="Ваш логин" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Пароль Epic Games:</label>
+                    <input type="password" id="epicPassword" placeholder="Ваш пароль" required>
+                </div>
+
+                <div class="payment-info">
+                    <h3>💳 Оплата переводом</h3>
+                    <p><strong>Сбербанк:</strong> +7 921 804 85 83</p>
+                    <p><strong>Получатель:</strong> Е.Ю Макаров</p>
+                    <p class="payment-note">После оплаты отправьте чек в Telegram: <a href="https://t.me/vksei7" target="_blank">@vksei7</a></p>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <span>Я осознаю, что ручная доставка требует передачи данных и подтверждаю, что не менял регион в своём аккаунте Epic Games за последние 6 месяцев. 🎮🔒</span>
+                    </label>
+                </div>
+
+                <div class="security-badge">
+                    <p>🔒 Все безопасно. Следят РКН</p>
+                </div>
+
+                <button type="submit" class="btn btn-submit">Оформить заказ</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Анимация загрузки заказа -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h2>Ваш заказ обрабатывается...</h2>
+            <p>Пожалуйста, подождите</p>
         </div>
     </div>
 

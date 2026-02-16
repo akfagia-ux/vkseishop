@@ -44,20 +44,20 @@ const chatModal = document.getElementById('chatModal');
 const openChatBtn = document.getElementById('openChatBtn');
 const closeBtn = document.querySelector('.close');
 
-openChatBtn.onclick = (e) => {
-    e.preventDefault();
-    chatModal.style.display = 'block';
-};
+if (openChatBtn) {
+    openChatBtn.onclick = (e) => {
+        e.preventDefault();
+        chatModal.style.display = 'block';
+        setTimeout(() => chatModal.classList.add('show'), 10);
+    };
+}
 
-closeBtn.onclick = () => {
-    chatModal.style.display = 'none';
-};
-
-window.onclick = (event) => {
-    if (event.target === chatModal) {
-        chatModal.style.display = 'none';
-    }
-};
+if (closeBtn) {
+    closeBtn.onclick = () => {
+        chatModal.classList.remove('show');
+        setTimeout(() => chatModal.style.display = 'none', 300);
+    };
+}
 
 // Чат с ботом
 const chatMessages = document.getElementById('chatMessages');
@@ -117,3 +117,89 @@ chatInput.addEventListener('keypress', (e) => {
         sendMessage();
     }
 });
+
+
+// Модальное окно Fortnite заказа
+function openFortniteOrder() {
+    const modal = document.getElementById('fortniteModal');
+    modal.style.display = 'block';
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+const closeFortnite = document.querySelector('.close-fortnite');
+if (closeFortnite) {
+    closeFortnite.onclick = () => {
+        const modal = document.getElementById('fortniteModal');
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 300);
+    };
+}
+
+// Обработка формы Fortnite
+const fortniteForm = document.getElementById('fortniteForm');
+if (fortniteForm) {
+    fortniteForm.onsubmit = (e) => {
+        e.preventDefault();
+        
+        const vbucks = document.getElementById('vbucksAmount').value;
+        const login = document.getElementById('epicLogin').value;
+        const agreed = document.getElementById('agreeTerms').checked;
+        
+        if (!vbucks || !login || !agreed) {
+            alert('Пожалуйста, заполните все поля и согласитесь с условиями');
+            return;
+        }
+        
+        // Показываем загрузку
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.classList.add('show');
+        
+        // Закрываем форму
+        const modal = document.getElementById('fortniteModal');
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 300);
+        
+        // Через 3 секунды показываем успех
+        setTimeout(() => {
+            loadingOverlay.classList.remove('show');
+            alert('✅ Заказ принят! Ожидайте обработки. Не забудьте отправить чек оплаты в Telegram: @vksei7');
+            fortniteForm.reset();
+        }, 3000);
+    };
+}
+
+// Закрытие модальных окон при клике вне их
+window.onclick = (event) => {
+    const chatModal = document.getElementById('chatModal');
+    const fortniteModal = document.getElementById('fortniteModal');
+    
+    if (event.target === chatModal) {
+        chatModal.classList.remove('show');
+        setTimeout(() => chatModal.style.display = 'none', 300);
+    }
+    
+    if (event.target === fortniteModal) {
+        fortniteModal.classList.remove('show');
+        setTimeout(() => fortniteModal.style.display = 'none', 300);
+    }
+};
+
+// Анимация открытия чата
+const openChatBtnNew = document.getElementById('openChatBtn');
+if (openChatBtnNew) {
+    openChatBtnNew.onclick = (e) => {
+        e.preventDefault();
+        const modal = document.getElementById('chatModal');
+        modal.style.display = 'block';
+        setTimeout(() => modal.classList.add('show'), 10);
+    };
+}
+
+const closeChatBtn = document.querySelector('.close');
+if (closeChatBtn) {
+    closeChatBtn.onclick = () => {
+        const modal = document.getElementById('chatModal');
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 300);
+    };
+}
