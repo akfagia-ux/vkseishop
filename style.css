@@ -2,13 +2,15 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #2d0a1f 0%, #4a1942 50%, #2d0a1f 100%);
+    background: linear-gradient(135deg, #1a0000 0%, #330000 50%, #1a0000 100%);
     color: #ffffff;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
@@ -18,13 +20,13 @@ body {
 }
 
 header {
-    background: rgba(74, 25, 66, 0.8);
+    background: rgba(51, 0, 0, 0.8);
     backdrop-filter: blur(10px);
     padding: 20px 0;
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 2px solid #c2185b;
+    border-bottom: 2px solid #cc0000;
 }
 
 header .container {
@@ -35,8 +37,8 @@ header .container {
 
 header h1 {
     font-size: 2em;
-    color: #ff4081;
-    text-shadow: 0 0 20px rgba(255, 64, 129, 0.5);
+    color: #ff0000;
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
 }
 
 nav {
@@ -45,14 +47,14 @@ nav {
 }
 
 nav a {
-    color: #ffc1e3;
+    color: #ffcccc;
     text-decoration: none;
     transition: color 0.3s;
     font-weight: 500;
 }
 
 nav a:hover {
-    color: #ff4081;
+    color: #ff0000;
 }
 
 .hero {
@@ -63,13 +65,13 @@ nav a:hover {
 .hero h2 {
     font-size: 3em;
     margin-bottom: 20px;
-    color: #ff4081;
-    text-shadow: 0 0 30px rgba(255, 64, 129, 0.6);
+    color: #ff0000;
+    text-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
 }
 
 .hero p {
     font-size: 1.3em;
-    color: #ffc1e3;
+    color: #ffcccc;
 }
 
 .services {
@@ -80,7 +82,7 @@ nav a:hover {
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 50px;
-    color: #ff4081;
+    color: #ff0000;
 }
 
 .services-grid {
@@ -90,8 +92,8 @@ nav a:hover {
 }
 
 .service-card {
-    background: rgba(194, 24, 91, 0.2);
-    border: 2px solid #c2185b;
+    background: rgba(204, 0, 0, 0.2);
+    border: 2px solid #cc0000;
     border-radius: 15px;
     padding: 30px;
     text-align: center;
@@ -100,23 +102,23 @@ nav a:hover {
 
 .service-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 40px rgba(255, 64, 129, 0.3);
+    box-shadow: 0 10px 40px rgba(255, 0, 0, 0.3);
 }
 
 .service-card h3 {
     font-size: 1.5em;
     margin-bottom: 15px;
-    color: #ff80ab;
+    color: #ff6666;
 }
 
 .service-card p {
     margin-bottom: 20px;
-    color: #ffc1e3;
+    color: #ffcccc;
 }
 
 .btn {
     display: inline-block;
-    background: linear-gradient(135deg, #c2185b 0%, #ff4081 100%);
+    background: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
     color: white;
     padding: 12px 30px;
     border-radius: 25px;
@@ -130,19 +132,19 @@ nav a:hover {
 
 .btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(255, 64, 129, 0.5);
+    box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
 }
 
 .reviews {
     padding: 60px 0;
-    background: rgba(74, 25, 66, 0.3);
+    background: rgba(51, 0, 0, 0.3);
 }
 
 .reviews h2 {
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 40px;
-    color: #ff4081;
+    color: #ff0000;
 }
 
 .reviews-stats {
@@ -160,12 +162,12 @@ nav a:hover {
     display: block;
     font-size: 3em;
     font-weight: bold;
-    color: #ff4081;
-    text-shadow: 0 0 20px rgba(255, 64, 129, 0.5);
+    color: #ff0000;
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
 }
 
 .stat-label {
-    color: #ffc1e3;
+    color: #ffcccc;
     font-size: 1.2em;
 }
 
@@ -176,8 +178,8 @@ nav a:hover {
 }
 
 .review-card {
-    background: rgba(194, 24, 91, 0.2);
-    border: 1px solid #c2185b;
+    background: rgba(204, 0, 0, 0.2);
+    border: 1px solid #cc0000;
     border-radius: 10px;
     padding: 20px;
 }
@@ -190,7 +192,7 @@ nav a:hover {
 
 .review-author {
     font-weight: bold;
-    color: #ff80ab;
+    color: #ff6666;
 }
 
 .review-rating {
@@ -198,23 +200,23 @@ nav a:hover {
 }
 
 .review-text {
-    color: #ffc1e3;
+    color: #ffcccc;
     line-height: 1.6;
 }
 
 footer {
-    background: rgba(45, 10, 31, 0.8);
+    background: rgba(26, 0, 0, 0.8);
     padding: 40px 0;
     text-align: center;
     margin-top: 60px;
-    border-top: 2px solid #c2185b;
+    border-top: 2px solid #cc0000;
 }
 
 footer h2 {
-    color: #ff4081;
+    color: #ff0000;
     font-size: 2em;
     margin-bottom: 20px;
-    text-shadow: 0 0 20px rgba(255, 64, 129, 0.5);
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
 }
 
 .footer-social {
@@ -225,13 +227,13 @@ footer h2 {
 }
 
 .footer-icon {
-    color: #ffc1e3;
+    color: #ffcccc;
     transition: all 0.3s;
     display: inline-block;
 }
 
 .footer-icon:hover {
-    color: #ff4081;
+    color: #ff0000;
     transform: scale(1.2);
 }
 
@@ -240,19 +242,19 @@ footer h2 {
 }
 
 .footer-info p {
-    color: #ffc1e3;
+    color: #ffcccc;
     margin: 10px 0;
     font-size: 1em;
 }
 
 .footer-info a {
-    color: #ff80ab;
+    color: #ff6666;
     text-decoration: none;
     transition: color 0.3s;
 }
 
 .footer-info a:hover {
-    color: #ff4081;
+    color: #ff0000;
     text-decoration: underline;
 }
 
@@ -289,10 +291,10 @@ footer h2 {
 }
 
 .modal-content {
-    background: linear-gradient(135deg, #4a1942 0%, #2d0a1f 100%);
+    background: linear-gradient(135deg, #330000 0%, #1a0000 100%);
     margin: 5% auto;
     padding: 0;
-    border: 2px solid #c2185b;
+    border: 2px solid #cc0000;
     border-radius: 15px;
     width: 90%;
     max-width: 700px;
@@ -302,15 +304,15 @@ footer h2 {
 }
 
 .chat-modal-content h2 {
-    color: #ff4081;
+    color: #ff0000;
     padding: 20px;
     margin: 0;
-    border-bottom: 2px solid #c2185b;
+    border-bottom: 2px solid #cc0000;
     text-align: center;
 }
 
 .close {
-    color: #ffc1e3;
+    color: #ffcccc;
     position: absolute;
     right: 20px;
     top: 15px;
@@ -321,7 +323,7 @@ footer h2 {
 }
 
 .close:hover {
-    color: #ff4081;
+    color: #ff0000;
 }
 
 .chat-container {
@@ -347,13 +349,13 @@ footer h2 {
 }
 
 .bot-message {
-    background: rgba(194, 24, 91, 0.3);
+    background: rgba(204, 0, 0, 0.3);
     align-self: flex-start;
-    border: 1px solid #c2185b;
+    border: 1px solid #cc0000;
 }
 
 .user-message {
-    background: linear-gradient(135deg, #c2185b 0%, #ff4081 100%);
+    background: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
     align-self: flex-end;
 }
 
@@ -364,34 +366,34 @@ footer h2 {
 }
 
 .chat-message strong {
-    color: #ff80ab;
+    color: #ff6666;
 }
 
 .chat-input-container {
     display: flex;
     gap: 10px;
     padding: 20px;
-    background: rgba(45, 10, 31, 0.5);
-    border-top: 1px solid #c2185b;
+    background: rgba(26, 0, 0, 0.5);
+    border-top: 1px solid #cc0000;
 }
 
 #chatInput {
     flex: 1;
     padding: 12px 20px;
-    border: 2px solid #c2185b;
+    border: 2px solid #cc0000;
     border-radius: 25px;
-    background: rgba(194, 24, 91, 0.1);
+    background: rgba(204, 0, 0, 0.1);
     color: white;
     font-size: 1em;
 }
 
 #chatInput:focus {
     outline: none;
-    border-color: #ff4081;
+    border-color: #ff0000;
 }
 
 #chatInput::placeholder {
-    color: #ffc1e3;
+    color: #ffcccc;
 }
 
 #chatSend {
@@ -405,16 +407,16 @@ footer h2 {
 }
 
 .chat-messages::-webkit-scrollbar-track {
-    background: rgba(45, 10, 31, 0.5);
+    background: rgba(26, 0, 0, 0.5);
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-    background: #c2185b;
+    background: #cc0000;
     border-radius: 4px;
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
-    background: #ff4081;
+    background: #ff0000;
 }
 
 @media (max-width: 768px) {
@@ -484,7 +486,7 @@ footer h2 {
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 50px;
-    color: #ff4081;
+    color: #ff0000;
 }
 
 .team-grid {
@@ -496,8 +498,8 @@ footer h2 {
 }
 
 .team-card {
-    background: rgba(194, 24, 91, 0.2);
-    border: 2px solid #c2185b;
+    background: rgba(204, 0, 0, 0.2);
+    border: 2px solid #cc0000;
     border-radius: 15px;
     padding: 40px 30px;
     text-align: center;
@@ -506,7 +508,7 @@ footer h2 {
 
 .team-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 40px rgba(255, 64, 129, 0.3);
+    box-shadow: 0 10px 40px rgba(255, 0, 0, 0.3);
 }
 
 .team-icon {
@@ -517,18 +519,18 @@ footer h2 {
 .team-card h3 {
     font-size: 2em;
     margin-bottom: 10px;
-    color: #ff80ab;
+    color: #ff6666;
 }
 
 .team-role {
     font-size: 1.2em;
-    color: #ff4081;
+    color: #ff0000;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
 .team-description {
-    color: #ffc1e3;
+    color: #ffcccc;
     line-height: 1.6;
 }
 
@@ -546,7 +548,7 @@ footer h2 {
 
 /* Лучшие покупатели */
 .close-buyers {
-    color: #ffc1e3;
+    color: #ffcccc;
     position: absolute;
     right: 20px;
     top: 15px;
@@ -557,7 +559,7 @@ footer h2 {
 }
 
 .close-buyers:hover {
-    color: #ff4081;
+    color: #ff0000;
 }
 
 .buyer-card {
@@ -573,4 +575,140 @@ footer h2 {
     border-radius: 20px;
     font-size: 1.1em;
     display: inline-block;
+}
+
+/* Улучшенная мобильная адаптация */
+@media (max-width: 768px) {
+    /* Навигация */
+    header .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    nav a {
+        font-size: 0.9em;
+    }
+    
+    header h1 {
+        font-size: 1.5em;
+    }
+    
+    /* Услуги */
+    .service-card {
+        padding: 20px;
+    }
+    
+    .service-card h3 {
+        font-size: 1.3em;
+    }
+    
+    /* Отзывы */
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Команда */
+    .team-card {
+        padding: 30px 20px;
+    }
+    
+    /* Футер */
+    footer h2 {
+        font-size: 1.5em;
+    }
+    
+    .footer-info p {
+        font-size: 0.9em;
+    }
+    
+    /* Модальные окна */
+    .close, .close-team, .close-buyers {
+        font-size: 28px;
+        right: 15px;
+        top: 10px;
+    }
+    
+    /* Лучшие покупатели */
+    .buyer-badge {
+        font-size: 0.9em;
+        padding: 8px 15px;
+    }
+}
+
+/* Очень маленькие экраны (телефоны) */
+@media (max-width: 480px) {
+    .hero h2 {
+        font-size: 1.5em;
+    }
+    
+    .hero p {
+        font-size: 1em;
+    }
+    
+    .services h2, .reviews h2, .team h2 {
+        font-size: 1.8em;
+    }
+    
+    .stat-number {
+        font-size: 2.5em;
+    }
+    
+    .stat-label {
+        font-size: 1em;
+    }
+    
+    nav {
+        gap: 10px;
+    }
+    
+    nav a {
+        font-size: 0.85em;
+        padding: 5px 10px;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+    
+    .team-icon {
+        font-size: 3em;
+    }
+    
+    .team-card h3 {
+        font-size: 1.5em;
+    }
+    
+    .footer-social {
+        gap: 15px;
+    }
+    
+    .footer-icon svg {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .chat-container {
+        height: 350px;
+    }
+    
+    #chatInput {
+        font-size: 0.9em;
+    }
+    
+    .modal-content {
+        width: 98%;
+        margin: 5% auto;
+    }
+    
+    .chat-modal-content h2 {
+        font-size: 1.3em;
+        padding: 15px;
+    }
 }
