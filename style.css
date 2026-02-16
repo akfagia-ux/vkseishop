@@ -1370,3 +1370,60 @@ nav a.active {
         gap: 15px;
     }
 }
+
+
+/* Кнопка входа через Google */
+.btn-google {
+    background: white;
+    color: #444;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    transition: all 0.3s;
+}
+
+.btn-google:hover {
+    background: #f8f8f8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+}
+
+.btn-google:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Разделитель "или" */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #cc0000;
+}
+
+.auth-divider span {
+    padding: 0 15px;
+    color: #ffcccc;
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    .btn-google {
+        font-size: 0.9em;
+        padding: 10px 20px;
+    }
+    
+    .btn-google svg {
+        width: 16px;
+        height: 16px;
+    }
+}

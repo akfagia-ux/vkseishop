@@ -198,81 +198,125 @@ window.addEventListener('click', (event) => {
 // Анимация открытия чата (дублирование удалено)
 
 
-// Система регистрации/входа (localStorage)
+// Система регистрации/входа (Firebase Authentication)
 class AuthSystem {
     constructor() {
         this.currentUser = null;
-        this.loadCurrentUser();
-        this.updateUI();
+        this.initAuthListener();
     }
 
-    // Загрузка текущего пользователя
-    loadCurrentUser() {
-        const userEmail = localStorage.getItem('currentUser');
-        if (userEmail) {
-            this.currentUser = userEmail;
-        }
+    // Слушатель изменения состояния авторизации
+    initAuthListener() {
+        firebase.auth().onAuthStateChanged((user) => {
+            this.currentUser = user;
+            this.updateUI();
+        });
     }
 
     // Регистрация
-    register(email, password) {
-        // Проверка длины пароля
-        if (password.length < 6) {
-            return { success: false, message: 'Пароль должен быть минимум 6 символов' };
+    async register(email, password) {
+        try {
+            // Проверка длины пароля
+            if (password.length < 6) {
+                return { success: false, message: 'Пароль должен быть минимум 6 символов' };
+            }
+
+            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+            return { success: true, message: 'Регистрация успешна!', user: userCredential.user };
+        } catch (error) {
+            let message = 'Ошибка регистрации';
+            
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    message = 'Пользователь с таким email уже существует';
+                    break;
+                case 'auth/invalid-email':
+                    message = 'Неверный формат email';
+                    break;
+                case 'auth/weak-password':
+                    message = 'Слишком слабый пароль';
+                    break;
+                case 'auth/network-request-failed':
+                    message = 'Ошибка сети. Проверьте подключение к интернету';
+                    break;
+                default:
+                    message = error.message;
+            }
+            
+            return { success: false, message };
         }
-
-        // Проверка существования пользователя
-        const users = this.getUsers();
-        if (users[email]) {
-            return { success: false, message: 'Пользователь с таким email уже существует' };
-        }
-
-        // Сохранение пользователя
-        users[email] = {
-            password: btoa(password), // Простое кодирование (не безопасно для реального использования!)
-            registeredAt: new Date().toISOString()
-        };
-        localStorage.setItem('users', JSON.stringify(users));
-        
-        // Автоматический вход
-        this.currentUser = email;
-        localStorage.setItem('currentUser', email);
-        this.updateUI();
-
-        return { success: true, message: 'Регистрация успешна!' };
     }
 
     // Вход
-    login(email, password) {
-        const users = this.getUsers();
-        const user = users[email];
-
-        if (!user) {
-            return { success: false, message: 'Пользователь не найден' };
+    async login(email, password) {
+        try {
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            return { success: true, message: 'Вход выполнен!', user: userCredential.user };
+        } catch (error) {
+            let message = 'Ошибка входа';
+            
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    message = 'Пользователь не найден';
+                    break;
+                case 'auth/wrong-password':
+                    message = 'Неверный пароль';
+                    break;
+                case 'auth/invalid-email':
+                    message = 'Неверный формат email';
+                    break;
+                case 'auth/network-request-failed':
+                    message = 'Ошибка сети. Проверьте подключение к интернету';
+                    break;
+                default:
+                    message = error.message;
+            }
+            
+            return { success: false, message };
         }
+    }
 
-        if (atob(user.password) !== password) {
-            return { success: false, message: 'Неверный пароль' };
+    // Вход через Google
+    async loginWithGoogle() {
+        try {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({
+                prompt: 'select_account'
+            });
+            const result = await firebase.auth().signInWithPopup(provider);
+            return { success: true, message: 'Вход через Google выполнен!', user: result.user };
+        } catch (error) {
+            let message = 'Ошибка входа через Google';
+            
+            switch (error.code) {
+                case 'auth/popup-closed-by-user':
+                    message = 'Окно входа было закрыто';
+                    break;
+                case 'auth/popup-blocked':
+                    message = 'Всплывающее окно заблокировано браузером';
+                    break;
+                case 'auth/network-request-failed':
+                    message = 'Ошибка сети. Проверьте подключение к интернету';
+                    break;
+                case 'auth/cancelled-popup-request':
+                    message = 'Запрос отменен';
+                    break;
+                default:
+                    message = error.message;
+            }
+            
+            return { success: false, message };
         }
-
-        this.currentUser = email;
-        localStorage.setItem('currentUser', email);
-        this.updateUI();
-
-        return { success: true, message: 'Вход выполнен!' };
     }
 
     // Выход
-    logout() {
-        this.currentUser = null;
-        localStorage.removeItem('currentUser');
-        this.updateUI();
-    }
-
-    // Получение всех пользователей
-    getUsers() {
-        const users = localStorage.getItem('users');
-        return users ? JSON.parse(users) : {};
+    async logout() {
+        try {
+            await firebase.auth().signOut();
+            return { success: true, message: 'Выход выполнен' };
+        } catch (error) {
+            return { success: false, message: 'Ошибка выхода' };
+        }
     }
 
     // Обновление UI
@@ -283,12 +327,13 @@ class AuthSystem {
         const userEmailDisplay = document.getElementById('userEmail');
 
         if (this.currentUser) {
-            userStatus.textContent = this.currentUser.split('@')[0];
+            const displayName = this.currentUser.email.split('@')[0];
+            userStatus.textContent = displayName;
             userStatus.classList.add('logged-in');
             if (authForm) authForm.style.display = 'none';
             if (userProfile) {
                 userProfile.style.display = 'block';
-                userEmailDisplay.textContent = this.currentUser;
+                userEmailDisplay.textContent = this.currentUser.email;
             }
         } else {
             userStatus.textContent = 'Войти';
@@ -362,19 +407,27 @@ if (switchAuthBtn) {
 
 // Обработка формы
 if (authForm) {
-    authForm.onsubmit = (e) => {
+    authForm.onsubmit = async (e) => {
         e.preventDefault();
         authError.textContent = '';
+        
+        // Отключаем кнопку во время обработки
+        authSubmitBtn.disabled = true;
+        authSubmitBtn.textContent = 'Обработка...';
         
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
         
         let result;
         if (isLoginMode) {
-            result = auth.login(email, password);
+            result = await auth.login(email, password);
         } else {
-            result = auth.register(email, password);
+            result = await auth.register(email, password);
         }
+        
+        // Включаем кнопку обратно
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться';
         
         if (result.success) {
             authForm.reset();
@@ -388,9 +441,39 @@ if (authForm) {
 
 // Выход
 if (logoutBtn) {
-    logoutBtn.onclick = () => {
-        auth.logout();
+    logoutBtn.onclick = async () => {
+        await auth.logout();
         authModal.classList.remove('show');
         setTimeout(() => authModal.style.display = 'none', 300);
+    };
+}
+
+// Вход через Google
+const googleSignInBtn = document.getElementById('googleSignInBtn');
+if (googleSignInBtn) {
+    googleSignInBtn.onclick = async () => {
+        authError.textContent = '';
+        googleSignInBtn.disabled = true;
+        googleSignInBtn.textContent = 'Загрузка...';
+        
+        const result = await auth.loginWithGoogle();
+        
+        googleSignInBtn.disabled = false;
+        googleSignInBtn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 10px;">
+                <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.335z"/>
+                <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+            </svg>
+            Войти через Google
+        `;
+        
+        if (result.success) {
+            authModal.classList.remove('show');
+            setTimeout(() => authModal.style.display = 'none', 300);
+        } else {
+            authError.textContent = result.message;
+        }
     };
 }
