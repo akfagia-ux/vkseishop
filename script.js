@@ -120,18 +120,21 @@ chatInput.addEventListener('keypress', (e) => {
 
 
 // Модальное окно Fortnite заказа
-function openFortniteOrder() {
-    const modal = document.getElementById('fortniteModal');
-    modal.style.display = 'block';
-    setTimeout(() => modal.classList.add('show'), 10);
+const fortniteOrderBtn = document.querySelector('.fortnite-order-btn');
+const fortniteModal = document.getElementById('fortniteModal');
+const closeFortnite = document.querySelector('.close-fortnite');
+
+if (fortniteOrderBtn) {
+    fortniteOrderBtn.onclick = () => {
+        fortniteModal.style.display = 'block';
+        setTimeout(() => fortniteModal.classList.add('show'), 10);
+    };
 }
 
-const closeFortnite = document.querySelector('.close-fortnite');
 if (closeFortnite) {
     closeFortnite.onclick = () => {
-        const modal = document.getElementById('fortniteModal');
-        modal.classList.remove('show');
-        setTimeout(() => modal.style.display = 'none', 300);
+        fortniteModal.classList.remove('show');
+        setTimeout(() => fortniteModal.style.display = 'none', 300);
     };
 }
 
@@ -169,7 +172,7 @@ if (fortniteForm) {
 }
 
 // Закрытие модальных окон при клике вне их
-window.onclick = (event) => {
+window.addEventListener('click', (event) => {
     const chatModal = document.getElementById('chatModal');
     const fortniteModal = document.getElementById('fortniteModal');
     
@@ -182,24 +185,6 @@ window.onclick = (event) => {
         fortniteModal.classList.remove('show');
         setTimeout(() => fortniteModal.style.display = 'none', 300);
     }
-};
+});
 
-// Анимация открытия чата
-const openChatBtnNew = document.getElementById('openChatBtn');
-if (openChatBtnNew) {
-    openChatBtnNew.onclick = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('chatModal');
-        modal.style.display = 'block';
-        setTimeout(() => modal.classList.add('show'), 10);
-    };
-}
-
-const closeChatBtn = document.querySelector('.close');
-if (closeChatBtn) {
-    closeChatBtn.onclick = () => {
-        const modal = document.getElementById('chatModal');
-        modal.classList.remove('show');
-        setTimeout(() => modal.style.display = 'none', 300);
-    };
-}
+// Анимация открытия чата (дублирование удалено)
