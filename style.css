@@ -98,8 +98,6 @@ nav a:hover {
     padding: 30px;
     text-align: center;
 }
-
-.service-card h3 {
     font-size: 1.5em;
     margin-bottom: 15px;
     color: #ff6666;
@@ -863,10 +861,6 @@ footer {
 }
 
 /* Анимация при наведении */
-.service-card:hover {
-    animation: pulse 0.5s ease-in-out;
-}
-
 .team-card:hover {
     animation: pulse 0.5s ease-in-out;
 }
