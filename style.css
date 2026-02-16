@@ -712,3 +712,229 @@ footer h2 {
         padding: 15px;
     }
 }
+
+
+/* Анимации при загрузке */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Применение анимаций */
+header {
+    animation: fadeIn 0.8s ease-out;
+}
+
+.hero h2 {
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.hero p {
+    animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.service-card {
+    animation: fadeInUp 0.8s ease-out both;
+}
+
+.service-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.service-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.service-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.service-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.service-card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.reviews-stats .stat {
+    animation: scaleIn 0.8s ease-out both;
+}
+
+.reviews-stats .stat:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.reviews-stats .stat:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.review-card {
+    animation: fadeInUp 0.6s ease-out both;
+}
+
+.review-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.review-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.review-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.review-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.review-card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.review-card:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.team-card {
+    animation: scaleIn 0.8s ease-out both;
+}
+
+.team-card:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.team-card:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.team-card:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+footer {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+/* Анимация при наведении */
+.service-card:hover {
+    animation: pulse 0.5s ease-in-out;
+}
+
+.team-card:hover {
+    animation: pulse 0.5s ease-in-out;
+}
+
+/* Анимация для модальных окон */
+.modal {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    animation: scaleIn 0.3s ease-out;
+}
+
+/* Анимация для кнопок */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+/* Плавное появление секций при скролле */
+.services, .reviews, .team {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.services {
+    animation-delay: 0.1s;
+}
+
+.reviews {
+    animation-delay: 0.2s;
+}
+
+.team {
+    animation-delay: 0.3s;
+}
+
+/* Анимация для иконок соцсетей */
+.footer-icon {
+    transition: all 0.3s ease;
+}
+
+.footer-icon:hover {
+    animation: pulse 0.6s ease-in-out infinite;
+}
+
+/* Отключение анимаций для пользователей с prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
