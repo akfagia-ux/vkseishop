@@ -175,6 +175,7 @@ if (fortniteForm) {
 window.addEventListener('click', (event) => {
     const chatModal = document.getElementById('chatModal');
     const fortniteModal = document.getElementById('fortniteModal');
+    const authModal = document.getElementById('authModal');
     
     if (event.target === chatModal) {
         chatModal.classList.remove('show');
@@ -184,6 +185,13 @@ window.addEventListener('click', (event) => {
     if (event.target === fortniteModal) {
         fortniteModal.classList.remove('show');
         setTimeout(() => fortniteModal.style.display = 'none', 300);
+    }
+    
+    if (event.target === authModal) {
+        authModal.classList.remove('show');
+        setTimeout(() => authModal.style.display = 'none', 300);
+        const authError = document.getElementById('authError');
+        if (authError) authError.textContent = '';
     }
 });
 
@@ -386,12 +394,3 @@ if (logoutBtn) {
         setTimeout(() => authModal.style.display = 'none', 300);
     };
 }
-
-// Закрытие при клике вне окна
-window.addEventListener('click', (event) => {
-    if (event.target === authModal) {
-        authModal.classList.remove('show');
-        setTimeout(() => authModal.style.display = 'none', 300);
-        authError.textContent = '';
-    }
-});
