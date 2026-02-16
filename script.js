@@ -66,7 +66,7 @@ const chatSend = document.getElementById('chatSend');
 
 // Команды бота
 const botCommands = {
-    '!vksei': 'Vksei - ютубер и стример. Создатель VkseiShop! 🎮',
+    '!vksei': 'Vksei - ютубер и стример. Создатель Vksei Shop! 🎮',
     '!цена': 'Все цены указаны при нажатии на услугу. Перейди в раздел "Услуги" и выбери интересующую тебя услугу! 💰',
     '!redux': 'Redux by vksei: https://t.me/reduxx67 📱'
 };
