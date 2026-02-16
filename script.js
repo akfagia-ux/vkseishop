@@ -47,10 +47,6 @@ const closeBtn = document.querySelector('.close');
 openChatBtn.onclick = (e) => {
     e.preventDefault();
     chatModal.style.display = 'block';
-    chatModal.classList.add('show');
-    setTimeout(() => {
-        chatModal.classList.remove('show');
-    }, 400);
 };
 
 closeBtn.onclick = () => {
@@ -146,72 +142,5 @@ document.addEventListener('DOMContentLoaded', () => {
         section.style.transform = 'translateY(30px)';
         section.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
         observer.observe(section);
-    });
-});
-
-
-// Анимация оформления заказа
-function showOrderAnimation(serviceName, redirectUrl) {
-    // Создаем оверлей если его нет
-    let overlay = document.getElementById('orderOverlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'orderOverlay';
-        overlay.className = 'order-overlay';
-        overlay.innerHTML = `
-            <div class="order-content">
-                <h2>Оформление заказа</h2>
-                <div class="order-spinner"></div>
-                <div class="order-checkmark">
-                    <svg viewBox="0 0 52 52">
-                        <circle class="checkmark-circle" cx="26" cy="26" r="25"/>
-                        <path class="checkmark-check" d="M14 27l7 7 16-16"/>
-                    </svg>
-                </div>
-                <p class="order-message">Подготовка заказа...</p>
-                <p class="order-redirect"></p>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-    }
-    
-    const spinner = overlay.querySelector('.order-spinner');
-    const checkmark = overlay.querySelector('.order-checkmark');
-    const message = overlay.querySelector('.order-message');
-    const redirect = overlay.querySelector('.order-redirect');
-    
-    // Показываем оверлей
-    overlay.classList.add('show');
-    spinner.style.display = 'block';
-    checkmark.classList.remove('show');
-    message.textContent = 'Подготовка заказа...';
-    redirect.textContent = '';
-    
-    // Через 1.5 секунды показываем галочку
-    setTimeout(() => {
-        spinner.style.display = 'none';
-        checkmark.classList.add('show');
-        message.textContent = 'Заказ оформлен!';
-        redirect.textContent = 'Перенаправление на страницу оплаты...';
-        
-        // Через 1 секунду перенаправляем
-        setTimeout(() => {
-            window.open(redirectUrl, '_blank');
-            overlay.classList.remove('show');
-        }, 1000);
-    }, 1500);
-}
-
-// Добавляем обработчики на кнопки услуг
-document.addEventListener('DOMContentLoaded', () => {
-    const serviceButtons = document.querySelectorAll('.service-card .btn');
-    
-    serviceButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const url = button.getAttribute('href');
-            const serviceName = button.closest('.service-card').querySelector('h3').textContent;
-            showOrderAnimation(serviceName, url);
-        });
     });
 });
