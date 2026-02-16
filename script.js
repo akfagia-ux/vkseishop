@@ -320,20 +320,52 @@ class AuthSystem {
     }
 
     // Обновление UI
-    updateUI() {
+    async updateUI() {
         const userStatus = document.getElementById('userStatus');
         const authForm = document.getElementById('authForm');
         const userProfile = document.getElementById('userProfile');
         const userEmailDisplay = document.getElementById('userEmail');
 
         if (this.currentUser) {
-            const displayName = this.currentUser.email.split('@')[0];
-            userStatus.textContent = displayName;
-            userStatus.classList.add('logged-in');
-            if (authForm) authForm.style.display = 'none';
-            if (userProfile) {
-                userProfile.style.display = 'block';
-                userEmailDisplay.textContent = this.currentUser.email;
+            // Загружаем профиль пользователя
+            const profileResult = await profileManager.getProfile(this.currentUser.uid);
+            
+            if (profileResult.success) {
+                const profile = profileResult.profile;
+                const displayName = profile.displayName || this.currentUser.email.split('@')[0];
+                
+                userStatus.textContent = displayName;
+                userStatus.classList.add('logged-in');
+                
+                if (authForm) authForm.style.display = 'none';
+                if (userProfile) {
+                    userProfile.style.display = 'block';
+                    
+                    // Обновляем информацию в профиле
+                    if (userEmailDisplay) userEmailDisplay.textContent = this.currentUser.email;
+                    
+                    const profileDisplayName = document.getElementById('profileDisplayName');
+                    const profileRole = document.getElementById('profileRole');
+                    const profileAvatar = document.getElementById('profileAvatar');
+                    const displayNameInput = document.getElementById('displayNameInput');
+                    const bioInput = document.getElementById('bioInput');
+                    const registrationDate = document.getElementById('registrationDate');
+                    
+                    if (profileDisplayName) profileDisplayName.textContent = displayName;
+                    if (profileRole) {
+                        profileRole.textContent = profileManager.getRoleName(profile.role);
+                        profileRole.className = `profile-role role-${profile.role}`;
+                    }
+                    if (profileAvatar) {
+                        profileAvatar.src = profile.avatarUrl || 'https://via.placeholder.com/150?text=' + displayName.charAt(0);
+                    }
+                    if (displayNameInput) displayNameInput.value = displayName;
+                    if (bioInput) bioInput.value = profile.bio || '';
+                    if (registrationDate && profile.createdAt) {
+                        const date = profile.createdAt.toDate ? profile.createdAt.toDate() : new Date(profile.createdAt);
+                        registrationDate.textContent = date.toLocaleDateString('ru-RU');
+                    }
+                }
             }
         } else {
             userStatus.textContent = 'Войти';
@@ -477,3 +509,137 @@ if (googleSignInBtn) {
         }
     };
 }
+
+
+// Обработчики профиля
+document.addEventListener('DOMContentLoaded', () => {
+    // Переключение вкладок профиля
+    const profileTabs = document.querySelectorAll('.profile-tab');
+    profileTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.dataset.tab;
+            
+            // Убираем active у всех вкладок
+            profileTabs.forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
+            
+            // Добавляем active к выбранной
+            tab.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        });
+    });
+
+    // Сохранение никнейма
+    const saveDisplayNameBtn = document.getElementById('saveDisplayNameBtn');
+    if (saveDisplayNameBtn) {
+        saveDisplayNameBtn.addEventListener('click', async () => {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const displayName = document.getElementById('displayNameInput').value.trim();
+            if (!displayName) {
+                alert('Введите никнейм');
+                return;
+            }
+
+            saveDisplayNameBtn.disabled = true;
+            saveDisplayNameBtn.textContent = 'Сохранение...';
+
+            const result = await profileManager.updateDisplayName(user.uid, displayName);
+            
+            saveDisplayNameBtn.disabled = false;
+            saveDisplayNameBtn.textContent = 'Сохранить';
+
+            if (result.success) {
+                alert('✅ Никнейм обновлен!');
+                auth.updateUI();
+            } else {
+                alert('❌ ' + result.message);
+            }
+        });
+    }
+
+    // Сохранение описания
+    const saveBioBtn = document.getElementById('saveBioBtn');
+    if (saveBioBtn) {
+        saveBioBtn.addEventListener('click', async () => {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const bio = document.getElementById('bioInput').value.trim();
+
+            saveBioBtn.disabled = true;
+            saveBioBtn.textContent = 'Сохранение...';
+
+            const result = await profileManager.updateBio(user.uid, bio);
+            
+            saveBioBtn.disabled = false;
+            saveBioBtn.textContent = 'Сохранить';
+
+            if (result.success) {
+                alert('✅ Описание обновлено!');
+            } else {
+                alert('❌ ' + result.message);
+            }
+        });
+    }
+
+    // Загрузка аватара
+    const avatarUpload = document.getElementById('avatarUpload');
+    if (avatarUpload) {
+        avatarUpload.addEventListener('change', async (e) => {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const result = await profileManager.uploadAvatar(user.uid, file);
+
+            if (result.success) {
+                alert('✅ Аватар обновлен!');
+                document.getElementById('profileAvatar').src = result.url;
+                auth.updateUI();
+            } else {
+                alert('❌ ' + result.message);
+            }
+
+            // Очищаем input
+            avatarUpload.value = '';
+        });
+    }
+
+    // Удаление аккаунта
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', async () => {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const confirmation = confirm('⚠️ Вы уверены, что хотите удалить аккаунт? Это действие необратимо!');
+            if (!confirmation) return;
+
+            const doubleConfirmation = confirm('⚠️ ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ! Все ваши данные будут удалены навсегда. Продолжить?');
+            if (!doubleConfirmation) return;
+
+            deleteAccountBtn.disabled = true;
+            deleteAccountBtn.textContent = 'Удаление...';
+
+            const result = await profileManager.deleteAccount(user.uid);
+
+            if (result.success) {
+                alert('✅ Аккаунт удален');
+                window.location.reload();
+            } else {
+                deleteAccountBtn.disabled = false;
+                deleteAccountBtn.textContent = 'Удалить аккаунт';
+                
+                if (result.requiresReauth) {
+                    alert('❌ Для удаления аккаунта необходимо войти заново. Пожалуйста, выйдите и войдите снова.');
+                } else {
+                    alert('❌ ' + result.message);
+                }
+            }
+        });
+    }
+});

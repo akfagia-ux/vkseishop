@@ -133,9 +133,61 @@
                 </p>
             </form>
             <div id="userProfile" class="user-profile" style="display: none;">
-                <div class="profile-icon">👤</div>
-                <h3>Добро пожаловать!</h3>
-                <p id="userEmail"></p>
+                <div class="profile-header">
+                    <div class="profile-avatar-container">
+                        <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar">
+                        <div class="profile-avatar-overlay">
+                            <label for="avatarUpload" class="avatar-upload-label">
+                                📷
+                                <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <h3 id="profileDisplayName">Пользователь</h3>
+                        <p id="profileRole" class="profile-role">Пользователь</p>
+                        <p id="userEmail" class="profile-email"></p>
+                    </div>
+                </div>
+                
+                <div class="profile-tabs">
+                    <button class="profile-tab active" data-tab="info">Информация</button>
+                    <button class="profile-tab" data-tab="settings">Настройки</button>
+                </div>
+                
+                <div class="profile-content">
+                    <!-- Вкладка Информация -->
+                    <div class="profile-tab-content active" id="tab-info">
+                        <div class="profile-field">
+                            <label>Никнейм:</label>
+                            <div class="profile-field-edit">
+                                <input type="text" id="displayNameInput" placeholder="Ваш никнейм">
+                                <button class="btn-small" id="saveDisplayNameBtn">Сохранить</button>
+                            </div>
+                        </div>
+                        <div class="profile-field">
+                            <label>Описание:</label>
+                            <textarea id="bioInput" placeholder="Расскажите о себе..." rows="3"></textarea>
+                            <button class="btn-small" id="saveBioBtn">Сохранить</button>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Дата регистрации:</span>
+                                <span id="registrationDate" class="stat-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Вкладка Настройки -->
+                    <div class="profile-tab-content" id="tab-settings">
+                        <div class="settings-section">
+                            <h4>⚠️ Опасная зона</h4>
+                            <button class="btn btn-danger" id="deleteAccountBtn">Удалить аккаунт</button>
+                            <p class="warning-text">Это действие необратимо!</p>
+                        </div>
+                    </div>
+                </div>
+                
                 <button class="btn" id="logoutBtn">Выйти</button>
             </div>
         </div>
@@ -194,7 +246,10 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="profile-manager.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

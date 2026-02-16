@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора - Vkesi Shop</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-panel {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .admin-header h1 {
+            color: #ff0000;
+            margin-bottom: 10px;
+        }
+        
+        .users-table {
+            width: 100%;
+            background: rgba(204, 0, 0, 0.1);
+            border: 2px solid #cc0000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .users-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .users-table th,
+        .users-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #cc0000;
+        }
+        
+        .users-table th {
+            background: rgba(204, 0, 0, 0.3);
+            color: #ff0000;
+            font-weight: bold;
+        }
+        
+        .users-table td {
+            color: #ffcccc;
+        }
+        
+        .users-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #cc0000;
+        }
+        
+        .role-select {
+            padding: 8px;
+            background: rgba(204, 0, 0, 0.2);
+            border: 2px solid #cc0000;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .role-select option {
+            background: #1a0000;
+        }
+        
+        .access-denied {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        
+        .access-denied h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #ffcccc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Vkesi Shop</h1>
+            <nav>
+                <a href="index.html">Главная</a>
+                <a href="admin.html" class="active">Админ панель</a>
+                <a href="#" id="openAuthBtn">
+                    <span id="userStatus">Войти</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="admin-panel">
+            <div id="loadingMessage" class="loading">
+                <h2>Загрузка...</h2>
+            </div>
+            
+            <div id="accessDenied" class="access-denied" style="display: none;">
+                <h2>⛔ Доступ запрещен</h2>
+                <p>У вас нет прав администратора</p>
+                <a href="index.html" class="btn">Вернуться на главную</a>
+            </div>
+            
+            <div id="adminContent" style="display: none;">
+                <div class="admin-header">
+                    <h1>👑 Панель администратора</h1>
+                    <p>Управление пользователями и ролями</p>
+                </div>
+                
+                <div class="users-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Аватар</th>
+                                <th>Никнейм</th>
+                                <th>Email</th>
+                                <th>Роль</th>
+                                <th>Дата регистрации</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Пользователи будут добавлены через JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="profile-manager.js"></script>
+    
+    <script>
+        // Проверка прав администратора
+        firebase.auth().onAuthStateChanged(async (user) => {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const accessDenied = document.getElementById('accessDenied');
+            const adminContent = document.getElementById('adminContent');
+            const userStatus = document.getElementById('userStatus');
+            
+            if (user) {
+                // Загружаем профиль
+                const profileResult = await profileManager.getProfile(user.uid);
+                
+                if (profileResult.success) {
+                    const profile = profileResult.profile;
+                    userStatus.textContent = profile.displayName || user.email.split('@')[0];
+                    
+                    // Проверяем роль
+                    if (profile.role === 'admin') {
+                        loadingMessage.style.display = 'none';
+                        adminContent.style.display = 'block';
+                        loadUsers();
+                    } else {
+                        loadingMessage.style.display = 'none';
+                        accessDenied.style.display = 'block';
+                    }
+                }
+            } else {
+                userStatus.textContent = 'Войти';
+                loadingMessage.style.display = 'none';
+                accessDenied.style.display = 'block';
+            }
+        });
+        
+        // Загрузка пользователей
+        async function loadUsers() {
+            const result = await profileManager.getAllUsers();
+            
+            if (result.success) {
+                const tbody = document.getElementById('usersTableBody');
+                tbody.innerHTML = '';
+                
+                result.users.forEach(user => {
+                    const tr = document.createElement('tr');
+                    
+                    const avatarUrl = user.avatarUrl || `https://via.placeholder.com/40?text=${user.displayName.charAt(0)}`;
+                    const createdAt = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString('ru-RU') : '-';
+                    
+                    tr.innerHTML = `
+                        <td><img src="${avatarUrl}" alt="Avatar" class="user-avatar-small"></td>
+                        <td>${user.displayName}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <select class="role-select" data-user-id="${user.id}" data-current-role="${user.role}">
+                                <option value="user" ${user.role === 'user' ? 'selected' : ''}>Пользователь</option>
+                                <option value="vip" ${user.role === 'vip' ? 'selected' : ''}>VIP</option>
+                                <option value="moderator" ${user.role === 'moderator' ? 'selected' : ''}>Модератор</option>
+                                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Администратор</option>
+                            </select>
+                        </td>
+                        <td>${createdAt}</td>
+                    `;
+                    
+                    tbody.appendChild(tr);
+                });
+                
+                // Добавляем обработчики для изменения ролей
+                document.querySelectorAll('.role-select').forEach(select => {
+                    select.addEventListener('change', async (e) => {
+                        const userId = e.target.dataset.userId;
+                        const newRole = e.target.value;
+                        const oldRole = e.target.dataset.currentRole;
+                        
+                        const confirmation = confirm(`Изменить роль пользователя на "${profileManager.getRoleName(newRole)}"?`);
+                        
+                        if (confirmation) {
+                            const result = await profileManager.updateRole(userId, newRole);
+                            
+                            if (result.success) {
+                                alert('✅ Роль обновлена!');
+                                e.target.dataset.currentRole = newRole;
+                            } else {
+                                alert('❌ ' + result.message);
+                                e.target.value = oldRole;
+                            }
+                        } else {
+                            e.target.value = oldRole;
+                        }
+                    });
+                });
+            }
+        }
+    </script>
+</body>
+</html>
