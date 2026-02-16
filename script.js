@@ -188,3 +188,210 @@ window.addEventListener('click', (event) => {
 });
 
 // Анимация открытия чата (дублирование удалено)
+
+
+// Система регистрации/входа (localStorage)
+class AuthSystem {
+    constructor() {
+        this.currentUser = null;
+        this.loadCurrentUser();
+        this.updateUI();
+    }
+
+    // Загрузка текущего пользователя
+    loadCurrentUser() {
+        const userEmail = localStorage.getItem('currentUser');
+        if (userEmail) {
+            this.currentUser = userEmail;
+        }
+    }
+
+    // Регистрация
+    register(email, password) {
+        // Проверка длины пароля
+        if (password.length < 6) {
+            return { success: false, message: 'Пароль должен быть минимум 6 символов' };
+        }
+
+        // Проверка существования пользователя
+        const users = this.getUsers();
+        if (users[email]) {
+            return { success: false, message: 'Пользователь с таким email уже существует' };
+        }
+
+        // Сохранение пользователя
+        users[email] = {
+            password: btoa(password), // Простое кодирование (не безопасно для реального использования!)
+            registeredAt: new Date().toISOString()
+        };
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // Автоматический вход
+        this.currentUser = email;
+        localStorage.setItem('currentUser', email);
+        this.updateUI();
+
+        return { success: true, message: 'Регистрация успешна!' };
+    }
+
+    // Вход
+    login(email, password) {
+        const users = this.getUsers();
+        const user = users[email];
+
+        if (!user) {
+            return { success: false, message: 'Пользователь не найден' };
+        }
+
+        if (atob(user.password) !== password) {
+            return { success: false, message: 'Неверный пароль' };
+        }
+
+        this.currentUser = email;
+        localStorage.setItem('currentUser', email);
+        this.updateUI();
+
+        return { success: true, message: 'Вход выполнен!' };
+    }
+
+    // Выход
+    logout() {
+        this.currentUser = null;
+        localStorage.removeItem('currentUser');
+        this.updateUI();
+    }
+
+    // Получение всех пользователей
+    getUsers() {
+        const users = localStorage.getItem('users');
+        return users ? JSON.parse(users) : {};
+    }
+
+    // Обновление UI
+    updateUI() {
+        const userStatus = document.getElementById('userStatus');
+        const authForm = document.getElementById('authForm');
+        const userProfile = document.getElementById('userProfile');
+        const userEmailDisplay = document.getElementById('userEmail');
+
+        if (this.currentUser) {
+            userStatus.textContent = this.currentUser.split('@')[0];
+            userStatus.classList.add('logged-in');
+            if (authForm) authForm.style.display = 'none';
+            if (userProfile) {
+                userProfile.style.display = 'block';
+                userEmailDisplay.textContent = this.currentUser;
+            }
+        } else {
+            userStatus.textContent = 'Войти';
+            userStatus.classList.remove('logged-in');
+            if (authForm) authForm.style.display = 'block';
+            if (userProfile) userProfile.style.display = 'none';
+        }
+    }
+
+    // Проверка авторизации
+    isLoggedIn() {
+        return this.currentUser !== null;
+    }
+}
+
+// Инициализация системы авторизации
+const auth = new AuthSystem();
+
+// Модальное окно авторизации
+const authModal = document.getElementById('authModal');
+const openAuthBtn = document.getElementById('openAuthBtn');
+const closeAuth = document.querySelector('.close-auth');
+const authForm = document.getElementById('authForm');
+const switchAuthBtn = document.getElementById('switchAuth');
+const authTitle = document.getElementById('authTitle');
+const authSubmitBtn = document.getElementById('authSubmitBtn');
+const switchText = document.getElementById('switchText');
+const authError = document.getElementById('authError');
+const logoutBtn = document.getElementById('logoutBtn');
+
+let isLoginMode = true;
+
+// Открытие модального окна
+if (openAuthBtn) {
+    openAuthBtn.onclick = (e) => {
+        e.preventDefault();
+        authModal.style.display = 'block';
+        setTimeout(() => authModal.classList.add('show'), 10);
+    };
+}
+
+// Закрытие модального окна
+if (closeAuth) {
+    closeAuth.onclick = () => {
+        authModal.classList.remove('show');
+        setTimeout(() => authModal.style.display = 'none', 300);
+        authError.textContent = '';
+    };
+}
+
+// Переключение между входом и регистрацией
+if (switchAuthBtn) {
+    switchAuthBtn.onclick = (e) => {
+        e.preventDefault();
+        isLoginMode = !isLoginMode;
+        
+        if (isLoginMode) {
+            authTitle.textContent = 'Вход';
+            authSubmitBtn.textContent = 'Войти';
+            switchText.textContent = 'Нет аккаунта?';
+            switchAuthBtn.textContent = 'Зарегистрироваться';
+        } else {
+            authTitle.textContent = 'Регистрация';
+            authSubmitBtn.textContent = 'Зарегистрироваться';
+            switchText.textContent = 'Уже есть аккаунт?';
+            switchAuthBtn.textContent = 'Войти';
+        }
+        authError.textContent = '';
+    };
+}
+
+// Обработка формы
+if (authForm) {
+    authForm.onsubmit = (e) => {
+        e.preventDefault();
+        authError.textContent = '';
+        
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        
+        let result;
+        if (isLoginMode) {
+            result = auth.login(email, password);
+        } else {
+            result = auth.register(email, password);
+        }
+        
+        if (result.success) {
+            authForm.reset();
+            authModal.classList.remove('show');
+            setTimeout(() => authModal.style.display = 'none', 300);
+        } else {
+            authError.textContent = result.message;
+        }
+    };
+}
+
+// Выход
+if (logoutBtn) {
+    logoutBtn.onclick = () => {
+        auth.logout();
+        authModal.classList.remove('show');
+        setTimeout(() => authModal.style.display = 'none', 300);
+    };
+}
+
+// Закрытие при клике вне окна
+window.addEventListener('click', (event) => {
+    if (event.target === authModal) {
+        authModal.classList.remove('show');
+        setTimeout(() => authModal.style.display = 'none', 300);
+        authError.textContent = '';
+    }
+});
