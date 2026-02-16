@@ -19,6 +19,9 @@
                 <a href="#" id="openChatBtn">Чат</a>
                 <a href="#team">Работники</a>
                 <a href="#topbuyers">Лучшие покупатели</a>
+                <a href="#" id="openAuthBtn">
+                    <span id="userStatus">Войти</span>
+                </a>
             </nav>
         </div>
     </header>
@@ -128,6 +131,36 @@
 
 
     </main>
+
+    <!-- Модальное окно регистрации/входа -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <span class="close-auth">&times;</span>
+            <h2 id="authTitle">Вход</h2>
+            <form id="authForm" class="auth-form">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="authEmail" placeholder="Ваш email" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль:</label>
+                    <input type="password" id="authPassword" placeholder="Минимум 6 символов" required>
+                </div>
+                <div id="authError" class="error-message"></div>
+                <button type="submit" class="btn btn-submit" id="authSubmitBtn">Войти</button>
+                <p class="switch-auth">
+                    <span id="switchText">Нет аккаунта?</span>
+                    <a href="#" id="switchAuth">Зарегистрироваться</a>
+                </p>
+            </form>
+            <div id="userProfile" class="user-profile" style="display: none;">
+                <div class="profile-icon">👤</div>
+                <h3>Добро пожаловать!</h3>
+                <p id="userEmail"></p>
+                <button class="btn" id="logoutBtn">Выйти</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Модальное окно чата -->
     <div id="chatModal" class="modal">
