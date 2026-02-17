@@ -357,7 +357,13 @@ class AuthSystem {
                         profileRole.className = `profile-role role-${profile.role}`;
                     }
                     if (profileAvatar) {
-                        profileAvatar.src = profile.avatarUrl || 'https://via.placeholder.com/150?text=' + displayName.charAt(0);
+                        // Если аватарки нет, генерируем с первой буквой
+                        if (profile.avatarUrl) {
+                            profileAvatar.src = profile.avatarUrl;
+                        } else {
+                            const firstLetter = displayName.charAt(0).toUpperCase();
+                            profileAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=200&background=cc0000&color=fff&bold=true`;
+                        }
                     }
                     if (displayNameInput) displayNameInput.value = displayName;
                     if (bioInput) bioInput.value = profile.bio || '';

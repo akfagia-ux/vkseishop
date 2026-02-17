@@ -197,8 +197,14 @@
                 result.users.forEach(user => {
                     const tr = document.createElement('tr');
                     
-                    const avatarUrl = user.avatarUrl || `https://via.placeholder.com/40?text=${user.displayName.charAt(0)}`;
-                    const createdAt = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString('ru-RU') : '-';
+                    // Генерируем аватарку если её нет
+                    let avatarUrl = user.avatarUrl;
+                    if (!avatarUrl) {
+                        const firstLetter = user.displayName.charAt(0).toUpperCase();
+                        avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=40&background=cc0000&color=fff&bold=true`;
+                    }
+                    
+                    const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleDateString('ru-RU') : '-';
                     
                     tr.innerHTML = `
                         <td><img src="${avatarUrl}" alt="Avatar" class="user-avatar-small"></td>
@@ -206,6 +212,7 @@
                         <td>${user.email}</td>
                         <td>
                             <select class="role-select" data-user-id="${user.id}" data-current-role="${user.role}">
+                                <option value="buyer" ${user.role === 'buyer' ? 'selected' : ''}>Покупатель</option>
                                 <option value="user" ${user.role === 'user' ? 'selected' : ''}>Пользователь</option>
                                 <option value="vip" ${user.role === 'vip' ? 'selected' : ''}>VIP</option>
                                 <option value="moderator" ${user.role === 'moderator' ? 'selected' : ''}>Модератор</option>
