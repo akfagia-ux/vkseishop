@@ -1,25 +1,40 @@
-// Менеджер профилей пользователей
+// Менеджер профилей пользователей (localStorage + ImgBB)
 class ProfileManager {
     constructor() {
-        this.db = firebase.firestore();
-        this.storage = firebase.storage();
+        // API ключ ImgBB (бесплатный)
+        this.imgbbApiKey = '718bfc6d20fe6c4889b3680c1dd00e7c';
         this.currentUserProfile = null;
+    }
+
+    // Получение профилей из localStorage
+    getProfiles() {
+        const profiles = localStorage.getItem('userProfiles');
+        return profiles ? JSON.parse(profiles) : {};
+    }
+
+    // Сохранение профилей в localStorage
+    saveProfiles(profiles) {
+        localStorage.setItem('userProfiles', JSON.stringify(profiles));
     }
 
     // Создание профиля при регистрации
     async createProfile(userId, email) {
         try {
+            const profiles = this.getProfiles();
+            
             const profileData = {
                 email: email,
                 displayName: email.split('@')[0],
                 bio: '',
                 role: 'user',
                 avatarUrl: '',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
 
-            await this.db.collection('users').doc(userId).set(profileData);
+            profiles[userId] = profileData;
+            this.saveProfiles(profiles);
+            
             return { success: true, profile: profileData };
         } catch (error) {
             console.error('Ошибка создания профиля:', error);
@@ -30,10 +45,10 @@ class ProfileManager {
     // Получение профиля пользователя
     async getProfile(userId) {
         try {
-            const doc = await this.db.collection('users').doc(userId).get();
+            const profiles = this.getProfiles();
             
-            if (doc.exists) {
-                this.currentUserProfile = { id: doc.id, ...doc.data() };
+            if (profiles[userId]) {
+                this.currentUserProfile = { id: userId, ...profiles[userId] };
                 return { success: true, profile: this.currentUserProfile };
             } else {
                 // Если профиля нет, создаем его
@@ -52,11 +67,16 @@ class ProfileManager {
     // Обновление никнейма
     async updateDisplayName(userId, displayName) {
         try {
-            await this.db.collection('users').doc(userId).update({
-                displayName: displayName,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            return { success: true, message: 'Никнейм обновлен' };
+            const profiles = this.getProfiles();
+            
+            if (profiles[userId]) {
+                profiles[userId].displayName = displayName;
+                profiles[userId].updatedAt = new Date().toISOString();
+                this.saveProfiles(profiles);
+                return { success: true, message: 'Никнейм обновлен' };
+            }
+            
+            return { success: false, message: 'Профиль не найден' };
         } catch (error) {
             console.error('Ошибка обновления никнейма:', error);
             return { success: false, message: 'Ошибка обновления никнейма' };
@@ -66,23 +86,28 @@ class ProfileManager {
     // Обновление описания
     async updateBio(userId, bio) {
         try {
-            await this.db.collection('users').doc(userId).update({
-                bio: bio,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            return { success: true, message: 'Описание обновлено' };
+            const profiles = this.getProfiles();
+            
+            if (profiles[userId]) {
+                profiles[userId].bio = bio;
+                profiles[userId].updatedAt = new Date().toISOString();
+                this.saveProfiles(profiles);
+                return { success: true, message: 'Описание обновлено' };
+            }
+            
+            return { success: false, message: 'Профиль не найден' };
         } catch (error) {
             console.error('Ошибка обновления описания:', error);
             return { success: false, message: 'Ошибка обновления описания' };
         }
     }
 
-    // Загрузка аватара
+    // Загрузка аватара через ImgBB
     async uploadAvatar(userId, file) {
         try {
-            // Проверка размера файла (максимум 2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                return { success: false, message: 'Файл слишком большой (максимум 2MB)' };
+            // Проверка размера файла (максимум 5MB для ImgBB)
+            if (file.size > 5 * 1024 * 1024) {
+                return { success: false, message: 'Файл слишком большой (максимум 5MB)' };
             }
 
             // Проверка типа файла
@@ -90,20 +115,33 @@ class ProfileManager {
                 return { success: false, message: 'Можно загружать только изображения' };
             }
 
-            // Загрузка в Storage
-            const storageRef = this.storage.ref();
-            const avatarRef = storageRef.child(`avatars/${userId}/${Date.now()}_${file.name}`);
-            
-            await avatarRef.put(file);
-            const downloadURL = await avatarRef.getDownloadURL();
+            // Создаем FormData для отправки
+            const formData = new FormData();
+            formData.append('image', file);
 
-            // Обновление URL в профиле
-            await this.db.collection('users').doc(userId).update({
-                avatarUrl: downloadURL,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            // Загружаем на ImgBB
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${this.imgbbApiKey}`, {
+                method: 'POST',
+                body: formData
             });
 
-            return { success: true, message: 'Аватар обновлен', url: downloadURL };
+            const data = await response.json();
+
+            if (data.success) {
+                const imageUrl = data.data.url;
+                
+                // Сохраняем URL в профиле
+                const profiles = this.getProfiles();
+                if (profiles[userId]) {
+                    profiles[userId].avatarUrl = imageUrl;
+                    profiles[userId].updatedAt = new Date().toISOString();
+                    this.saveProfiles(profiles);
+                }
+
+                return { success: true, message: 'Аватар обновлен', url: imageUrl };
+            } else {
+                return { success: false, message: 'Ошибка загрузки на сервер' };
+            }
         } catch (error) {
             console.error('Ошибка загрузки аватара:', error);
             return { success: false, message: 'Ошибка загрузки аватара' };
@@ -113,10 +151,12 @@ class ProfileManager {
     // Удаление аккаунта
     async deleteAccount(userId) {
         try {
-            // Удаление профиля из Firestore
-            await this.db.collection('users').doc(userId).delete();
+            // Удаление профиля из localStorage
+            const profiles = this.getProfiles();
+            delete profiles[userId];
+            this.saveProfiles(profiles);
             
-            // Удаление аккаунта из Authentication
+            // Удаление аккаунта из Firebase Authentication
             const user = firebase.auth().currentUser;
             if (user) {
                 await user.delete();
@@ -138,11 +178,16 @@ class ProfileManager {
     // Обновление роли (только для администраторов)
     async updateRole(userId, role) {
         try {
-            await this.db.collection('users').doc(userId).update({
-                role: role,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            return { success: true, message: 'Роль обновлена' };
+            const profiles = this.getProfiles();
+            
+            if (profiles[userId]) {
+                profiles[userId].role = role;
+                profiles[userId].updatedAt = new Date().toISOString();
+                this.saveProfiles(profiles);
+                return { success: true, message: 'Роль обновлена' };
+            }
+            
+            return { success: false, message: 'Профиль не найден' };
         } catch (error) {
             console.error('Ошибка обновления роли:', error);
             return { success: false, message: 'Ошибка обновления роли' };
@@ -152,12 +197,12 @@ class ProfileManager {
     // Получение всех пользователей (для администраторов)
     async getAllUsers() {
         try {
-            const snapshot = await this.db.collection('users').get();
+            const profiles = this.getProfiles();
             const users = [];
             
-            snapshot.forEach(doc => {
-                users.push({ id: doc.id, ...doc.data() });
-            });
+            for (const [userId, profile] of Object.entries(profiles)) {
+                users.push({ id: userId, ...profile });
+            }
 
             return { success: true, users: users };
         } catch (error) {
