@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a0000 0%, #330000 50%, #1a0000 100%);
+    background: linear-gradient(135deg, #1a0000 0%, #001a33 50%, #1a0000 100%);
     color: #ffffff;
     min-height: 100vh;
     overflow-x: hidden;
@@ -20,13 +20,14 @@ body {
 }
 
 header {
-    background: rgba(51, 0, 0, 0.8);
+    background: rgba(51, 0, 51, 0.8);
     backdrop-filter: blur(10px);
     padding: 20px 0;
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 2px solid #cc0000;
+    border-bottom: 2px solid;
+    border-image: linear-gradient(90deg, #cc0000, #00bfff) 1;
 }
 
 header .container {
@@ -37,8 +38,11 @@ header .container {
 
 header h1 {
     font-size: 2em;
-    color: #ff0000;
-    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    background: linear-gradient(90deg, #ff0000, #00bfff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
 }
 
 nav {
@@ -54,7 +58,10 @@ nav a {
 }
 
 nav a:hover {
-    color: #ff0000;
+    background: linear-gradient(90deg, #ff0000, #00bfff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .hero {
@@ -65,8 +72,11 @@ nav a:hover {
 .hero h2 {
     font-size: 3em;
     margin-bottom: 20px;
-    color: #ff0000;
-    text-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+    background: linear-gradient(90deg, #ff0000, #00bfff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
 }
 
 .hero p {
@@ -82,7 +92,10 @@ nav a:hover {
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 50px;
-    color: #ff0000;
+    background: linear-gradient(90deg, #ff0000, #00bfff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .services-grid {
@@ -92,8 +105,9 @@ nav a:hover {
 }
 
 .service-card {
-    background: rgba(204, 0, 0, 0.2);
-    border: 2px solid #cc0000;
+    background: linear-gradient(135deg, rgba(204, 0, 0, 0.2), rgba(0, 191, 255, 0.2));
+    border: 2px solid;
+    border-image: linear-gradient(135deg, #cc0000, #00bfff) 1;
     border-radius: 15px;
     padding: 30px;
     text-align: center;
@@ -112,7 +126,7 @@ nav a:hover {
 
 .btn {
     display: inline-block;
-    background: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
+    background: linear-gradient(135deg, #cc0000 0%, #00bfff 100%);
     color: white;
     padding: 12px 30px;
     border-radius: 25px;
@@ -126,7 +140,7 @@ nav a:hover {
 
 .btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
+    box-shadow: 0 5px 20px rgba(0, 191, 255, 0.5);
 }
 
 .reviews {
@@ -138,7 +152,10 @@ nav a:hover {
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 40px;
-    color: #ff0000;
+    background: linear-gradient(90deg, #ff0000, #00bfff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .reviews-stats {
@@ -156,8 +173,11 @@ nav a:hover {
     display: block;
     font-size: 3em;
     font-weight: bold;
-    color: #ff0000;
-    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    background: linear-gradient(90deg, #ff0000, #00bfff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
 }
 
 .stat-label {
@@ -172,8 +192,9 @@ nav a:hover {
 }
 
 .review-card {
-    background: rgba(204, 0, 0, 0.2);
-    border: 1px solid #cc0000;
+    background: linear-gradient(135deg, rgba(204, 0, 0, 0.2), rgba(0, 191, 255, 0.2));
+    border: 1px solid;
+    border-image: linear-gradient(135deg, #cc0000, #00bfff) 1;
     border-radius: 10px;
     padding: 20px;
 }
@@ -199,18 +220,22 @@ nav a:hover {
 }
 
 footer {
-    background: rgba(26, 0, 0, 0.8);
+    background: rgba(26, 0, 26, 0.8);
     padding: 40px 0;
     text-align: center;
     margin-top: 60px;
-    border-top: 2px solid #cc0000;
+    border-top: 2px solid;
+    border-image: linear-gradient(90deg, #cc0000, #00bfff) 1;
 }
 
 footer h2 {
-    color: #ff0000;
+    background: linear-gradient(90deg, #ff0000, #00bfff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 2em;
     margin-bottom: 20px;
-    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    text-shadow: none;
 }
 
 .footer-social {
@@ -227,7 +252,10 @@ footer h2 {
 }
 
 .footer-icon:hover {
-    color: #ff0000;
+    background: linear-gradient(90deg, #ff0000, #00bfff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     transform: scale(1.2);
 }
 
@@ -1713,13 +1741,15 @@ nav a.active {
     height: 35px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #ff0000;
+    border: 2px solid;
+    border-image: linear-gradient(135deg, #ff0000, #00bfff) 1;
+    border-radius: 50%;
     transition: all 0.3s;
 }
 
 .user-nav-avatar:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
 }
 
 @media (max-width: 768px) {

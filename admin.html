@@ -201,7 +201,7 @@
                     let avatarUrl = user.avatarUrl;
                     if (!avatarUrl) {
                         const firstLetter = user.displayName.charAt(0).toUpperCase();
-                        avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=40&background=cc0000&color=fff&bold=true`;
+                        avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=40&background=random&color=fff&bold=true`;
                     }
                     
                     const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleDateString('ru-RU') : '-';

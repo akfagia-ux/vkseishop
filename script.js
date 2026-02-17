@@ -338,7 +338,7 @@ class AuthSystem {
                 // Показываем аватарку в навигации
                 if (userNavAvatar) {
                     const firstLetter = displayName.charAt(0).toUpperCase();
-                    const avatarUrl = profile.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=40&background=cc0000&color=fff&bold=true`;
+                    const avatarUrl = profile.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=40&background=random&color=fff&bold=true`;
                     userNavAvatar.src = avatarUrl;
                     userNavAvatar.style.display = 'block';
                     userNavAvatar.title = displayName;
@@ -374,7 +374,7 @@ class AuthSystem {
                             profileAvatar.src = profile.avatarUrl;
                         } else {
                             const firstLetter = displayName.charAt(0).toUpperCase();
-                            profileAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=200&background=cc0000&color=fff&bold=true`;
+                            profileAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=200&background=random&color=fff&bold=true`;
                         }
                     }
                     if (displayNameInput) displayNameInput.value = displayName;

@@ -23,7 +23,7 @@ class ProfileManager {
             
             // Генерируем аватарку с первой буквой имени
             const firstLetter = displayName.charAt(0).toUpperCase();
-            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=200&background=cc0000&color=fff&bold=true`;
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=200&background=random&color=fff&bold=true`;
             
             const profileData = {
                 email: email,
