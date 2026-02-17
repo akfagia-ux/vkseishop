@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Работники - Vkesi Shop</title>
+    <title>Поддержка - Vkesi Shop</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="alternate icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="favicon.svg">
@@ -18,9 +18,9 @@
                 <a href="index.html#services">Услуги</a>
                 <a href="index.html#reviews">Отзывы</a>
                 <a href="#" id="openChatBtn">Чат</a>
-                <a href="workers.html" class="active">Работники</a>
+                <a href="workers.html">Работники</a>
                 <a href="topbuyers.html">Лучшие покупатели</a>
-                <a href="support.html">Поддержка</a>
+                <a href="support.html" class="active">Поддержка</a>
                 <a href="#" id="adminPanelLink" style="display: none;">⚙️ Админ-панель</a>
                 <a href="#" id="openAuthBtn" class="user-nav-link">
                     <img id="userNavAvatar" src="" alt="Avatar" class="user-nav-avatar" style="display: none;">
@@ -33,79 +33,86 @@
     <main>
         <section class="hero">
             <div class="container">
-                <h2>Наша команда</h2>
-                <p>Профессионалы, которые работают для вас</p>
+                <h2>💬 Поддержка</h2>
+                <p>Мы всегда готовы помочь вам решить любую проблему</p>
             </div>
         </section>
 
-        <section class="team">
+        <!-- Сообщение для незарегистрированных -->
+        <section id="supportLoginRequired" class="support-login-section" style="display: none;">
             <div class="container">
-                <h2>Работники Vkesi Shop</h2>
-                <div class="team-grid">
-                    <div class="team-card">
-                        <div class="team-icon">👑</div>
-                        <h3>Vksei</h3>
-                        <p class="team-role">Создатель</p>
-                        <p class="team-description">Основатель Vkesi Shop, ютубер и стример. Отвечает за развитие проекта и создание контента.</p>
-                        <div class="team-social">
-                            <a href="https://www.youtube.com/@vksei" target="_blank" title="YouTube">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                </svg>
-                            </a>
-                            <a href="https://t.me/vksei7" target="_blank" title="Telegram">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="team-contact">
-                            <p>💬 Discord: <strong>vksei</strong></p>
-                        </div>
-                    </div>
-                    <div class="team-card">
-                        <div class="team-icon">⚡</div>
-                        <h3>Strax</h3>
-                        <p class="team-role">Администратор</p>
-                        <p class="team-description">Выполняет ваши заказы быстро и качественно. Отвечает за обработку заявок и поддержку клиентов.</p>
-                        <div class="team-contact">
-                            <p>📧 Telegram: <a href="https://t.me/Strax7007" target="_blank">@Strax7007</a></p>
-                        </div>
-                    </div>
+                <div class="support-login-card">
+                    <div class="support-lock-icon">🔒</div>
+                    <h3>Требуется авторизация</h3>
+                    <p>Чтобы создать тикет поддержки, необходимо войти в аккаунт</p>
+                    <button class="btn" id="supportLoginBtn">Войти</button>
                 </div>
             </div>
         </section>
 
-        <section class="team-info">
+        <!-- Раздел поддержки для авторизованных -->
+        <section id="supportSection" class="support-section" style="display: none;">
             <div class="container">
-                <h2>Почему мы?</h2>
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="info-icon">⚡</div>
-                        <h3>Быстрая работа</h3>
-                        <p>Обрабатываем заказы в течение нескольких часов</p>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon">🔒</div>
-                        <h3>Безопасность</h3>
-                        <p>Все данные защищены, следят РКН</p>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon">💯</div>
-                        <h3>Качество</h3>
-                        <p>Рейтинг 5/5 на основе 20+ отзывов</p>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon">💬</div>
-                        <h3>Поддержка 24/7</h3>
-                        <p>Всегда на связи в Telegram</p>
-                    </div>
+                <div class="support-header">
+                    <h2>Мои тикеты</h2>
+                    <button class="btn" id="createTicketBtn">+ Создать тикет</button>
+                </div>
+
+                <div class="tickets-list" id="ticketsList">
+                    <!-- Тикеты будут добавлены через JS -->
+                </div>
+
+                <div id="noTickets" class="no-tickets" style="display: none;">
+                    <div class="no-tickets-icon">📭</div>
+                    <h3>У вас пока нет тикетов</h3>
+                    <p>Создайте тикет, если у вас возникли вопросы или проблемы</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Модальное окно регистрации/входа -->
+    <!-- Модальное окно создания тикета -->
+    <div id="createTicketModal" class="modal">
+        <div class="modal-content ticket-modal-content">
+            <span class="close-ticket">&times;</span>
+            <h2>Создать тикет</h2>
+            <form id="createTicketForm" class="ticket-form">
+                <div class="form-group">
+                    <label>Тема:</label>
+                    <input type="text" id="ticketSubject" placeholder="Кратко опишите проблему" required maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label>Категория:</label>
+                    <select id="ticketCategory" required>
+                        <option value="">Выберите категорию...</option>
+                        <option value="order">Проблема с заказом</option>
+                        <option value="payment">Вопрос по оплате</option>
+                        <option value="account">Проблема с аккаунтом</option>
+                        <option value="technical">Технические проблемы</option>
+                        <option value="other">Другое</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Описание проблемы:</label>
+                    <textarea id="ticketDescription" placeholder="Подробно опишите что случилось..." rows="6" required maxlength="1000"></textarea>
+                    <span class="char-counter"><span id="charCount">0</span>/1000</span>
+                </div>
+                <button type="submit" class="btn btn-submit">Отправить тикет</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно просмотра тикета -->
+    <div id="viewTicketModal" class="modal">
+        <div class="modal-content ticket-view-modal-content">
+            <span class="close-view-ticket">&times;</span>
+            <div id="ticketViewContent">
+                <!-- Содержимое тикета будет добавлено через JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Остальные модальные окна (авторизация, чат, админ-панель) -->
     <div id="authModal" class="modal">
         <div class="modal-content auth-modal-content">
             <span class="close-auth">&times;</span>
@@ -156,7 +163,6 @@
                 </div>
                 
                 <div class="profile-content">
-                    <!-- Вкладка Информация -->
                     <div class="profile-tab-content active" id="tab-info">
                         <div class="profile-field">
                             <label>Никнейм:</label>
@@ -178,7 +184,6 @@
                         </div>
                     </div>
                     
-                    <!-- Вкладка Настройки -->
                     <div class="profile-tab-content" id="tab-settings">
                         <div class="settings-section">
                             <h4>⚠️ Опасная зона</h4>
@@ -193,13 +198,11 @@
         </div>
     </div>
 
-    <!-- Модальное окно чата -->
     <div id="chatModal" class="modal">
         <div class="modal-content chat-modal-content">
             <span class="close">&times;</span>
             <h2>Общий чат</h2>
             
-            <!-- Сообщение для незарегистрированных -->
             <div id="chatLoginRequired" class="chat-login-required" style="display: none;">
                 <div class="chat-lock-icon">🔒</div>
                 <h3>Требуется авторизация</h3>
@@ -207,14 +210,82 @@
                 <button class="btn" id="chatLoginBtn">Войти</button>
             </div>
             
-            <!-- Чат для зарегистрированных -->
             <div id="chatContainer" class="chat-container" style="display: none;">
-                <div class="chat-messages" id="chatMessages">
-                    <!-- Сообщения будут добавлены через JS -->
-                </div>
+                <div class="chat-messages" id="chatMessages"></div>
                 <div class="chat-input-container">
                     <input type="text" id="chatInput" placeholder="Напиши сообщение..." maxlength="500" />
                     <button id="chatSend" class="btn">Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminModal" class="modal">
+        <div class="modal-content admin-modal-content">
+            <span class="close-admin">&times;</span>
+            <h2>⚙️ Админ-панель</h2>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="users">Пользователи</button>
+                <button class="admin-tab" data-tab="tickets">Тикеты поддержки</button>
+                <button class="admin-tab" data-tab="chat">Управление чатом</button>
+                <button class="admin-tab" data-tab="stats">Статистика</button>
+            </div>
+            
+            <div class="admin-content">
+                <div class="admin-tab-content active" id="admin-tab-users">
+                    <div class="admin-search">
+                        <input type="text" id="userSearch" placeholder="Поиск пользователей...">
+                    </div>
+                    <div class="users-list" id="usersList"></div>
+                </div>
+                
+                <div class="admin-tab-content" id="admin-tab-tickets">
+                    <div class="admin-tickets-filter">
+                        <button class="filter-btn active" data-filter="all">Все</button>
+                        <button class="filter-btn" data-filter="open">Открытые</button>
+                        <button class="filter-btn" data-filter="closed">Закрытые</button>
+                    </div>
+                    <div class="admin-tickets-list" id="adminTicketsList"></div>
+                </div>
+                
+                <div class="admin-tab-content" id="admin-tab-chat">
+                    <div class="admin-section">
+                        <h3>Управление сообщениями</h3>
+                        <button class="btn btn-danger" id="clearChatBtn">Очистить весь чат</button>
+                        <p class="warning-text">Это действие удалит все сообщения из чата!</p>
+                    </div>
+                    
+                    <div class="admin-section">
+                        <h3>Отправить сообщение от бота</h3>
+                        <textarea id="botMessageInput" placeholder="Текст сообщения..." rows="3"></textarea>
+                        <button class="btn" id="sendBotMessageBtn">Отправить</button>
+                    </div>
+                </div>
+                
+                <div class="admin-tab-content" id="admin-tab-stats">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-number" id="totalUsers">0</div>
+                            <div class="stat-label">Всего пользователей</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💬</div>
+                            <div class="stat-number" id="totalMessages">0</div>
+                            <div class="stat-label">Сообщений в чате</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🎫</div>
+                            <div class="stat-number" id="totalTickets">0</div>
+                            <div class="stat-label">Тикетов поддержки</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">👑</div>
+                            <div class="stat-number" id="totalAdmins">0</div>
+                            <div class="stat-label">Администраторов</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -248,11 +319,12 @@
         </div>
     </footer>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="profile-manager.js"></script>
     <script src="script.js"></script>
+    <script src="support.js"></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
 // Генерация отзывов
 const reviews = [
-    { author: 'Игрок123', rating: 5, text: 'Отличная работа! Быстро отсидел деморган, рекомендую!' },
-    { author: 'ProGamer', rating: 5, text: 'Купил аккаунт Steam, все отлично работает. Спасибо!' },
-    { author: 'RPшник', rating: 5, text: 'Скрипт на деморган просто огонь! Экономит кучу времени.' },
-    { author: 'Максим', rating: 5, text: 'Быстро, качественно, недорого. Буду обращаться еще!' },
-    { author: 'Андрей_RP', rating: 5, text: 'Отсидел деморган за 2 часа, очень доволен сервисом!' },
-    { author: 'Владислав', rating: 5, text: 'Профессиональный подход, всем советую!' }
+    { author: 'Darkergame', rating: 5, text: '+rep лучший' },
+    { author: 'xdead113', rating: 5, text: 'мясо' },
+    { author: 'TireksShop', rating: 5, text: 'быстро' },
+    { author: 'Leontev101', rating: 5, text: 'Топ' },
+    { author: 'selleriliss', rating: 5, text: 'top' },
+    { author: 'kenesy11', rating: 5, text: 'Отличный продавец, всё быстро и качественно!' }
 ];
 
 const reviewsContainer = document.getElementById('reviewsContainer');
@@ -49,6 +49,7 @@ if (openChatBtn) {
         e.preventDefault();
         chatModal.style.display = 'block';
         setTimeout(() => chatModal.classList.add('show'), 10);
+        initChat();
     };
 }
 
@@ -59,64 +60,243 @@ if (closeBtn) {
     };
 }
 
-// Чат с ботом
-const chatMessages = document.getElementById('chatMessages');
-const chatInput = document.getElementById('chatInput');
-const chatSend = document.getElementById('chatSend');
+// Инициализация чата
+let chatUnsubscribe = null;
 
-// Команды бота
-const botCommands = {
-    '!vksei': 'Vksei - ютубер и стример. Создатель Vkesi Shop! 🎮',
-    '!цена': 'Все цены указаны при нажатии на услугу. Перейди в раздел "Услуги" и выбери интересующую тебя услугу! 💰',
-    '!redux': 'Redux by vksei: https://t.me/reduxx67 📱'
+function initChat() {
+    const user = firebase.auth().currentUser;
+    const chatLoginRequired = document.getElementById('chatLoginRequired');
+    const chatContainer = document.getElementById('chatContainer');
+    const chatLoginBtn = document.getElementById('chatLoginBtn');
+    
+    if (!user) {
+        // Показываем сообщение о необходимости входа
+        chatLoginRequired.style.display = 'flex';
+        chatContainer.style.display = 'none';
+        
+        // Обработчик кнопки входа
+        if (chatLoginBtn) {
+            chatLoginBtn.onclick = () => {
+                chatModal.classList.remove('show');
+                setTimeout(() => chatModal.style.display = 'none', 300);
+                document.getElementById('openAuthBtn').click();
+            };
+        }
+    } else {
+        // Показываем чат
+        chatLoginRequired.style.display = 'none';
+        chatContainer.style.display = 'flex';
+        loadChatMessages();
+        
+        // Приветствие от бота при первом открытии
+        const hasSeenWelcome = sessionStorage.getItem('chatWelcomeSeen');
+        if (!hasSeenWelcome) {
+            sessionStorage.setItem('chatWelcomeSeen', 'true');
+        }
+    }
+}
+
+// Загрузка сообщений из Firestore с реал-тайм обновлениями
+function loadChatMessages() {
+    const chatMessages = document.getElementById('chatMessages');
+    
+    // Отписываемся от предыдущего слушателя, если он есть
+    if (chatUnsubscribe) {
+        chatUnsubscribe();
+    }
+    
+    // Подписываемся на обновления сообщений
+    chatUnsubscribe = db.collection('chatMessages')
+        .orderBy('timestamp', 'asc')
+        .limit(50)
+        .onSnapshot((snapshot) => {
+            chatMessages.innerHTML = '';
+            
+            snapshot.forEach((doc) => {
+                const msg = doc.data();
+                addMessageToChat(msg.author, msg.text, msg.timestamp, msg.userId, msg.isBot || false);
+            });
+            
+            // Прокручиваем вниз
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, (error) => {
+            console.error('Ошибка загрузки сообщений:', error);
+        });
+}
+
+// Добавление сообщения в чат
+function addMessageToChat(author, text, timestamp, userId, isBot = false) {
+    const chatMessages = document.getElementById('chatMessages');
+    const currentUser = firebase.auth().currentUser;
+    const isOwnMessage = currentUser && currentUser.uid === userId;
+    
+    const messageDiv = document.createElement('div');
+    let messageClass = 'other-message';
+    if (isBot) {
+        messageClass = 'bot-message';
+    } else if (isOwnMessage) {
+        messageClass = 'user-message';
+    }
+    messageDiv.className = `chat-message ${messageClass}`;
+    
+    const time = new Date(timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    
+    const authorDisplay = isBot ? '🤖 ' + escapeHtml(author) : escapeHtml(author);
+    
+    messageDiv.innerHTML = `
+        <div class="message-header">
+            <span class="message-author">${authorDisplay}</span>
+            <span class="message-time">${time}</span>
+        </div>
+        <p class="message-text">${escapeHtml(text)}</p>
+    `;
+    
+    chatMessages.appendChild(messageDiv);
+}
+
+// Экранирование HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Бот-помощник
+const botResponses = {
+    'помощь': 'Доступные команды:\n/помощь - список команд\n/услуги - наши услуги\n/цены - актуальные цены\n/контакты - связь с нами\n/время - текущее время работы',
+    'услуги': 'Мы предлагаем:\n🎮 Fortnite V-Bucks\n🚗 GTA 5 RP услуги\n💎 Steam аккаунты\n📜 Скрипты и боты\n\nПодробнее на главной странице!',
+    'цены': '💰 Актуальные цены:\n• 1000 V-Bucks - 500₽\n• 2800 V-Bucks - 1200₽\n• 5000 V-Bucks - 2000₽\n• Деморган GTA - от 300₽',
+    'контакты': '📞 Связаться с нами:\n• Telegram: @vksei7\n• Email: rilikov2000@mail.ru\n• Discord: discord.gg/5Ewjje5Tw3',
+    'время': 'Мы работаем 24/7! 🕐\nОтвечаем в течение 5-30 минут.',
+    'привет': 'Привет! 👋 Чем могу помочь? Напиши /помощь для списка команд.',
+    'здравствуй': 'Здравствуй! 👋 Чем могу помочь? Напиши /помощь для списка команд.',
+    'спасибо': 'Пожалуйста! 😊 Обращайтесь, если нужна помощь!',
+    'как дела': 'Отлично! Готов помочь с заказом! 💪',
+    'заказ': 'Для оформления заказа:\n1. Выберите услугу на главной странице\n2. Заполните форму\n3. Оплатите по реквизитам\n4. Отправьте чек в Telegram: @vksei7'
 };
 
-function addMessage(text, isUser = false) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
-    messageDiv.innerHTML = `<p>${text}</p>`;
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+async function sendBotMessage(text) {
+    try {
+        await db.collection('chatMessages').add({
+            userId: 'bot',
+            author: 'Vkesi Bot',
+            text: text,
+            timestamp: Date.now(),
+            isBot: true
+        });
+    } catch (error) {
+        console.error('Ошибка отправки сообщения бота:', error);
+    }
 }
 
-function getBotResponse(userMessage) {
-    const message = userMessage.trim().toLowerCase();
+function getBotResponse(message) {
+    const lowerMessage = message.toLowerCase().trim();
     
-    // Проверяем команды
-    if (botCommands[message]) {
-        return botCommands[message];
+    // Проверяем команды с /
+    if (lowerMessage.startsWith('/')) {
+        const command = lowerMessage.substring(1);
+        if (botResponses[command]) {
+            return botResponses[command];
+        }
     }
     
-    // Если команда не найдена
-    if (message.startsWith('!')) {
-        return 'Неизвестная команда. Доступные команды: !vksei, !цена, !redux';
+    // Проверяем ключевые слова
+    for (const [key, response] of Object.entries(botResponses)) {
+        if (lowerMessage.includes(key)) {
+            return response;
+        }
     }
     
-    // Обычное сообщение
-    return 'Используй команды: !vksei, !цена, !redux для получения информации! 😊';
+    // Если не нашли ответ
+    if (lowerMessage.includes('?')) {
+        return 'Не совсем понял вопрос 🤔\nПопробуйте команду /помощь для списка доступных команд.';
+    }
+    
+    return null;
 }
 
-function sendMessage() {
+// Отправка сообщения
+const chatSend = document.getElementById('chatSend');
+const chatInput = document.getElementById('chatInput');
+
+async function sendChatMessage() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    
     const message = chatInput.value.trim();
+    if (!message) return;
     
-    if (message) {
-        addMessage(message, true);
+    // Блокируем кнопку отправки
+    chatSend.disabled = true;
+    
+    try {
+        // Получаем профиль пользователя
+        const profileResult = await profileManager.getProfile(user.uid);
+        if (!profileResult.success) {
+            chatSend.disabled = false;
+            return;
+        }
+        
+        const displayName = profileResult.profile.displayName || user.email.split('@')[0];
+        
+        // Сохраняем сообщение в Firestore
+        await db.collection('chatMessages').add({
+            userId: user.uid,
+            author: displayName,
+            text: message,
+            timestamp: Date.now(),
+            isBot: false
+        });
+        
+        // Очищаем поле ввода
         chatInput.value = '';
         
-        setTimeout(() => {
-            const response = getBotResponse(message);
-            addMessage(response, false);
-        }, 500);
+        // Проверяем, нужен ли ответ от бота
+        const botResponse = getBotResponse(message);
+        if (botResponse) {
+            // Задержка перед ответом бота для реалистичности
+            setTimeout(() => {
+                sendBotMessage(botResponse);
+            }, 500 + Math.random() * 1000);
+        }
+        
+    } catch (error) {
+        console.error('Ошибка отправки сообщения:', error);
+        alert('Ошибка отправки сообщения. Попробуйте снова.');
+    } finally {
+        chatSend.disabled = false;
+        chatInput.focus();
     }
 }
 
-chatSend.addEventListener('click', sendMessage);
+if (chatSend) {
+    chatSend.addEventListener('click', sendChatMessage);
+}
 
-chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-});
+if (chatInput) {
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
+}
+
+// Отписываемся от слушателя при закрытии чата
+if (closeBtn) {
+    const originalCloseHandler = closeBtn.onclick;
+    closeBtn.onclick = () => {
+        if (chatUnsubscribe) {
+            chatUnsubscribe();
+            chatUnsubscribe = null;
+        }
+        if (originalCloseHandler) {
+            originalCloseHandler();
+        } else {
+            chatModal.classList.remove('show');
+            setTimeout(() => chatModal.style.display = 'none', 300);
+        }
+    };
+}
 
 
 // Модальное окно Fortnite заказа
@@ -326,6 +506,7 @@ class AuthSystem {
         const authForm = document.getElementById('authForm');
         const userProfile = document.getElementById('userProfile');
         const userEmailDisplay = document.getElementById('userEmail');
+        const adminPanelLink = document.getElementById('adminPanelLink');
 
         if (this.currentUser) {
             // Загружаем профиль пользователя
@@ -334,6 +515,13 @@ class AuthSystem {
             if (profileResult.success) {
                 const profile = profileResult.profile;
                 const displayName = profile.displayName || this.currentUser.email.split('@')[0];
+                
+                // Показываем ссылку на админ-панель для администраторов
+                if (adminPanelLink && profile.role === 'admin') {
+                    adminPanelLink.style.display = 'inline';
+                } else if (adminPanelLink) {
+                    adminPanelLink.style.display = 'none';
+                }
                 
                 // Показываем аватарку в навигации
                 if (userNavAvatar) {
@@ -386,6 +574,11 @@ class AuthSystem {
                 }
             }
         } else {
+            // Скрываем админ-панель
+            if (adminPanelLink) {
+                adminPanelLink.style.display = 'none';
+            }
+            
             // Показываем текст "Войти"
             if (userStatus) {
                 userStatus.textContent = 'Войти';
@@ -645,4 +838,370 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+});
+
+
+// Админ-панель
+const adminModal = document.getElementById('adminModal');
+const adminPanelLink = document.getElementById('adminPanelLink');
+const closeAdmin = document.querySelector('.close-admin');
+
+// Открытие админ-панели
+if (adminPanelLink) {
+    adminPanelLink.onclick = (e) => {
+        e.preventDefault();
+        const user = firebase.auth().currentUser;
+        if (!user) return;
+        
+        profileManager.getProfile(user.uid).then(result => {
+            if (result.success && result.profile.role === 'admin') {
+                adminModal.style.display = 'block';
+                setTimeout(() => adminModal.classList.add('show'), 10);
+                loadAdminData();
+            } else {
+                alert('❌ У вас нет прав доступа к админ-панели');
+            }
+        });
+    };
+}
+
+// Закрытие админ-панели
+if (closeAdmin) {
+    closeAdmin.onclick = () => {
+        adminModal.classList.remove('show');
+        setTimeout(() => adminModal.style.display = 'none', 300);
+    };
+}
+
+// Переключение вкладок админ-панели
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+        
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(`admin-tab-${tabName}`).classList.add('active');
+        
+        if (tabName === 'stats') {
+            loadStatistics();
+        }
+    });
+});
+
+// Загрузка данных админ-панели
+async function loadAdminData() {
+    await loadUsersList();
+    await loadStatistics();
+}
+
+// Загрузка списка пользователей
+async function loadUsersList() {
+    const usersList = document.getElementById('usersList');
+    const result = await profileManager.getAllUsers();
+    
+    if (result.success) {
+        usersList.innerHTML = '';
+        
+        result.users.forEach(user => {
+            const userCard = document.createElement('div');
+            userCard.className = 'user-card';
+            userCard.innerHTML = `
+                <div class="user-card-header">
+                    <img src="${user.avatarUrl || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName.charAt(0)) + '&size=50'}" alt="Avatar" class="user-card-avatar">
+                    <div class="user-card-info">
+                        <h4>${user.displayName}</h4>
+                        <p>${user.email}</p>
+                    </div>
+                </div>
+                <div class="user-card-body">
+                    <div class="user-card-field">
+                        <label>Роль:</label>
+                        <select class="role-select" data-user-id="${user.id}">
+                            <option value="user" ${user.role === 'user' ? 'selected' : ''}>Пользователь</option>
+                            <option value="buyer" ${user.role === 'buyer' ? 'selected' : ''}>Покупатель</option>
+                            <option value="vip" ${user.role === 'vip' ? 'selected' : ''}>VIP</option>
+                            <option value="moderator" ${user.role === 'moderator' ? 'selected' : ''}>Модератор</option>
+                            <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Администратор</option>
+                        </select>
+                    </div>
+                    <div class="user-card-field">
+                        <label>Дата регистрации:</label>
+                        <span>${new Date(user.createdAt).toLocaleDateString('ru-RU')}</span>
+                    </div>
+                </div>
+            `;
+            usersList.appendChild(userCard);
+        });
+        
+        // Обработчики изменения роли
+        document.querySelectorAll('.role-select').forEach(select => {
+            select.addEventListener('change', async (e) => {
+                const userId = e.target.dataset.userId;
+                const newRole = e.target.value;
+                
+                const result = await profileManager.updateRole(userId, newRole);
+                if (result.success) {
+                    alert('✅ Роль успешно обновлена!');
+                    // Обновляем UI если изменили свою роль
+                    const currentUser = firebase.auth().currentUser;
+                    if (currentUser && currentUser.uid === userId) {
+                        auth.updateUI();
+                    }
+                } else {
+                    alert('❌ ' + result.message);
+                }
+            });
+        });
+    }
+}
+
+// Поиск пользователей
+const userSearch = document.getElementById('userSearch');
+if (userSearch) {
+    userSearch.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        document.querySelectorAll('.user-card').forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+}
+
+// Загрузка статистики
+async function loadStatistics() {
+    const result = await profileManager.getAllUsers();
+    
+    if (result.success) {
+        const totalUsers = result.users.length;
+        const totalAdmins = result.users.filter(u => u.role === 'admin').length;
+        const totalVips = result.users.filter(u => u.role === 'vip').length;
+        
+        document.getElementById('totalUsers').textContent = totalUsers;
+        document.getElementById('totalAdmins').textContent = totalAdmins;
+        document.getElementById('totalVips').textContent = totalVips;
+    }
+    
+    // Подсчет сообщений в чате
+    try {
+        const snapshot = await db.collection('chatMessages').get();
+        document.getElementById('totalMessages').textContent = snapshot.size;
+    } catch (error) {
+        console.error('Ошибка подсчета сообщений:', error);
+    }
+}
+
+// Очистка чата
+const clearChatBtn = document.getElementById('clearChatBtn');
+if (clearChatBtn) {
+    clearChatBtn.addEventListener('click', async () => {
+        if (!confirm('⚠️ Вы уверены, что хотите удалить ВСЕ сообщения из чата?')) return;
+        if (!confirm('⚠️ ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ! Это действие необратимо!')) return;
+        
+        try {
+            const snapshot = await db.collection('chatMessages').get();
+            const batch = db.batch();
+            
+            snapshot.docs.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            
+            await batch.commit();
+            alert('✅ Чат очищен!');
+            loadStatistics();
+        } catch (error) {
+            console.error('Ошибка очистки чата:', error);
+            alert('❌ Ошибка очистки чата');
+        }
+    });
+}
+
+// Отправка сообщения от бота
+const sendBotMessageBtn = document.getElementById('sendBotMessageBtn');
+const botMessageInput = document.getElementById('botMessageInput');
+
+if (sendBotMessageBtn) {
+    sendBotMessageBtn.addEventListener('click', async () => {
+        const message = botMessageInput.value.trim();
+        if (!message) {
+            alert('Введите текст сообщения');
+            return;
+        }
+        
+        try {
+            await sendBotMessage(message);
+            botMessageInput.value = '';
+            alert('✅ Сообщение отправлено!');
+        } catch (error) {
+            console.error('Ошибка отправки сообщения:', error);
+            alert('❌ Ошибка отправки сообщения');
+        }
+    });
+}
+
+
+// Управление тикетами в админ-панели
+let currentTicketFilter = 'all';
+
+// Фильтры тикетов
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTicketFilter = btn.dataset.filter;
+        loadAdminTickets();
+    });
+});
+
+// Загрузка тикетов для админа
+async function loadAdminTickets() {
+    const adminTicketsList = document.getElementById('adminTicketsList');
+    if (!adminTicketsList) return;
+    
+    try {
+        let query = db.collection('supportTickets').orderBy('createdAt', 'desc');
+        
+        if (currentTicketFilter === 'open') {
+            query = query.where('status', '==', 'open');
+        } else if (currentTicketFilter === 'closed') {
+            query = query.where('status', '==', 'closed');
+        }
+        
+        const snapshot = await query.get();
+        
+        if (snapshot.empty) {
+            adminTicketsList.innerHTML = '<p class="no-data">Нет тикетов</p>';
+            return;
+        }
+        
+        adminTicketsList.innerHTML = '';
+        
+        snapshot.forEach((doc) => {
+            const ticket = doc.data();
+            const ticketCard = createAdminTicketCard(doc.id, ticket);
+            adminTicketsList.appendChild(ticketCard);
+        });
+    } catch (error) {
+        console.error('Ошибка загрузки тикетов:', error);
+        adminTicketsList.innerHTML = '<p class="error-message">Ошибка загрузки тикетов</p>';
+    }
+}
+
+// Создание карточки тикета для админа
+function createAdminTicketCard(ticketId, ticket) {
+    const card = document.createElement('div');
+    card.className = 'admin-ticket-card';
+    
+    const statusClass = ticket.status === 'open' ? 'status-open' : 'status-closed';
+    const statusText = ticket.status === 'open' ? 'Открыт' : 'Закрыт';
+    const categoryNames = {
+        'order': 'Заказ',
+        'payment': 'Оплата',
+        'account': 'Аккаунт',
+        'technical': 'Техническая проблема',
+        'other': 'Другое'
+    };
+    
+    const date = new Date(ticket.createdAt).toLocaleString('ru-RU');
+    const messagesCount = ticket.messages ? ticket.messages.length : 0;
+    
+    card.innerHTML = `
+        <div class="admin-ticket-header">
+            <div>
+                <h4>${escapeHtml(ticket.subject)}</h4>
+                <p class="admin-ticket-user">От: ${escapeHtml(ticket.userName)} (${escapeHtml(ticket.userEmail)})</p>
+            </div>
+            <span class="ticket-status ${statusClass}">${statusText}</span>
+        </div>
+        <div class="admin-ticket-body">
+            <span class="ticket-category">${categoryNames[ticket.category]}</span>
+            <span class="ticket-date">📅 ${date}</span>
+            <span class="ticket-messages">💬 ${messagesCount} ответов</span>
+        </div>
+        <div class="admin-ticket-actions">
+            <button class="btn-small admin-view-ticket-btn" data-ticket-id="${ticketId}">Открыть</button>
+            ${ticket.status === 'open' ? `<button class="btn-small btn-danger admin-close-ticket-btn" data-ticket-id="${ticketId}">Закрыть</button>` : ''}
+        </div>
+    `;
+    
+    // Обработчик открытия тикета
+    const viewBtn = card.querySelector('.admin-view-ticket-btn');
+    viewBtn.onclick = () => openAdminTicket(ticketId);
+    
+    // Обработчик закрытия тикета
+    const closeBtn = card.querySelector('.admin-close-ticket-btn');
+    if (closeBtn) {
+        closeBtn.onclick = async () => {
+            if (!confirm('Закрыть этот тикет?')) return;
+            
+            try {
+                await db.collection('supportTickets').doc(ticketId).update({
+                    status: 'closed',
+                    updatedAt: Date.now()
+                });
+                alert('✅ Тикет закрыт!');
+                loadAdminTickets();
+                loadStatistics();
+            } catch (error) {
+                console.error('Ошибка закрытия тикета:', error);
+                alert('❌ Ошибка закрытия тикета');
+            }
+        };
+    }
+    
+    return card;
+}
+
+// Открытие тикета в админ-панели
+async function openAdminTicket(ticketId) {
+    try {
+        const doc = await db.collection('supportTickets').doc(ticketId).get();
+        if (!doc.exists) {
+            alert('Тикет не найден');
+            return;
+        }
+        
+        const ticket = doc.data();
+        
+        // Используем функцию из support.js если она доступна
+        if (typeof showTicketView === 'function') {
+            showTicketView(ticketId, ticket, true);
+        } else {
+            alert('Откройте страницу поддержки для просмотра тикета');
+        }
+    } catch (error) {
+        console.error('Ошибка открытия тикета:', error);
+        alert('Ошибка открытия тикета');
+    }
+}
+
+// Обновляем функцию loadStatistics для подсчета тикетов
+const originalLoadStatistics = loadStatistics;
+loadStatistics = async function() {
+    await originalLoadStatistics();
+    
+    // Подсчет тикетов
+    try {
+        const snapshot = await db.collection('supportTickets').get();
+        const totalTicketsEl = document.getElementById('totalTickets');
+        if (totalTicketsEl) {
+            totalTicketsEl.textContent = snapshot.size;
+        }
+    } catch (error) {
+        console.error('Ошибка подсчета тикетов:', error);
+    }
+};
+
+// Загружаем тикеты при открытии вкладки
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    const originalClick = tab.onclick;
+    tab.onclick = function() {
+        if (originalClick) originalClick.call(this);
+        
+        const tabName = this.dataset.tab;
+        if (tabName === 'tickets') {
+            loadAdminTickets();
+        }
+    };
 });

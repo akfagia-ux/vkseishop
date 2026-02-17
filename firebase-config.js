@@ -11,3 +11,6 @@ const firebaseConfig = {
 
 // Инициализация Firebase
 firebase.initializeApp(firebaseConfig);
+
+// Инициализация Firestore
+const db = firebase.firestore();
