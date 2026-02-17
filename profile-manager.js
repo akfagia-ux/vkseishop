@@ -1,8 +1,6 @@
-// Менеджер профилей пользователей (localStorage + ImgBB)
+// Менеджер профилей пользователей (localStorage)
 class ProfileManager {
     constructor() {
-        // API ключ ImgBB (бесплатный)
-        this.imgbbApiKey = '718bfc6d20fe6c4889b3680c1dd00e7c';
         this.currentUserProfile = null;
     }
 
@@ -104,52 +102,6 @@ class ProfileManager {
         } catch (error) {
             console.error('Ошибка обновления описания:', error);
             return { success: false, message: 'Ошибка обновления описания' };
-        }
-    }
-
-    // Загрузка аватара через ImgBB
-    async uploadAvatar(userId, file) {
-        try {
-            // Проверка размера файла (максимум 5MB для ImgBB)
-            if (file.size > 5 * 1024 * 1024) {
-                return { success: false, message: 'Файл слишком большой (максимум 5MB)' };
-            }
-
-            // Проверка типа файла
-            if (!file.type.startsWith('image/')) {
-                return { success: false, message: 'Можно загружать только изображения' };
-            }
-
-            // Создаем FormData для отправки
-            const formData = new FormData();
-            formData.append('image', file);
-
-            // Загружаем на ImgBB
-            const response = await fetch(`https://api.imgbb.com/1/upload?key=${this.imgbbApiKey}`, {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                const imageUrl = data.data.url;
-                
-                // Сохраняем URL в профиле
-                const profiles = this.getProfiles();
-                if (profiles[userId]) {
-                    profiles[userId].avatarUrl = imageUrl;
-                    profiles[userId].updatedAt = new Date().toISOString();
-                    this.saveProfiles(profiles);
-                }
-
-                return { success: true, message: 'Аватар обновлен', url: imageUrl };
-            } else {
-                return { success: false, message: 'Ошибка загрузки на сервер' };
-            }
-        } catch (error) {
-            console.error('Ошибка загрузки аватара:', error);
-            return { success: false, message: 'Ошибка загрузки аватара' };
         }
     }
 

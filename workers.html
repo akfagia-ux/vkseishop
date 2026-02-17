@@ -20,7 +20,8 @@
                 <a href="#" id="openChatBtn">Чат</a>
                 <a href="workers.html" class="active">Работники</a>
                 <a href="index.html#topbuyers">Лучшие покупатели</a>
-                <a href="#" id="openAuthBtn">
+                <a href="#" id="openAuthBtn" class="user-nav-link">
+                    <img id="userNavAvatar" src="" alt="Avatar" class="user-nav-avatar" style="display: none;">
                     <span id="userStatus">Войти</span>
                 </a>
             </nav>
@@ -136,12 +137,6 @@
                 <div class="profile-header">
                     <div class="profile-avatar-container">
                         <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar">
-                        <div class="profile-avatar-overlay">
-                            <label for="avatarUpload" class="avatar-upload-label">
-                                📷
-                                <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
-                            </label>
-                        </div>
                     </div>
                     <div class="profile-info">
                         <h3 id="profileDisplayName">Пользователь</h3>

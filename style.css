@@ -98,6 +98,8 @@ nav a:hover {
     padding: 30px;
     text-align: center;
 }
+
+.service-card h3 {
     font-size: 1.5em;
     margin-bottom: 15px;
     color: #ff6666;
@@ -1453,31 +1455,6 @@ nav a.active {
     border: 3px solid #cc0000;
 }
 
-.profile-avatar-overlay {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: #cc0000;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.profile-avatar-overlay:hover {
-    background: #ff0000;
-    transform: scale(1.1);
-}
-
-.avatar-upload-label {
-    cursor: pointer;
-    font-size: 1.2em;
-}
-
 .profile-info {
     flex: 1;
 }
@@ -1720,5 +1697,34 @@ nav a.active {
     .user-profile > .btn {
         margin: 15px 20px;
         width: calc(100% - 40px);
+    }
+}
+
+
+/* Аватарка в навигации */
+.user-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-nav-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ff0000;
+    transition: all 0.3s;
+}
+
+.user-nav-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .user-nav-avatar {
+        width: 30px;
+        height: 30px;
     }
 }

@@ -322,6 +322,7 @@ class AuthSystem {
     // Обновление UI
     async updateUI() {
         const userStatus = document.getElementById('userStatus');
+        const userNavAvatar = document.getElementById('userNavAvatar');
         const authForm = document.getElementById('authForm');
         const userProfile = document.getElementById('userProfile');
         const userEmailDisplay = document.getElementById('userEmail');
@@ -334,8 +335,19 @@ class AuthSystem {
                 const profile = profileResult.profile;
                 const displayName = profile.displayName || this.currentUser.email.split('@')[0];
                 
-                userStatus.textContent = displayName;
-                userStatus.classList.add('logged-in');
+                // Показываем аватарку в навигации
+                if (userNavAvatar) {
+                    const firstLetter = displayName.charAt(0).toUpperCase();
+                    const avatarUrl = profile.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstLetter)}&size=40&background=cc0000&color=fff&bold=true`;
+                    userNavAvatar.src = avatarUrl;
+                    userNavAvatar.style.display = 'block';
+                    userNavAvatar.title = displayName;
+                }
+                
+                // Скрываем текст "Войти"
+                if (userStatus) {
+                    userStatus.style.display = 'none';
+                }
                 
                 if (authForm) authForm.style.display = 'none';
                 if (userProfile) {
@@ -374,8 +386,18 @@ class AuthSystem {
                 }
             }
         } else {
-            userStatus.textContent = 'Войти';
-            userStatus.classList.remove('logged-in');
+            // Показываем текст "Войти"
+            if (userStatus) {
+                userStatus.textContent = 'Войти';
+                userStatus.style.display = 'inline';
+                userStatus.classList.remove('logged-in');
+            }
+            
+            // Скрываем аватарку
+            if (userNavAvatar) {
+                userNavAvatar.style.display = 'none';
+            }
+            
             if (authForm) authForm.style.display = 'block';
             if (userProfile) userProfile.style.display = 'none';
         }
@@ -587,31 +609,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 alert('❌ ' + result.message);
             }
-        });
-    }
-
-    // Загрузка аватара
-    const avatarUpload = document.getElementById('avatarUpload');
-    if (avatarUpload) {
-        avatarUpload.addEventListener('change', async (e) => {
-            const user = firebase.auth().currentUser;
-            if (!user) return;
-
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const result = await profileManager.uploadAvatar(user.uid, file);
-
-            if (result.success) {
-                alert('✅ Аватар обновлен!');
-                document.getElementById('profileAvatar').src = result.url;
-                auth.updateUI();
-            } else {
-                alert('❌ ' + result.message);
-            }
-
-            // Очищаем input
-            avatarUpload.value = '';
         });
     }
 
