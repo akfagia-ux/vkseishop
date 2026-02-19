@@ -4715,3 +4715,463 @@ footer a {
 .btn-send-dm:active:not(.disabled) {
     transform: translateY(0);
 }
+
+
+/* ============================================
+   МОБИЛЬНАЯ ОПТИМИЗАЦИЯ
+   ============================================ */
+
+/* Оптимизация производительности */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Планшеты и маленькие ноутбуки */
+@media (max-width: 1024px) {
+    .container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+    
+    .navbar .container {
+        gap: 1rem;
+    }
+    
+    .search-container {
+        max-width: 300px;
+    }
+    
+    .modal-content {
+        width: 90%;
+        max-width: 600px;
+    }
+    
+    .profile-modal {
+        width: 85%;
+        max-height: 85vh;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .container {
+        padding: 0 10px;
+    }
+    
+    /* Навигация */
+    .navbar {
+        padding: 0.8rem 0;
+    }
+    
+    .navbar .container {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .logo {
+        font-size: 1.3rem;
+    }
+    
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    nav a {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+    
+    .search-container {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .search-input {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.8rem;
+    }
+    
+    /* Модальные окна */
+    .modal-content {
+        width: 95%;
+        max-width: none;
+        margin: 5% auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .profile-modal {
+        width: 95%;
+        max-height: 90vh;
+        padding: 1rem;
+    }
+    
+    .profile-header {
+        padding: 1rem;
+    }
+    
+    .profile-title {
+        font-size: 1.3rem;
+    }
+    
+    .profile-info-card,
+    .profile-edit-card {
+        padding: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .input-group {
+        margin-bottom: 0.8rem;
+    }
+    
+    .input-group label {
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .input-group input,
+    .input-group textarea {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+    
+    /* Чат */
+    .modal-chat-container {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        margin: 0;
+    }
+    
+    .modal-chat-header {
+        padding: 1rem;
+    }
+    
+    .modal-chat-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .modal-chat-subtitle {
+        font-size: 0.75rem;
+    }
+    
+    .modal-chat-messages {
+        padding: 0.8rem;
+    }
+    
+    .chat-message {
+        padding: 0.6rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .message-username {
+        font-size: 0.85rem;
+    }
+    
+    .message-text {
+        font-size: 0.9rem;
+    }
+    
+    .modal-chat-input-container {
+        padding: 0.8rem;
+    }
+    
+    .modal-chat-input-container input {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+    }
+    
+    /* Сообщения */
+    .messages-modal-container {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .messages-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .messages-main {
+        width: 100%;
+    }
+    
+    .messages-modal-container.chat-active .messages-sidebar {
+        display: none;
+    }
+    
+    .messages-modal-container.chat-active .messages-main {
+        display: flex;
+    }
+    
+    /* Кнопки */
+    .btn-primary,
+    .btn-danger,
+    .btn-save,
+    .btn-logout {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .profile-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .profile-actions button {
+        width: 100%;
+    }
+    
+    /* Админ панель */
+    .admin-container {
+        padding: 1rem;
+    }
+    
+    .admin-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .admin-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .admin-tab-btn {
+        width: 100%;
+        padding: 0.8rem;
+    }
+    
+    .users-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .users-table {
+        font-size: 0.8rem;
+    }
+    
+    .users-table th,
+    .users-table td {
+        padding: 0.6rem 0.4rem;
+    }
+    
+    /* Тикеты */
+    .tickets-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .ticket-card {
+        padding: 1rem;
+    }
+    
+    .ticket-header h3 {
+        font-size: 1rem;
+    }
+    
+    /* Интеграции */
+    .integrations-compact {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Закрепленное сообщение */
+    .modal-pinned-box-content {
+        font-size: 0.85rem;
+    }
+    
+    .modal-pinned-box-content ul {
+        padding-left: 1.2rem;
+    }
+    
+    /* Floating button */
+    .floating-messages-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .unread-badge {
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        top: -5px;
+        right: -5px;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    body {
+        font-size: 13px;
+    }
+    
+    .logo {
+        font-size: 1.1rem;
+    }
+    
+    nav a {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+    
+    .modal-content {
+        width: 98%;
+        margin: 2% auto;
+        padding: 1rem;
+    }
+    
+    .profile-modal {
+        width: 98%;
+        padding: 0.8rem;
+    }
+    
+    .profile-header {
+        padding: 0.8rem;
+    }
+    
+    .profile-title {
+        font-size: 1.1rem;
+    }
+    
+    .section-title {
+        font-size: 0.95rem;
+    }
+    
+    .input-group input,
+    .input-group textarea {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+    
+    .btn-primary,
+    .btn-danger {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .modal-chat-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .chat-message {
+        padding: 0.5rem;
+    }
+    
+    .message-text {
+        font-size: 0.85rem;
+    }
+    
+    .users-table {
+        font-size: 0.75rem;
+    }
+    
+    .users-table th,
+    .users-table td {
+        padding: 0.5rem 0.3rem;
+    }
+    
+    .manage-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Оптимизация скроллинга на мобильных */
+.modal-content,
+.profile-modal,
+.modal-chat-messages,
+.messages-chat-body,
+.users-table-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Оптимизация анимаций на мобильных */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Landscape режим на мобильных */
+@media (max-width: 768px) and (orientation: landscape) {
+    .modal-chat-container,
+    .messages-modal-container {
+        height: 100vh;
+    }
+    
+    .modal-chat-header {
+        padding: 0.6rem 1rem;
+    }
+    
+    .modal-chat-messages {
+        max-height: calc(100vh - 180px);
+    }
+    
+    .navbar {
+        position: relative;
+    }
+}
+
+/* Оптимизация для touch устройств */
+@media (hover: none) and (pointer: coarse) {
+    button,
+    a,
+    .manage-btn,
+    .btn-primary,
+    .btn-danger {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .search-input,
+    input,
+    textarea {
+        font-size: 16px !important; /* Предотвращает zoom на iOS */
+    }
+}
+
+/* Скрытие элементов на мобильных для производительности */
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll; /* Фиксированный фон тяжелый на мобильных */
+    }
+    
+    .navbar {
+        backdrop-filter: blur(10px); /* Уменьшаем blur для производительности */
+    }
+    
+    /* Упрощаем тени на мобильных */
+    .modal-content,
+    .profile-modal,
+    .ticket-card,
+    .chat-message {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+}
