@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vkesi Shop - Сообщения</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Vkesi Shop</div>
+            <div class="search-container">
+                <input type="text" id="globalSearch" placeholder="🔍 Поиск пользователей..." class="search-input">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+                <li><a href="chat.html">Чат</a></li>
+                <li><a href="messages.html">Сообщения</a></li>
+                <li><a href="support.html">Поддержка</a></li>
+                <li><a href="#" id="profileLink" style="display:none;">Профиль</a></li>
+                <li><a href="admin.html" id="adminLink" style="display:none;">Админ-панель</a></li>
+                <li><a href="#" id="authBtn">Войти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="messages-section">
+        <div class="container">
+            <div class="messages-container">
+                <div class="messages-sidebar">
+                    <div class="messages-sidebar-header">
+                        <h2>💬 Сообщения</h2>
+                        <button class="btn-new-message" id="newMessageBtn">✏️</button>
+                    </div>
+                    
+                    <div class="messages-tabs">
+                        <button class="messages-tab active" data-tab="direct">Личные</button>
+                        <button class="messages-tab" data-tab="groups">Группы</button>
+                        <button class="messages-tab" data-tab="channels">Каналы</button>
+                    </div>
+                    
+                    <div class="messages-list" id="messagesList">
+                        <div class="messages-loading">Загрузка...</div>
+                    </div>
+                </div>
+
+                <div class="messages-main">
+                    <div class="messages-empty" id="messagesEmpty">
+                        <div class="empty-icon">💬</div>
+                        <h3>Выберите чат</h3>
+                        <p>Выберите существующий чат или создайте новый</p>
+                    </div>
+                    
+                    <div class="messages-chat" id="messagesChat" style="display:none;">
+                        <div class="messages-chat-header">
+                            <div class="chat-header-info">
+                                <div class="chat-avatar" id="chatAvatar">👤</div>
+                                <div class="chat-info">
+                                    <h3 id="chatName">Имя чата</h3>
+                                    <p id="chatStatus">онлайн</p>
+                                </div>
+                            </div>
+                            <button class="btn-chat-menu" id="chatMenuBtn">⋮</button>
+                        </div>
+                        
+                        <div class="messages-chat-body" id="chatBody">
+                            <div class="chat-messages-list" id="chatMessagesList"></div>
+                        </div>
+                        
+                        <div class="messages-chat-input">
+                            <input type="text" id="messageInput" placeholder="Введите сообщение..." maxlength="1000">
+                            <button id="sendMessageBtn" class="btn-send-message">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Владелец сайта: Елизар Макаров</p>
+            <p>Связь: <a href="mailto:rilikov2000@mail.ru">rilikov2000@mail.ru</a></p>
+            <p style="margin-top: 1rem; opacity: 0.8;">© 2026 Vkesi Shop. Все права защищены. Спонсор: РКН</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/search.js?v=7"></script>
+    <script type="module" src="js/messages.js"></script>
+</body>
+</html>

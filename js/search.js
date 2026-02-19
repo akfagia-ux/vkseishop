@@ -305,10 +305,38 @@ async function showUserProfileModal(userId) {
                     ` : ''}
                 </div>
                 ${integrationsHTML}
+                <div class="profile-actions-view">
+                    <button class="btn-send-dm ${userData.allowDirectMessages === false ? 'disabled' : ''}" 
+                            data-user-id="${userId}" 
+                            data-allow-dm="${userData.allowDirectMessages !== false}"
+                            ${userData.allowDirectMessages === false ? 'disabled' : ''}>
+                        💬 ${userData.allowDirectMessages === false ? 'ЛС запрещены' : 'Написать ЛС'}
+                    </button>
+                </div>
             </div>
         `;
         
         document.body.appendChild(modal);
+        
+        // Обработчик кнопки "Написать ЛС"
+        const dmBtn = modal.querySelector('.btn-send-dm');
+        if (dmBtn && userData.allowDirectMessages !== false) {
+            dmBtn.addEventListener('click', async () => {
+                modal.remove();
+                // Открываем модальное окно сообщений
+                const messagesOverlay = document.getElementById('modalMessagesOverlay');
+                if (messagesOverlay) {
+                    messagesOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    
+                    // Импортируем функцию startChat из messages.js
+                    const { startChatWithUser } = await import('./messages.js');
+                    if (startChatWithUser) {
+                        startChatWithUser({ id: userId, ...userData });
+                    }
+                }
+            });
+        }
         
         // Закрытие по клику вне окна
         modal.addEventListener('click', (e) => {

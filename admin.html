@@ -17,6 +17,7 @@
             <ul class="nav-links">
                 <li><a href="index.html">Главная</a></li>
                 <li><a href="services.html">Услуги</a></li>
+                <li><a href="chat.html">Чат</a></li>
                 <li><a href="support.html">Поддержка</a></li>
                 <li><a href="#" id="profileLinkAdmin">Профиль</a></li>
                 <li><a href="admin.html">Админ-панель</a></li>
@@ -230,6 +231,22 @@
                     <textarea id="userBio" placeholder="О себе" rows="2"></textarea>
                 </div>
                 
+                <h3 class="section-title">🖼️ Оформление профиля</h3>
+                <div class="input-group">
+                    <label>🎨 Баннер (ссылка на изображение)</label>
+                    <input type="url" id="bannerUrlInput" placeholder="https://example.com/banner.jpg">
+                    <small style="opacity: 0.7; font-size: 0.8rem; display: block; margin-top: 0.3rem;">
+                        Рекомендуемый размер: 1200x300px
+                    </small>
+                </div>
+                <div class="input-group">
+                    <label>👤 Аватар (ссылка на изображение)</label>
+                    <input type="url" id="avatarUrlInput" placeholder="https://example.com/avatar.jpg">
+                    <small style="opacity: 0.7; font-size: 0.8rem; display: block; margin-top: 0.3rem;">
+                        Рекомендуемый размер: 200x200px
+                    </small>
+                </div>
+                
                 <h3 class="section-title">🔗 Интеграции</h3>
                 <div class="integrations-compact">
                     <div class="input-group">
@@ -261,6 +278,17 @@
                     <span id="googleLinkText">Привязать Google</span>
                 </button>
                 
+                <h3 class="section-title">🔒 Приватность</h3>
+                <div class="privacy-setting">
+                    <label class="privacy-checkbox">
+                        <input type="checkbox" id="allowDirectMessages" checked>
+                        <span class="checkbox-label">💬 Разрешить личные сообщения</span>
+                    </label>
+                    <small style="opacity: 0.7; font-size: 0.8rem; display: block; margin-top: 0.5rem;">
+                        Если отключено, другие пользователи не смогут написать вам в личные сообщения
+                    </small>
+                </div>
+                
                 <div id="usernameError" class="error-message"></div>
                 
                 <div class="profile-actions">
@@ -278,6 +306,9 @@
     <script type="module" src="js/firebase-config.js?v=3"></script>
     <script type="module" src="js/admin.js?v=3"></script>
     <script type="module" src="js/search.js?v=7"></script>
+    <script type="module" src="js/modal-chat.js"></script>
+    <script type="module" src="js/messages.js"></script>
+    <script src="js/floating-messages-btn.js"></script>
     <script type="module">
         import { auth, db } from './js/firebase-config.js';
         import { onAuthStateChanged, signOut, GoogleAuthProvider, linkWithPopup } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -325,6 +356,13 @@
                 document.getElementById('discordTag').value = userData.discordTag || '';
                 document.getElementById('telegramUrl').value = userData.telegramUrl || '';
                 
+                // Загрузка URL изображений
+                document.getElementById('bannerUrlInput').value = userData.bannerUrl || '';
+                document.getElementById('avatarUrlInput').value = userData.avatarUrl || '';
+                
+                // Загрузка настройки приватности
+                document.getElementById('allowDirectMessages').checked = userData.allowDirectMessages !== false;
+                
                 // Проверяем привязку Google
                 const providers = user.providerData.map(p => p.providerId);
                 const googleLinked = providers.includes('google.com');
@@ -357,6 +395,9 @@
             const youtubeUrl = document.getElementById('youtubeUrl').value;
             const discordTag = document.getElementById('discordTag').value;
             const telegramUrl = document.getElementById('telegramUrl').value;
+            const bannerUrl = document.getElementById('bannerUrlInput').value.trim();
+            const avatarUrl = document.getElementById('avatarUrlInput').value.trim();
+            const allowDirectMessages = document.getElementById('allowDirectMessages').checked;
             const saveBtn = document.getElementById('saveProfileBtn');
             const originalText = saveBtn.innerHTML;
             const errorDiv = document.getElementById('usernameError');
@@ -405,7 +446,10 @@
                     steamId: steamId,
                     youtubeUrl: youtubeUrl,
                     discordTag: discordTag,
-                    telegramUrl: telegramUrl
+                    telegramUrl: telegramUrl,
+                    bannerUrl: bannerUrl,
+                    avatarUrl: avatarUrl,
+                    allowDirectMessages: allowDirectMessages
                 });
                 
                 saveBtn.innerHTML = '✅ Сохранено!';

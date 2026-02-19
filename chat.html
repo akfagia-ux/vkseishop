@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vkesi Shop - Чат</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Vkesi Shop</div>
+            <div class="search-container">
+                <input type="text" id="globalSearch" placeholder="🔍 Поиск пользователей..." class="search-input">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+                <li><a href="chat.html">Чат</a></li>
+                <li><a href="support.html">Поддержка</a></li>
+                <li><a href="#" id="profileLink" style="display:none;">Профиль</a></li>
+                <li><a href="admin.html" id="adminLink" style="display:none;">Админ-панель</a></li>
+                <li><a href="#" id="authBtn">Войти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="chat-section">
+        <div class="container">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>💬 Общий чат</h2>
+                    <p class="chat-subtitle">Общайтесь с другими пользователями</p>
+                </div>
+                
+                <div class="chat-pinned-box">
+                    <div class="pinned-box-header">
+                        <div class="pinned-box-icon">📌</div>
+                        <h3>Закрепленное сообщение</h3>
+                    </div>
+                    <div class="pinned-box-content">
+                        <p>🛒 <strong>Этот чат предназначен для торговли и общения.</strong></p>
+                        <p>Вы можете:</p>
+                        <ul>
+                            <li>✅ Предлагать свои товары и услуги</li>
+                            <li>✅ Обсуждать сделки с другими пользователями</li>
+                            <li>✅ Задавать вопросы о товарах</li>
+                        </ul>
+                        <p><strong>⚠️ Правила:</strong> Без мата, спама и оскорблений. Нарушители будут замучены.</p>
+                        <p style="margin-top: 0.8rem; opacity: 0.8;">Приятной торговли! 💼</p>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-loading">Загрузка сообщений...</div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Введите сообщение..." maxlength="500">
+                    <button id="sendMessageBtn" class="btn-send">
+                        <span>📤</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Владелец сайта: Елизар Макаров</p>
+            <p>Связь: <a href="mailto:rilikov2000@mail.ru">rilikov2000@mail.ru</a></p>
+            <p style="margin-top: 1rem; opacity: 0.8;">© 2026 Vkesi Shop. Все права защищены. Спонсор: РКН</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/search.js?v=7"></script>
+    <script type="module" src="js/chat.js"></script>
+</body>
+</html>

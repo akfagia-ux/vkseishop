@@ -331,7 +331,21 @@ function loadWarnings(warnings) {
         return;
     }
 
+    // Добавляем заголовок с общим счетчиком
+    const headerDiv = document.createElement('div');
+    headerDiv.style.cssText = 'background: rgba(251, 146, 60, 0.3); padding: 0.7rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; font-weight: bold; border: 2px solid rgba(251, 146, 60, 0.5);';
+    
+    if (warnings.length >= 3) {
+        headerDiv.innerHTML = `🚫 ПРЕДУПРЕЖДЕНИЙ: ${warnings.length}/3 - АВТОБАН!`;
+        headerDiv.style.background = 'rgba(239, 68, 68, 0.3)';
+        headerDiv.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+    } else {
+        headerDiv.innerHTML = `⚠️ ПРЕДУПРЕЖДЕНИЙ: ${warnings.length}/3`;
+    }
+    
     warningsContent.innerHTML = '';
+    warningsContent.appendChild(headerDiv);
+
     warnings.forEach((warning, index) => {
         const warnDiv = document.createElement('div');
         warnDiv.style.cssText = 'background: rgba(255, 193, 7, 0.2); padding: 0.5rem; border-radius: 5px; margin-bottom: 0.5rem; border-left: 3px solid #ffc107; font-size: 0.8rem;';
@@ -447,33 +461,123 @@ document.getElementById('warnUserBtn').addEventListener('click', async () => {
     }
     
     try {
-        const { Timestamp, arrayUnion } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const { Timestamp, arrayUnion, setDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
         
+        // Получаем текущие предупреждения
+        const userDoc = await getDoc(doc(db, 'users', selectedUserId));
+        const userData = userDoc.data();
+        const currentWarnings = userData.warnings || [];
+        const newWarningsCount = currentWarnings.length + 1;
+        
+        // Добавляем предупреждение
         await updateDoc(doc(db, 'users', selectedUserId), {
             warnings: arrayUnion({
                 reason: warnReason,
                 date: Timestamp.now(),
                 moderatorId: currentUser.uid,
-                moderatorName: currentUser.displayName
+                moderatorName: currentUser.displayName || currentUser.email
             })
         });
         
-        messageDiv.textContent = '✅ Предупреждение выдано';
-        messageDiv.className = 'admin-message success';
+        // Создаем чат с пользователем для отправки уведомления
+        const chatId = [currentUser.uid, selectedUserId].sort().join('_');
+        const chatRef = doc(db, 'chats', chatId);
+        
+        // Проверяем существует ли чат
+        const chatDoc = await getDoc(chatRef);
+        if (!chatDoc.exists()) {
+            // Создаем новый чат
+            await setDoc(chatRef, {
+                participants: [currentUser.uid, selectedUserId],
+                participantsData: {
+                    [currentUser.uid]: {
+                        displayName: currentUser.displayName || 'Система',
+                        username: currentUser.username || '',
+                        role: currentUser.role,
+                        avatarUrl: currentUser.avatarUrl || ''
+                    },
+                    [selectedUserId]: {
+                        displayName: userData.displayName || 'Пользователь',
+                        username: userData.username || '',
+                        role: userData.role,
+                        avatarUrl: userData.avatarUrl || ''
+                    }
+                },
+                createdAt: Timestamp.now(),
+                lastMessage: '',
+                lastMessageTime: Timestamp.now(),
+                type: 'direct'
+            });
+        }
+        
+        // Отправляем системное сообщение в чат
+        const messagesRef = collection(db, 'chats', chatId, 'messages');
+        let warningMessage = `⚠️ **ПРЕДУПРЕЖДЕНИЕ ${newWarningsCount}/3**\n\n`;
+        warningMessage += `📝 Причина: ${warnReason}\n`;
+        warningMessage += `👮 Модератор: ${currentUser.displayName || currentUser.email}\n`;
+        warningMessage += `📅 Дата: ${new Date().toLocaleString('ru-RU')}\n\n`;
+        
+        if (newWarningsCount >= 3) {
+            warningMessage += `🚫 **ВЫ ПОЛУЧИЛИ 3 ПРЕДУПРЕЖДЕНИЯ И БУДЕТЕ ЗАБАНЕНЫ!**`;
+        } else {
+            warningMessage += `⚠️ При получении 3 предупреждений вы будете автоматически забанены!`;
+        }
+        
+        await addDoc(messagesRef, {
+            text: warningMessage,
+            senderId: currentUser.uid,
+            senderName: '🤖 Система модерации',
+            timestamp: Timestamp.now(),
+            isSystem: true
+        });
+        
+        // Обновляем lastMessage в чате
+        await updateDoc(chatRef, {
+            lastMessage: `⚠️ Предупреждение ${newWarningsCount}/3`,
+            lastMessageTime: Timestamp.now()
+        });
+        
+        // Если 3 предупреждения - автобан
+        if (newWarningsCount >= 3) {
+            await updateDoc(doc(db, 'users', selectedUserId), {
+                banned: true,
+                banReason: `Автоматический бан за 3 предупреждения. Последнее: ${warnReason}`,
+                bannedAt: Timestamp.now(),
+                bannedBy: currentUser.uid
+            });
+            
+            messageDiv.textContent = `✅ Предупреждение выдано (${newWarningsCount}/3). Пользователь автоматически забанен!`;
+            messageDiv.className = 'admin-message success';
+            
+            // Обновляем кнопки бана
+            document.getElementById('banUserBtn').style.display = 'none';
+            document.getElementById('unbanUserBtn').style.display = 'inline-block';
+            document.getElementById('banReasonGroup').style.display = 'none';
+        } else {
+            messageDiv.textContent = `✅ Предупреждение выдано (${newWarningsCount}/3). Уведомление отправлено в ЛС.`;
+            messageDiv.className = 'admin-message success';
+        }
+        
         messageDiv.style.display = 'block';
         setTimeout(() => {
             messageDiv.style.display = 'none';
-        }, 2000);
+        }, 3000);
         
         document.getElementById('warnReason').value = '';
         
         // Перезагружаем предупреждения
-        const userDoc = await getDoc(doc(db, 'users', selectedUserId));
-        loadWarnings(userDoc.data().warnings || []);
+        const updatedUserDoc = await getDoc(doc(db, 'users', selectedUserId));
+        loadWarnings(updatedUserDoc.data().warnings || []);
         
         loadUsers();
     } catch (error) {
         console.error('Ошибка:', error);
+        messageDiv.textContent = '❌ Ошибка: ' + error.message;
+        messageDiv.className = 'admin-message error';
+        messageDiv.style.display = 'block';
+        setTimeout(() => {
+            messageDiv.style.display = 'none';
+        }, 3000);
     }
 });
 
