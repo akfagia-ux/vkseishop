@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vkesi Shop - Услуги</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Vkesi Shop</div>
+            <div class="search-container">
+                <input type="text" id="globalSearch" placeholder="🔍 Поиск пользователей..." class="search-input">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+                <li><a href="support.html">Поддержка</a></li>
+                <li><a href="#" id="profileLink" style="display:none;">Профиль</a></li>
+                <li><a href="admin.html" id="adminLink" style="display:none;">Админ-панель</a></li>
+                <li><a href="#" id="authBtn">Войти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="services-section">
+        <div class="container">
+            <h1>Наши услуги</h1>
+            
+            <div class="services-tabs">
+                <button class="service-tab-btn" data-tab="gta">
+                    <span class="tab-icon">🎮</span>
+                    <span>GTA 5 RP</span>
+                </button>
+                <button class="service-tab-btn" data-tab="afkarena">
+                    <span class="tab-icon">⚔️</span>
+                    <span>AFK Arena</span>
+                </button>
+                <button class="service-tab-btn" data-tab="adobe">
+                    <span class="tab-icon">🎨</span>
+                    <span>Adobe</span>
+                </button>
+                <button class="service-tab-btn" data-tab="amazingrp">
+                    <span class="tab-icon">🏙️</span>
+                    <span>Amazing RP</span>
+                </button>
+                <button class="service-tab-btn" data-tab="blackrussia">
+                    <span class="tab-icon">🚗</span>
+                    <span>Black Russia</span>
+                </button>
+                <button class="service-tab-btn" data-tab="brawlstars">
+                    <span class="tab-icon">🥊</span>
+                    <span>Brawl Stars</span>
+                </button>
+                <button class="service-tab-btn" data-tab="discord">
+                    <span class="tab-icon">💬</span>
+                    <span>Discord</span>
+                </button>
+                <button class="service-tab-btn" data-tab="minecraft">
+                    <span class="tab-icon">⛏️</span>
+                    <span>Minecraft</span>
+                </button>
+                <button class="service-tab-btn" data-tab="roblox">
+                    <span class="tab-icon">🎮</span>
+                    <span>Roblox</span>
+                </button>
+                <button class="service-tab-btn" data-tab="steam">
+                    <span class="tab-icon">💎</span>
+                    <span>Steam</span>
+                </button>
+                <button class="service-tab-btn" data-tab="other">
+                    <span class="tab-icon">⭐</span>
+                    <span>Прочее</span>
+                </button>
+            </div>
+
+            <div id="gtaTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🚔</div>
+                        <h3>Отсижу деморган GTA 5 RP</h3>
+                        <p>Любой сервер, быстро и качественно</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63844588">Заказать</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🤖</div>
+                        <h3>Скрипт на деморган GTA 5 RP</h3>
+                        <p>Автоматизация процесса отсидки</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63880150">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="afkarenaTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🔥</div>
+                        <h3>Гайд неукротимое пламя</h3>
+                        <p>Подробный гайд по прохождению</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63876634">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="adobeTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">📁</div>
+                        <h3>Файл для дизайнеров</h3>
+                        <p>Полезные ресурсы для дизайна</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63844918">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="amazingrpTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">👤</div>
+                        <h3>Аккаунт Amazing RP сервер Black</h3>
+                        <p>Готовый аккаунт на сервере Black</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=64021831">Заказать</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🔒</div>
+                        <h3>Отсижу тюрьму за вас</h3>
+                        <p>Быстро и качественно</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63846356">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="blackrussiaTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">👤</div>
+                        <h3>Аккаунт Black Russia 17 lvl</h3>
+                        <p>Готовый прокачанный аккаунт</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=64021150">Заказать</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">💎</div>
+                        <h3>Отсижу за вас в тюрьме</h3>
+                        <p>Деморган (Цена за 1 час) - Скидки и выгода</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63886726">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="brawlstarsTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🏆</div>
+                        <h3>Аккаунт Brawl Stars 9к кубков</h3>
+                        <p>Прокачанный аккаунт с 9000 кубков</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63710021">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="discordTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">👥</div>
+                        <h3>Стану участником Discord канала</h3>
+                        <p>Накрутка участников для вашего сервера</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63845101">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="minecraftTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">⚙️</div>
+                        <h3>Конфиг на Nursultan Client 1.16.5</h3>
+                        <p>Готовый конфиг для клиента</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63845203">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="robloxTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🐄</div>
+                        <h3>🔥 Ла вакка сатурно сатурнито</h3>
+                        <p>Проклят брейнрот - 2.7 m/s</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=64062550">Заказать</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🐢</div>
+                        <h3>🔥 Танко черепаха 2.5 м/с 🔥</h3>
+                        <p>Предметы, Прочее</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=64062278">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="steamTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">💰</div>
+                        <h3>Пополнение Steam аккаунта RUB</h3>
+                        <p>Быстрое пополнение баланса Steam</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=64343163">Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="otherTab" class="service-tab-content" style="display:none;">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🎯</div>
+                        <h3>Прочие услуги</h3>
+                        <p>Другие услуги и предложения</p>
+                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/users/13881930/">Посмотреть все</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Владелец сайта: Елизар Макаров</p>
+            <p>Связь: <a href="mailto:rilikov2000@mail.ru">rilikov2000@mail.ru</a></p>
+            <p style="margin-top: 1rem; opacity: 0.8;">© 2026 Vkesi Shop. Все права защищены. Спонсор: РКН</p>
+        </div>
+    </footer>
+
+    <div id="toastNotification" class="toast-notification">
+        <div class="toast-icon" id="toastIcon">✅</div>
+        <span id="toastMessage">Сообщение</span>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <span class="close" id="closeProfile">&times;</span>
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <span class="avatar-icon">👤</span>
+                </div>
+                <h2 class="profile-title">Мой профиль</h2>
+            </div>
+            
+            <div class="profile-info-card">
+                <div class="info-item">
+                    <span class="info-icon">📧</span>
+                    <div class="info-content">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="userEmail"></span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🆔</span>
+                    <div class="info-content">
+                        <span class="info-label">Username</span>
+                        <span class="info-value" id="userUsername">Не установлен</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">⭐</span>
+                    <div class="info-content">
+                        <span class="info-label">Роль</span>
+                        <span class="info-value role-badge" id="userRole"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-edit-card">
+                <h3 class="section-title">✏️ Редактировать</h3>
+                <div class="input-group">
+                    <label>🆔 Username</label>
+                    <input type="text" id="username" placeholder="username" maxlength="20">
+                </div>
+                <div class="input-group">
+                    <label>👤 Никнейм</label>
+                    <input type="text" id="displayName" placeholder="Введите никнейм">
+                </div>
+                <div class="input-group">
+                    <label>📝 Описание</label>
+                    <textarea id="userBio" placeholder="О себе" rows="2"></textarea>
+                </div>
+                
+                <h3 class="section-title">🔗 Интеграции</h3>
+                <div class="integrations-compact">
+                    <div class="input-group">
+                        <label>🎮 Steam</label>
+                        <input type="text" id="steamId" placeholder="Steam ID">
+                    </div>
+                    <div class="input-group">
+                        <label>📺 YouTube</label>
+                        <input type="text" id="youtubeUrl" placeholder="Ссылка">
+                    </div>
+                    <div class="input-group">
+                        <label>💬 Discord</label>
+                        <input type="text" id="discordTag" placeholder="Discord тег">
+                    </div>
+                    <div class="input-group">
+                        <label>✈️ Telegram</label>
+                        <input type="text" id="telegramUrl" placeholder="Ссылка">
+                    </div>
+                </div>
+                
+                <h3 class="section-title">🔐 Привязка аккаунтов</h3>
+                <button class="btn-google-link" id="linkGoogleBtn">
+                    <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 8px; vertical-align: middle;">
+                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                        <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                    </svg>
+                    <span id="googleLinkText">Привязать Google</span>
+                </button>
+                
+                <div id="usernameError" class="error-message"></div>
+                
+                <div class="profile-actions">
+                    <button class="btn-primary btn-save" id="saveProfileBtn">
+                        💾 Сохранить
+                    </button>
+                    <button class="btn-danger btn-logout" id="logoutProfileBtn">
+                        🚪 Выйти
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/firebase-config.js?v=4"></script>
+    <script type="module" src="js/auth.js?v=4"></script>
+    <script type="module" src="js/search.js?v=7"></script>
+    <script type="module">
+        import { auth, db } from './js/firebase-config.js';
+        import { onAuthStateChanged, signOut, GoogleAuthProvider, linkWithPopup } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const profileModal = document.getElementById('profileModal');
+        const profileLink = document.getElementById('profileLink');
+        const closeProfile = document.getElementById('closeProfile');
+
+        // Открыть профиль
+        if (profileLink) {
+            profileLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                profileModal.style.display = 'block';
+            });
+        }
+
+        // Закрыть профиль
+        if (closeProfile) {
+            closeProfile.addEventListener('click', () => {
+                profileModal.style.display = 'none';
+            });
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === profileModal) {
+                profileModal.style.display = 'none';
+            }
+        });
+
+        // Загрузка данных профиля
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const userData = userDoc.data();
+
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userUsername').textContent = userData.username ? '@' + userData.username : 'Не установлен';
+                document.getElementById('userRole').textContent = userData.role;
+                document.getElementById('username').value = userData.username || '';
+                document.getElementById('displayName').value = userData.displayName || '';
+                document.getElementById('userBio').value = userData.bio || '';
+                document.getElementById('steamId').value = userData.steamId || '';
+                document.getElementById('youtubeUrl').value = userData.youtubeUrl || '';
+                document.getElementById('discordTag').value = userData.discordTag || '';
+                document.getElementById('telegramUrl').value = userData.telegramUrl || '';
+                
+                // Проверяем привязку Google
+                const providers = user.providerData.map(p => p.providerId);
+                const googleLinked = providers.includes('google.com');
+                const linkBtn = document.getElementById('linkGoogleBtn');
+                const linkText = document.getElementById('googleLinkText');
+                
+                if (googleLinked) {
+                    linkBtn.classList.add('linked');
+                    linkBtn.classList.remove('unlinked');
+                    linkText.textContent = '✅ Google привязан (нажмите для отвязки)';
+                    linkBtn.disabled = false;
+                } else {
+                    linkBtn.classList.remove('linked');
+                    linkBtn.classList.add('unlinked');
+                    linkText.textContent = 'Привязать Google';
+                    linkBtn.disabled = false;
+                }
+            }
+        });
+
+        // Сохранение профиля
+        document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const username = document.getElementById('username').value.toLowerCase().trim();
+            const displayName = document.getElementById('displayName').value;
+            const bio = document.getElementById('userBio').value;
+            const steamId = document.getElementById('steamId').value;
+            const youtubeUrl = document.getElementById('youtubeUrl').value;
+            const discordTag = document.getElementById('discordTag').value;
+            const telegramUrl = document.getElementById('telegramUrl').value;
+            const saveBtn = document.getElementById('saveProfileBtn');
+            const originalText = saveBtn.innerHTML;
+            const errorDiv = document.getElementById('usernameError');
+
+            errorDiv.classList.remove('show');
+            errorDiv.textContent = '';
+
+            // Валидация username
+            if (username && !/^[a-z0-9_]+$/.test(username)) {
+                errorDiv.textContent = '❌ Username может содержать только латиницу, цифры и _';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            try {
+                saveBtn.innerHTML = '⏳ Сохранение...';
+                saveBtn.disabled = true;
+
+                // Проверка уникальности username
+                if (username) {
+                    const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                    const usersRef = collection(db, 'users');
+                    const q = query(usersRef, where('username', '==', username));
+                    const querySnapshot = await getDocs(q);
+                    
+                    let usernameExists = false;
+                    querySnapshot.forEach((doc) => {
+                        if (doc.id !== user.uid) {
+                            usernameExists = true;
+                        }
+                    });
+
+                    if (usernameExists) {
+                        errorDiv.textContent = '❌ Этот username уже занят';
+                        errorDiv.classList.add('show');
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                        return;
+                    }
+                }
+                
+                await updateDoc(doc(db, 'users', user.uid), {
+                    username: username,
+                    displayName: displayName,
+                    bio: bio,
+                    steamId: steamId,
+                    youtubeUrl: youtubeUrl,
+                    discordTag: discordTag,
+                    telegramUrl: telegramUrl
+                });
+                
+                saveBtn.innerHTML = '✅ Сохранено!';
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }, 1500);
+            } catch (error) {
+                saveBtn.innerHTML = '❌ Ошибка';
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }, 2000);
+                console.error('Ошибка сохранения:', error);
+            }
+        });
+
+        // Toast уведомление
+        function showToast(message, icon = '✅', duration = 1000) {
+            const toast = document.getElementById('toastNotification');
+            if (!toast) return;
+            
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastIcon.textContent = icon;
+            toastMessage.textContent = message;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // Привязка/Отвязка Google аккаунта
+        document.getElementById('linkGoogleBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const providers = user.providerData.map(p => p.providerId);
+            const googleLinked = providers.includes('google.com');
+
+            if (googleLinked) {
+                // Отвязка Google
+                try {
+                    const { unlink } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                    await unlink(user, 'google.com');
+                    
+                    const linkBtn = document.getElementById('linkGoogleBtn');
+                    const linkText = document.getElementById('googleLinkText');
+                    linkBtn.classList.remove('linked');
+                    linkBtn.classList.add('unlinked');
+                    linkText.textContent = 'Привязать Google';
+                    linkBtn.disabled = false;
+                    
+                    showToast('Google аккаунт успешно отвязан!', '✅', 1000);
+                } catch (error) {
+                    if (error.code === 'auth/no-such-provider') {
+                        showToast('Google аккаунт не был привязан', '❌', 1000);
+                    } else {
+                        showToast('Ошибка отвязки: ' + error.message, '❌', 2000);
+                    }
+                    console.error('Ошибка:', error);
+                }
+            } else {
+                // Привязка Google
+                try {
+                    const provider = new GoogleAuthProvider();
+                    await linkWithPopup(user, provider);
+                    
+                    const linkBtn = document.getElementById('linkGoogleBtn');
+                    const linkText = document.getElementById('googleLinkText');
+                    linkBtn.classList.add('linked');
+                    linkBtn.classList.remove('unlinked');
+                    linkText.textContent = '✅ Google привязан (нажмите для отвязки)';
+                    linkBtn.disabled = false;
+                    
+                    showToast('Google аккаунт успешно привязан!', '✅', 1000);
+                } catch (error) {
+                    if (error.code === 'auth/credential-already-in-use') {
+                        showToast('Этот Google аккаунт уже используется', '❌', 2000);
+                    } else if (error.code === 'auth/popup-closed-by-user') {
+                        // Игнорируем
+                    } else {
+                        showToast('Ошибка привязки: ' + error.message, '❌', 2000);
+                    }
+                    console.error('Ошибка:', error);
+                }
+            }
+        });
+
+        // Выход из профиля
+        document.getElementById('logoutProfileBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            profileModal.style.display = 'none';
+            window.location.reload();
+        });
+
+        // Проверка авторизации при клике на услугу
+        document.querySelectorAll('.service-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = e.target.dataset.url;
+                
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        // Авторизован - открываем ссылку
+                        window.open(url, '_blank');
+                    } else {
+                        // Не авторизован - показываем сообщение
+                        const modal = document.createElement('div');
+                        modal.style.cssText = `
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(0, 0, 0, 0.85);
+                            backdrop-filter: blur(15px);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            z-index: 10000;
+                            animation: fadeIn 0.3s ease;
+                        `;
+                        
+                        modal.innerHTML = `
+                            <div style="
+                                background: linear-gradient(135deg, rgba(138, 43, 226, 0.95) 0%, rgba(75, 0, 130, 0.95) 100%);
+                                padding: 3rem;
+                                border-radius: 20px;
+                                text-align: center;
+                                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                                border: 2px solid rgba(167, 139, 250, 0.3);
+                                max-width: 500px;
+                            ">
+                                <div style="font-size: 4rem; margin-bottom: 1rem;">🔒</div>
+                                <h2 style="color: white; font-size: 2rem; margin-bottom: 1rem;">Требуется регистрация</h2>
+                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; margin-bottom: 2rem;">
+                                    Для заказа услуг необходимо зарегистрироваться или войти в аккаунт
+                                </p>
+                                <button onclick="
+                                    window.location.href='index.html#register';
+                                    setTimeout(() => {
+                                        const authBtn = document.getElementById('authBtn');
+                                        if (authBtn) authBtn.click();
+                                        setTimeout(() => {
+                                            const registerTab = document.querySelector('[data-tab=register]');
+                                            if (registerTab) registerTab.click();
+                                        }, 100);
+                                    }, 100);
+                                " style="
+                                    background: linear-gradient(45deg, #8b5cf6, #6366f1);
+                                    color: white;
+                                    padding: 1rem 2rem;
+                                    border: none;
+                                    border-radius: 10px;
+                                    font-size: 1rem;
+                                    font-weight: bold;
+                                    cursor: pointer;
+                                    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+                                    margin-right: 0.5rem;
+                                ">
+                                    Войти / Регистрация
+                                </button>
+                                <button onclick="this.closest('div').parentElement.remove()" style="
+                                    background: rgba(255, 255, 255, 0.2);
+                                    color: white;
+                                    padding: 1rem 2rem;
+                                    border: none;
+                                    border-radius: 10px;
+                                    font-size: 1rem;
+                                    font-weight: bold;
+                                    cursor: pointer;
+                                ">
+                                    Закрыть
+                                </button>
+                            </div>
+                        `;
+                        
+                        document.body.appendChild(modal);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        // Переключение вкладок услуг
+        document.querySelectorAll('.service-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                
+                // Убираем активный класс со всех кнопок
+                document.querySelectorAll('.service-tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Скрываем все вкладки
+                document.querySelectorAll('.service-tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // Показываем нужную вкладку
+                document.getElementById(tab + 'Tab').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vkesi Shop - Главная</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Vkesi Shop</div>
+            <div class="search-container">
+                <input type="text" id="globalSearch" placeholder="🔍 Поиск пользователей..." class="search-input">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+                <li><a href="support.html">Поддержка</a></li>
+                <li><a href="#" id="profileLink" style="display:none;">Профиль</a></li>
+                <li><a href="admin.html" id="adminLink" style="display:none;">Админ-панель</a></li>
+                <li><a href="#" id="authBtn">Войти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Vkesi Shop</h1>
+            <p class="subtitle">Игровые услуги для GTA 5 RP, Steam и других платформ</p>
+            <a href="services.html" class="btn-primary">Посмотреть услуги</a>
+        </div>
+    </section>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <span class="close" id="closeProfile">&times;</span>
+            <div class="profile-banner" id="profileBanner"></div>
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">
+                    <span class="avatar-icon">👤</span>
+                </div>
+                <h2 class="profile-title">Мой профиль</h2>
+            </div>
+            
+            <div class="profile-info-card">
+                <div class="info-item">
+                    <span class="info-icon">📧</span>
+                    <div class="info-content">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="userEmail"></span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🆔</span>
+                    <div class="info-content">
+                        <span class="info-label">Username</span>
+                        <span class="info-value" id="userUsername">Не установлен</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">⭐</span>
+                    <div class="info-content">
+                        <span class="info-label">Роль</span>
+                        <span class="info-value role-badge" id="userRole"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-edit-card">
+                <h3 class="section-title">🎨 Оформление профиля</h3>
+                <div class="input-group">
+                    <label>🖼️ Баннер (ссылка на изображение)</label>
+                    <input type="url" id="bannerUrlInput" placeholder="https://example.com/banner.jpg">
+                    <small style="opacity: 0.7; font-size: 0.75rem;">Вставьте ссылку на изображение или <a href="https://postimages.org/" target="_blank" style="color: #6366f1;">загрузите здесь</a></small>
+                </div>
+                <div class="input-group">
+                    <label>👤 Аватар (ссылка на изображение)</label>
+                    <input type="url" id="avatarUrlInput" placeholder="https://example.com/avatar.jpg">
+                    <small style="opacity: 0.7; font-size: 0.75rem;">Вставьте ссылку на изображение или <a href="https://postimages.org/" target="_blank" style="color: #6366f1;">загрузите здесь</a></small>
+                </div>
+                
+                <h3 class="section-title">✏️ Редактировать</h3>
+                <div class="input-group">
+                    <label>🆔 Username</label>
+                    <input type="text" id="username" placeholder="username" maxlength="20">
+                </div>
+                <div class="input-group">
+                    <label>👤 Никнейм</label>
+                    <input type="text" id="displayName" placeholder="Введите никнейм">
+                </div>
+                <div class="input-group">
+                    <label>📝 Описание</label>
+                    <textarea id="userBio" placeholder="О себе" rows="2"></textarea>
+                </div>
+                
+                <h3 class="section-title">🔗 Интеграции</h3>
+                <div class="integrations-compact">
+                    <div class="input-group">
+                        <label>🎮 Steam</label>
+                        <input type="text" id="steamId" placeholder="Steam ID">
+                    </div>
+                    <div class="input-group">
+                        <label>📺 YouTube</label>
+                        <input type="text" id="youtubeUrl" placeholder="Ссылка">
+                    </div>
+                    <div class="input-group">
+                        <label>💬 Discord</label>
+                        <input type="text" id="discordTag" placeholder="Discord тег">
+                    </div>
+                    <div class="input-group">
+                        <label>✈️ Telegram</label>
+                        <input type="text" id="telegramUrl" placeholder="Ссылка">
+                    </div>
+                </div>
+                
+                <h3 class="section-title">🔐 Привязка аккаунтов</h3>
+                <button class="btn-google-link" id="linkGoogleBtn">
+                    <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 8px; vertical-align: middle;">
+                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                        <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                    </svg>
+                    <span id="googleLinkText">Привязать Google</span>
+                </button>
+                
+                <div id="usernameError" class="error-message"></div>
+                
+                <div class="profile-actions">
+                    <button class="btn-primary btn-save" id="saveProfileBtn">
+                        💾 Сохранить
+                    </button>
+                    <button class="btn-danger btn-logout" id="logoutProfileBtn">
+                        🚪 Выйти
+                    </button>
+                    <button class="btn-delete-account" id="deleteAccountBtn">
+                        🗑️ Удалить аккаунт
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="why-us">
+        <div class="container">
+            <h2>Почему именно мы?</h2>
+            <div class="features">
+                <div class="feature">
+                    <h3>⚡ Быстро</h3>
+                    <p>Выполняем заказы в кратчайшие сроки</p>
+                </div>
+                <div class="feature">
+                    <h3>🛡️ Надежно</h3>
+                    <p>Гарантия качества на все услуги</p>
+                </div>
+                <div class="feature">
+                    <h3>⭐ Рейтинг 5.5</h3>
+                    <p>Высокая оценка от наших клиентов</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reviews">
+        <div class="container">
+            <h2>Отзывы наших клиентов</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">BroTop1</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">Топ</p>
+                    <p class="review-date">13 февраля в 13:15</p>
+                    <p class="review-service">ВКонтакте, 10 ₽</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">Techies228666777</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">Чотко</p>
+                    <p class="review-date">13 февраля в 12:11</p>
+                    <p class="review-service">Steam, 100 ₽</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">Maksimkaboev2</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">Очень быстро</p>
+                    <p class="review-date">13 февраля в 12:02</p>
+                    <p class="review-service">Steam, 50 ₽</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">k1llya001</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">топ</p>
+                    <p class="review-date">13 февраля в 11:50</p>
+                    <p class="review-service">Steam, 50 ₽</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">pe4nka007</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">быстро четко</p>
+                    <p class="review-date">12 февраля в 16:10</p>
+                    <p class="review-service">Discord, 10 ₽</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">Flexsiiii</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">Топчик все</p>
+                    <p class="review-date">12 февраля в 11:46</p>
+                    <p class="review-service">Discord, 10 ₽</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">Darkergame</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">+rep лучший</p>
+                    <p class="review-date">17 февраля в 11:49</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">xdead113</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">мясо</p>
+                    <p class="review-date">16 февраля в 20:37</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="username">TireksShop</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="review-text">быстро</p>
+                    <p class="review-date">16 февраля в 18:56</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Владелец сайта: Елизар Макаров</p>
+            <p>Связь: <a href="mailto:rilikov2000@mail.ru">rilikov2000@mail.ru</a></p>
+            <p style="margin-top: 1rem; opacity: 0.8;">© 2026 Vkesi Shop. Все права защищены. Спонсор: РКН</p>
+        </div>
+    </footer>
+
+    <div id="toastNotification" class="toast-notification">
+        <div class="toast-icon" id="toastIcon">✅</div>
+        <span id="toastMessage">Сообщение</span>
+    </div>
+
+    <div id="confirmModal" class="modal" style="display: none;">
+        <div class="modal-content confirm-modal">
+            <div class="confirm-header">
+                <h2 id="confirmTitle">Подтверждение действия</h2>
+            </div>
+            <div class="confirm-body">
+                <div class="confirm-icon-inline" id="confirmIcon">✅</div>
+                <p id="confirmMessage" class="confirm-message"></p>
+            </div>
+            <div class="confirm-buttons-single">
+                <button class="btn-confirm-single" id="confirmOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteAccountModal" class="modal">
+        <div class="modal-content confirm-modal">
+            <div class="confirm-header">
+                <div class="confirm-icon">⚠️</div>
+                <h2>Удаление аккаунта</h2>
+            </div>
+            <div id="deleteAccountMessage" class="admin-message"></div>
+            <div class="confirm-body">
+                <p class="confirm-warning">ВНИМАНИЕ!</p>
+                <p class="confirm-text">Вы действительно хотите УДАЛИТЬ свой аккаунт?</p>
+                <p class="confirm-text">Это действие НЕОБРАТИМО!</p>
+                <p class="confirm-text">Все ваши данные будут удалены навсегда.</p>
+                <div class="confirm-checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="confirmAccountDeleteCheckbox">
+                        <span>Я понимаю последствия и хочу удалить аккаунт</span>
+                    </label>
+                </div>
+            </div>
+            <div class="confirm-actions">
+                <button class="btn-cancel" id="cancelAccountDeleteBtn">Отмена</button>
+                <button class="btn-confirm-delete" id="confirmAccountDeleteBtn">Удалить навсегда</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="setupProfileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header-admin">
+                <div class="modal-icon">👋</div>
+                <h2>Добро пожаловать!</h2>
+                <p style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem;">Настройте свой профиль</p>
+            </div>
+            <div id="setupProfileMessage" class="admin-message"></div>
+            
+            <div class="profile-edit-card" style="padding: 1.5rem;">
+                <div class="input-group">
+                    <label>👤 Никнейм</label>
+                    <input type="text" id="setupDisplayName" placeholder="Введите никнейм">
+                </div>
+                <div class="input-group">
+                    <label>🆔 Username (необязательно)</label>
+                    <input type="text" id="setupUsername" placeholder="username" maxlength="20">
+                    <small style="opacity: 0.7; font-size: 0.8rem;">Только латиница, цифры и _</small>
+                </div>
+                
+                <button class="btn-primary btn-action" id="saveSetupBtn" style="width: 100%; margin-top: 1rem;">
+                    ✅ Продолжить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeAuthModal">&times;</span>
+            <h2>Вход / Регистрация</h2>
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Вход</button>
+                <button class="tab-btn" data-tab="register">Регистрация</button>
+            </div>
+            <div id="loginForm" class="auth-form">
+                <div id="loginError" class="error-message"></div>
+                <input type="email" id="loginEmail" placeholder="📧 Email">
+                <input type="password" id="loginPassword" placeholder="🔒 Пароль">
+                <button class="btn-primary" id="loginBtn">Войти</button>
+                <button class="btn-google" id="googleLoginBtn">
+                    <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 8px; vertical-align: middle;">
+                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                        <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                    </svg>
+                    Войти через Google
+                </button>
+            </div>
+            <div id="registerForm" class="auth-form" style="display:none;">
+                <div id="registerError" class="error-message"></div>
+                <input type="text" id="registerName" placeholder="👤 Никнейм">
+                <input type="text" id="registerUsername" placeholder="🆔 Username (латиница, цифры, _)">
+                <input type="email" id="registerEmail" placeholder="📧 Email">
+                <input type="password" id="registerPassword" placeholder="🔒 Пароль">
+                <button class="btn-primary" id="registerBtn">Зарегистрироваться</button>
+                <button class="btn-google" id="googleRegisterBtn">
+                    <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 8px; vertical-align: middle;">
+                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                        <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                    </svg>
+                    Регистрация через Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/search.js?v=7"></script>
+    <script type="module">
+        import { auth, db } from './js/firebase-config.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Toast уведомление
+        function showToast(message, icon = '✅', duration = 1000) {
+            const toast = document.getElementById('toastNotification');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastIcon.textContent = icon;
+            toastMessage.textContent = message;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // Кастомное окно подтверждения/сообщения
+        function showConfirm(message, title = 'Подтверждение действия', icon = '✅') {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                const titleEl = document.getElementById('confirmTitle');
+                const messageEl = document.getElementById('confirmMessage');
+                const iconEl = document.getElementById('confirmIcon');
+                const okBtn = document.getElementById('confirmOkBtn');
+                
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                iconEl.textContent = icon;
+                modal.style.display = 'block';
+                
+                const handleOk = () => {
+                    modal.style.display = 'none';
+                    okBtn.removeEventListener('click', handleOk);
+                    resolve(true);
+                };
+                
+                okBtn.addEventListener('click', handleOk);
+                
+                // Закрытие по клику вне окна
+                const handleOutsideClick = (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                        okBtn.removeEventListener('click', handleOk);
+                        window.removeEventListener('click', handleOutsideClick);
+                        resolve(true);
+                    }
+                };
+                window.addEventListener('click', handleOutsideClick);
+            });
+        }
+
+        const profileModal = document.getElementById('profileModal');
+        const profileLink = document.getElementById('profileLink');
+        const closeProfile = document.getElementById('closeProfile');
+
+        // Открыть профиль
+        if (profileLink) {
+            profileLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                profileModal.style.display = 'block';
+            });
+        }
+
+        // Открыть профиль по хэшу #profile
+        if (window.location.hash === '#profile') {
+            setTimeout(() => {
+                if (auth.currentUser) {
+                    profileModal.style.display = 'block';
+                }
+            }, 500);
+        }
+
+        // Закрыть профиль
+        if (closeProfile) {
+            closeProfile.addEventListener('click', () => {
+                profileModal.style.display = 'none';
+            });
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === profileModal) {
+                profileModal.style.display = 'none';
+            }
+        });
+
+        // Загрузка данных профиля
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const userData = userDoc.data();
+
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userUsername').textContent = userData.username ? '@' + userData.username : 'Не установлен';
+                document.getElementById('userRole').textContent = userData.role;
+                document.getElementById('username').value = userData.username || '';
+                document.getElementById('displayName').value = userData.displayName || '';
+                document.getElementById('userBio').value = userData.bio || '';
+                document.getElementById('steamId').value = userData.steamId || '';
+                document.getElementById('youtubeUrl').value = userData.youtubeUrl || '';
+                document.getElementById('discordTag').value = userData.discordTag || '';
+                document.getElementById('telegramUrl').value = userData.telegramUrl || '';
+                
+                // Загрузка URL изображений
+                document.getElementById('bannerUrlInput').value = userData.bannerUrl || '';
+                document.getElementById('avatarUrlInput').value = userData.avatarUrl || '';
+                
+                // Загрузка баннера
+                if (userData.bannerUrl) {
+                    document.getElementById('profileBanner').style.backgroundImage = `url(${userData.bannerUrl})`;
+                }
+                
+                // Загрузка аватара
+                if (userData.avatarUrl) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${userData.avatarUrl})`;
+                    avatar.querySelector('.avatar-icon').style.display = 'none';
+                }
+                
+                // Проверяем привязку Google
+                const providers = user.providerData.map(p => p.providerId);
+                const googleLinked = providers.includes('google.com');
+                const linkBtn = document.getElementById('linkGoogleBtn');
+                const linkText = document.getElementById('googleLinkText');
+                
+                if (googleLinked) {
+                    linkBtn.classList.add('linked');
+                    linkBtn.classList.remove('unlinked');
+                    linkText.textContent = '✅ Google привязан (нажмите для отвязки)';
+                    linkBtn.disabled = false;
+                } else {
+                    linkBtn.classList.remove('linked');
+                    linkBtn.classList.add('unlinked');
+                    linkText.textContent = 'Привязать Google';
+                    linkBtn.disabled = false;
+                }
+            }
+        });
+
+        // Сохранение профиля
+        document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const username = document.getElementById('username').value.toLowerCase().trim();
+            const displayName = document.getElementById('displayName').value;
+            const bio = document.getElementById('userBio').value;
+            const steamId = document.getElementById('steamId').value;
+            const youtubeUrl = document.getElementById('youtubeUrl').value;
+            const discordTag = document.getElementById('discordTag').value;
+            const telegramUrl = document.getElementById('telegramUrl').value;
+            const saveBtn = document.getElementById('saveProfileBtn');
+            const originalText = saveBtn.innerHTML;
+            const errorDiv = document.getElementById('usernameError');
+
+            errorDiv.classList.remove('show');
+            errorDiv.textContent = '';
+
+            // Валидация username
+            if (username && !/^[a-z0-9_]+$/.test(username)) {
+                errorDiv.textContent = '❌ Username может содержать только латиницу, цифры и _';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            try {
+                saveBtn.innerHTML = '⏳ Сохранение...';
+                saveBtn.disabled = true;
+
+                // Проверка уникальности username
+                if (username) {
+                    const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                    const usersRef = collection(db, 'users');
+                    const q = query(usersRef, where('username', '==', username));
+                    const querySnapshot = await getDocs(q);
+                    
+                    // Проверяем что username не занят другим пользователем
+                    let usernameExists = false;
+                    querySnapshot.forEach((doc) => {
+                        if (doc.id !== user.uid) {
+                            usernameExists = true;
+                        }
+                    });
+
+                    if (usernameExists) {
+                        errorDiv.textContent = '❌ Этот username уже занят';
+                        errorDiv.classList.add('show');
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                        return;
+                    }
+                }
+                
+                const bannerUrl = document.getElementById('bannerUrlInput').value.trim();
+                const avatarUrl = document.getElementById('avatarUrlInput').value.trim();
+                
+                await updateDoc(doc(db, 'users', user.uid), {
+                    username: username,
+                    displayName: displayName,
+                    bio: bio,
+                    steamId: steamId,
+                    youtubeUrl: youtubeUrl,
+                    discordTag: discordTag,
+                    telegramUrl: telegramUrl,
+                    bannerUrl: bannerUrl,
+                    avatarUrl: avatarUrl
+                });
+                
+                // Обновляем отображение
+                if (bannerUrl) {
+                    document.getElementById('profileBanner').style.backgroundImage = `url(${bannerUrl})`;
+                }
+                if (avatarUrl) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${avatarUrl})`;
+                    avatar.querySelector('.avatar-icon').style.display = 'none';
+                }
+                
+                saveBtn.innerHTML = '✅ Сохранено!';
+                setTimeout(() => {
+                    profileModal.style.display = 'none';
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }, 1000);
+            } catch (error) {
+                saveBtn.innerHTML = '❌ Ошибка';
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }, 2000);
+                console.error('Ошибка сохранения:', error);
+            }
+        });
+
+        // Выход из профиля
+        document.getElementById('logoutProfileBtn').addEventListener('click', async () => {
+            const { signOut } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+            await signOut(auth);
+            profileModal.style.display = 'none';
+            window.location.reload();
+        });
+
+        // Удаление аккаунта
+        document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+            document.getElementById('confirmAccountDeleteCheckbox').checked = false;
+            document.getElementById('deleteAccountModal').style.display = 'block';
+        });
+
+        // Привязка/Отвязка Google аккаунта
+        document.getElementById('linkGoogleBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const providers = user.providerData.map(p => p.providerId);
+            const googleLinked = providers.includes('google.com');
+
+            if (googleLinked) {
+                // Отвязка Google
+                try {
+                    const { unlink } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                    await unlink(user, 'google.com');
+                    
+                    const linkBtn = document.getElementById('linkGoogleBtn');
+                    const linkText = document.getElementById('googleLinkText');
+                    linkBtn.classList.remove('linked');
+                    linkBtn.classList.add('unlinked');
+                    linkText.textContent = 'Привязать Google';
+                    linkBtn.disabled = false;
+                    
+                    showToast('Google аккаунт успешно отвязан!', '✅', 1000);
+                } catch (error) {
+                    if (error.code === 'auth/no-such-provider') {
+                        showToast('Google аккаунт не был привязан', '❌', 1000);
+                    } else {
+                        showToast('Ошибка отвязки: ' + error.message, '❌', 2000);
+                    }
+                    console.error('Ошибка:', error);
+                }
+            } else {
+                // Привязка Google
+                try {
+                    const { GoogleAuthProvider, linkWithPopup } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                    const provider = new GoogleAuthProvider();
+                    
+                    await linkWithPopup(user, provider);
+                    
+                    const linkBtn = document.getElementById('linkGoogleBtn');
+                    const linkText = document.getElementById('googleLinkText');
+                    linkBtn.classList.add('linked');
+                    linkBtn.classList.remove('unlinked');
+                    linkText.textContent = '✅ Google привязан (нажмите для отвязки)';
+                    linkBtn.disabled = false;
+                    
+                    showToast('Google аккаунт успешно привязан!', '✅', 1000);
+                } catch (error) {
+                    if (error.code === 'auth/credential-already-in-use') {
+                        showToast('Этот Google аккаунт уже используется', '❌', 2000);
+                    } else if (error.code === 'auth/popup-closed-by-user') {
+                        // Игнорируем
+                    } else {
+                        showToast('Ошибка привязки: ' + error.message, '❌', 2000);
+                    }
+                    console.error('Ошибка:', error);
+                }
+            }
+        });
+
+        // Настройка профиля после регистрации через Google
+        document.getElementById('saveSetupBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const displayName = document.getElementById('setupDisplayName').value.trim();
+            const username = document.getElementById('setupUsername').value.toLowerCase().trim();
+            const messageDiv = document.getElementById('setupProfileMessage');
+            const saveBtn = document.getElementById('saveSetupBtn');
+            const originalText = saveBtn.innerHTML;
+
+            if (!displayName) {
+                messageDiv.textContent = '❌ Введите никнейм';
+                messageDiv.className = 'admin-message error';
+                messageDiv.style.display = 'block';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 2000);
+                return;
+            }
+
+            // Валидация username
+            if (username && !/^[a-z0-9_]+$/.test(username)) {
+                messageDiv.textContent = '❌ Username может содержать только латиницу, цифры и _';
+                messageDiv.className = 'admin-message error';
+                messageDiv.style.display = 'block';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 2000);
+                return;
+            }
+
+            try {
+                saveBtn.innerHTML = '⏳ Сохранение...';
+                saveBtn.disabled = true;
+
+                // Проверка уникальности username
+                if (username) {
+                    const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                    const usersRef = collection(db, 'users');
+                    const q = query(usersRef, where('username', '==', username));
+                    const querySnapshot = await getDocs(q);
+                    
+                    let usernameExists = false;
+                    querySnapshot.forEach((doc) => {
+                        if (doc.id !== user.uid) {
+                            usernameExists = true;
+                        }
+                    });
+
+                    if (usernameExists) {
+                        messageDiv.textContent = '❌ Этот username уже занят';
+                        messageDiv.className = 'admin-message error';
+                        messageDiv.style.display = 'block';
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                        setTimeout(() => {
+                            messageDiv.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+                }
+                
+                await updateDoc(doc(db, 'users', user.uid), {
+                    displayName: displayName,
+                    username: username,
+                    needsSetup: false
+                });
+                
+                saveBtn.innerHTML = '✅ Готово!';
+                setTimeout(() => {
+                    document.getElementById('setupProfileModal').style.display = 'none';
+                    location.reload();
+                }, 1000);
+            } catch (error) {
+                messageDiv.textContent = '❌ Ошибка: ' + error.message;
+                messageDiv.className = 'admin-message error';
+                messageDiv.style.display = 'block';
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 2000);
+                console.error('Ошибка:', error);
+            }
+        });
+
+        document.getElementById('cancelAccountDeleteBtn').addEventListener('click', () => {
+            document.getElementById('deleteAccountModal').style.display = 'none';
+        });
+
+        document.getElementById('confirmAccountDeleteBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const confirmCheckbox = document.getElementById('confirmAccountDeleteCheckbox');
+            const messageDiv = document.getElementById('deleteAccountMessage');
+            
+            if (!confirmCheckbox.checked) {
+                confirmCheckbox.parentElement.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    confirmCheckbox.parentElement.style.animation = '';
+                }, 500);
+                return;
+            }
+
+            try {
+                // Удаляем данные из Firestore
+                const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                await deleteDoc(doc(db, 'users', user.uid));
+                
+                // Удаляем аккаунт из Authentication
+                const { deleteUser } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                await deleteUser(user);
+                
+                messageDiv.textContent = '✅ Ваш аккаунт успешно удален';
+                messageDiv.className = 'admin-message success';
+                messageDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('deleteAccountModal').style.display = 'none';
+                    window.location.href = 'index.html';
+                }, 2000);
+            } catch (error) {
+                if (error.code === 'auth/requires-recent-login') {
+                    messageDiv.textContent = '❌ Для удаления аккаунта необходимо заново войти. Выйдите и войдите снова.';
+                } else {
+                    messageDiv.textContent = '❌ Ошибка удаления: ' + error.message;
+                }
+                messageDiv.className = 'admin-message error';
+                messageDiv.style.display = 'block';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 4000);
+                console.error('Ошибка:', error);
+            }
+        });
+    </script>
+</body>
+</html>
