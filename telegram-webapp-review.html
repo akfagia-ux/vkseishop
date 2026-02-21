@@ -33,26 +33,28 @@
         .stars {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             margin: 30px 0;
         }
         
         .star {
-            font-size: 40px;
+            font-size: 50px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         
-        .star:hover {
-            transform: scale(1.2);
+        .star:active {
+            transform: scale(0.9);
         }
         
         .star.active {
-            color: #FFD700;
+            filter: grayscale(0%) brightness(1.2);
         }
         
         .star.inactive {
-            color: #ccc;
+            filter: grayscale(100%) brightness(0.7);
         }
         
         textarea {
@@ -90,11 +92,11 @@
         </div>
         
         <div class="stars" id="stars">
-            <span class="star inactive" data-rating="1">⭐</span>
-            <span class="star inactive" data-rating="2">⭐</span>
-            <span class="star inactive" data-rating="3">⭐</span>
-            <span class="star inactive" data-rating="4">⭐</span>
-            <span class="star inactive" data-rating="5">⭐</span>
+            <div class="star inactive" data-rating="1">⭐</div>
+            <div class="star inactive" data-rating="2">⭐</div>
+            <div class="star inactive" data-rating="3">⭐</div>
+            <div class="star inactive" data-rating="4">⭐</div>
+            <div class="star inactive" data-rating="5">⭐</div>
         </div>
         
         <textarea id="comment" placeholder="Напишите ваш отзыв..."></textarea>
@@ -141,19 +143,33 @@
         loadOrderInfo();
 
         // Обработка выбора звезд
+        function updateStars(rating) {
+            document.querySelectorAll('.star').forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('inactive');
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                    star.classList.add('inactive');
+                }
+            });
+        }
+        
         document.querySelectorAll('.star').forEach(star => {
-            star.addEventListener('click', () => {
+            // Для мобильных устройств используем touchstart
+            star.addEventListener('touchstart', (e) => {
+                e.preventDefault();
                 selectedRating = parseInt(star.dataset.rating);
-                
-                document.querySelectorAll('.star').forEach((s, index) => {
-                    if (index < selectedRating) {
-                        s.classList.remove('inactive');
-                        s.classList.add('active');
-                    } else {
-                        s.classList.remove('active');
-                        s.classList.add('inactive');
-                    }
-                });
+                updateStars(selectedRating);
+                document.getElementById('error').textContent = '';
+            });
+            
+            // Для десктопа оставляем click
+            star.addEventListener('click', (e) => {
+                e.preventDefault();
+                selectedRating = parseInt(star.dataset.rating);
+                updateStars(selectedRating);
+                document.getElementById('error').textContent = '';
             });
         });
 
