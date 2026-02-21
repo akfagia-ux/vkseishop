@@ -1,18 +1,27 @@
 // Система управления отзывами с Firebase
 
-import { db } from './firebase-config.js';
-import { collection, getDocs, addDoc, deleteDoc, doc, query, orderBy, limit, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
 // Загрузка отзывов из Firebase
 export async function loadReviewsFromFirebase() {
     try {
+        const { db } = await import('./firebase-config.js');
+        const { collection, getDocs, query, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        
         const reviewsRef = collection(db, 'reviews');
-        const q = query(reviewsRef, orderBy('timestamp', 'desc'), limit(12));
+        const q = query(reviewsRef, orderBy('createdAt', 'desc'), limit(12));
         const snapshot = await getDocs(q);
         
         const reviews = [];
         snapshot.forEach((doc) => {
-            reviews.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            // Нормализуем данные из разных источников
+            reviews.push({ 
+                id: doc.id, 
+                username: data.username || data.buyerName || 'Аноним',
+                text: data.text || data.comment || '',
+                service: data.service || `${data.productName || 'Товар'}, ${data.amount || 0} ₽`,
+                timestamp: data.timestamp || data.createdAt,
+                rating: data.rating || 5
+            });
         });
         
         return reviews;
@@ -45,10 +54,13 @@ export function displayReviews(reviews) {
         
         const timeAgo = formatTimeAgo(review.timestamp?.toDate() || new Date(review.date));
         
+        // Генерируем звезды на основе рейтинга
+        const stars = '⭐'.repeat(review.rating || 5);
+        
         reviewCard.innerHTML = `
             <div class="review-header">
                 <span class="username">${escapeHtml(review.username)}</span>
-                <span class="stars">⭐⭐⭐⭐⭐</span>
+                <span class="stars">${stars}</span>
             </div>
             <p class="review-text">${escapeHtml(review.text)}</p>
             <p class="review-date">${timeAgo}</p>
@@ -131,6 +143,9 @@ function escapeHtml(text) {
 // Добавление отзыва в Firebase
 export async function addReviewToFirebase(reviewData) {
     try {
+        const { db } = await import('./firebase-config.js');
+        const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        
         const reviewsRef = collection(db, 'reviews');
         await addDoc(reviewsRef, {
             username: reviewData.username,
