@@ -9,20 +9,107 @@ let chatMessages = null;
 let chatInput = null;
 let sendBtn = null;
 
-// Список матерных слов
+// Список матерных слов и их вариаций
 const badWords = [
-    'хуй', 'хуя', 'хуи', 'хую', 'хуе', 'хуём', 'хуем',
-    'пизд', 'пизда', 'пизде', 'пизду', 'пиздец', 'пиздой',
-    'ебать', 'ебал', 'ебет', 'ебёт', 'ебут', 'ебала', 'ебло', 'ебаный', 'ебанный',
-    'бля', 'блять', 'блядь', 'блядина', 'блядство',
-    'сука', 'суки', 'суку', 'сукой',
-    'мудак', 'мудила', 'мудило', 'мудаки',
-    'гандон', 'гондон',
-    'дебил', 'дебилы', 'дебила',
-    'долбоеб', 'долбоёб',
-    'уебок', 'уёбок',
-    'чмо', 'чмошник'
+    // Основные слова
+    'хуй', 'хуя', 'хуи', 'хую', 'хуе', 'хуём', 'хуем', 'хуйня', 'хуйло',
+    'пизд', 'пизда', 'пизде', 'пизду', 'пиздец', 'пиздой', 'пизды',
+    'ебать', 'ебал', 'ебет', 'ебёт', 'ебут', 'ебала', 'ебло', 'ебаный', 'ебанный', 'ебан', 'ебать',
+    'бля', 'блять', 'блядь', 'блядина', 'блядство', 'блять',
+    'сука', 'суки', 'суку', 'сукой', 'сучка', 'сучки',
+    'мудак', 'мудила', 'мудило', 'мудаки', 'мудачье',
+    'гандон', 'гондон', 'гандоны',
+    'дебил', 'дебилы', 'дебила', 'дебилизм',
+    'долбоеб', 'долбоёб', 'долбаеб',
+    'уебок', 'уёбок', 'уебки',
+    'чмо', 'чмошник', 'чмырь',
+    'шлюха', 'шлюхи', 'шлюху', 'шлюхой',
+    'педик', 'педики', 'педор', 'пидор', 'пидорас', 'пидр',
+    'гей', 'гомик', 'гомосек',
+    'залупа', 'залупу', 'залупой',
+    'жопа', 'жопу', 'жопой', 'жопы',
+    
+    // Варианты через латиницу
+    'hui', 'huy', 'xui', 'xuy',
+    'pizda', 'pizd', 'pizdu',
+    'ebal', 'ebat', 'eban', 'ебан',
+    'suka', 'syka', 'suchka',
+    'blyat', 'blya', 'blyad',
+    'mudak', 'mudila',
+    'pidar', 'pidor', 'pidoras', 'пидор', 'пидар',
+    'shluha', 'shlux', 'шлюх', 'шклюх',
+    
+    // Варианты с цифрами и символами
+    'пид0р', 'пид0р3', 'пидор3', 'п1дор', 'п1д0р',
+    'шлюх', 'шлюхх', 'шклюх', 'шлюх2', 'шлюхх2',
+    'еб4н', 'еб@н', 'еб*н', 'ебан', 'ебань',
+    'хyй', 'хyи', 'х_й', 'х-й',
+    'п1зда', 'п1здец', 'п!зда',
+    'бл@ть', 'бл*ть', 'бл_ть',
+    'сyка', 'с_ка', 'с-ка',
+    
+    // Оскорбления
+    'идиот', 'идиоты', 'идиота',
+    'дурак', 'дураки', 'дурака',
+    'тупой', 'тупая', 'тупые',
+    'урод', 'уроды', 'урода',
+    'мразь', 'мрази',
+    'говно', 'говна', 'говном'
 ];
+
+// Функция проверки на мат (улучшенная)
+function containsBadWords(text) {
+    // Нормализуем текст
+    let normalizedText = text.toLowerCase()
+        // Убираем повторяющиеся буквы (пидоооооорцу -> пидорцу)
+        .replace(/(.)\1{2,}/g, '$1$1')
+        // Заменяем цифры на похожие буквы
+        .replace(/0/g, 'о')
+        .replace(/3/g, 'з')
+        .replace(/4/g, 'ч')
+        .replace(/6/g, 'б')
+        .replace(/1/g, 'и')
+        .replace(/5/g, 'с')
+        .replace(/7/g, 'т')
+        .replace(/8/g, 'в')
+        // Убираем все спецсимволы, пробелы и знаки препинания
+        .replace(/[^а-яёa-z]/gi, '')
+        // Заменяем латиницу на кириллицу
+        .replace(/a/g, 'а')
+        .replace(/e/g, 'е')
+        .replace(/o/g, 'о')
+        .replace(/p/g, 'р')
+        .replace(/c/g, 'с')
+        .replace(/y/g, 'у')
+        .replace(/x/g, 'х')
+        .replace(/k/g, 'к')
+        .replace(/h/g, 'х')
+        .replace(/b/g, 'б')
+        .replace(/m/g, 'м')
+        .replace(/t/g, 'т')
+        .replace(/n/g, 'н');
+    
+    // Проверяем на наличие матерных слов
+    return badWords.some(word => {
+        // Нормализуем слово из списка
+        const normalizedWord = word.toLowerCase()
+            .replace(/[^а-яёa-z]/gi, '');
+        
+        // Проверяем точное вхождение
+        if (normalizedText.includes(normalizedWord)) {
+            return true;
+        }
+        
+        // Проверяем с учетом возможных пробелов между буквами
+        const wordPattern = normalizedWord.split('').join('\\s*');
+        const regex = new RegExp(wordPattern, 'i');
+        if (regex.test(text.toLowerCase())) {
+            return true;
+        }
+        
+        return false;
+    });
+}
 
 // Инициализация модального чата
 function initModalChat() {
@@ -39,24 +126,6 @@ function initModalChat() {
                         </div>
                     </div>
                     <button class="modal-chat-close" id="modalChatClose">✕</button>
-                </div>
-                
-                <div class="modal-chat-pinned-box">
-                    <div class="modal-pinned-box-header">
-                        <div class="modal-pinned-box-icon">📌</div>
-                        <h3>Закрепленное сообщение</h3>
-                    </div>
-                    <div class="modal-pinned-box-content">
-                        <p>🛒 <strong>Этот чат предназначен для торговли и общения.</strong></p>
-                        <p>Вы можете:</p>
-                        <ul>
-                            <li>✅ Предлагать свои товары и услуги</li>
-                            <li>✅ Обсуждать сделки с другими пользователями</li>
-                            <li>✅ Задавать вопросы о товарах</li>
-                        </ul>
-                        <p><strong>⚠️ Правила:</strong> Без мата, спама и оскорблений. Нарушители будут замучены.</p>
-                        <p style="margin-top: 0.8rem; opacity: 0.8;">Приятной торговли! 💼</p>
-                    </div>
                 </div>
                 
                 <div class="modal-chat-messages" id="modalChatMessages">
@@ -173,14 +242,11 @@ function showMuteMessage(minutes) {
     chatMessages.parentElement.insertBefore(muteDiv, chatMessages);
 }
 
-function containsBadWords(text) {
-    const lowerText = text.toLowerCase();
-    return badWords.some(word => lowerText.includes(word));
-}
-
 function loadMessages() {
     const messagesRef = collection(db, 'chat');
-    const q = query(messagesRef, orderBy('timestamp', 'desc'), limit(100));
+    // Ограничиваем количество сообщений для слабых устройств
+    const messageLimit = window.mobileOptimization?.isLowPerformance ? 50 : 100;
+    const q = query(messagesRef, orderBy('timestamp', 'desc'), limit(messageLimit));
     
     let isFirstLoad = true;
     
@@ -223,45 +289,74 @@ function displayMessages(messages) {
         }
     });
     
+    // Используем DocumentFragment для батчинга (оптимизация производительности)
+    const fragment = document.createDocumentFragment();
+    let hasNewMessages = false;
+    
     // Добавляем только новые сообщения
     messages.forEach(message => {
         if (!existingIds.has(message.id)) {
-            const messageEl = document.createElement('div');
-            messageEl.className = 'chat-message';
-            messageEl.setAttribute('data-message-id', message.id);
-            
-            if (message.userId === currentUser?.uid) {
-                messageEl.classList.add('own-message');
-            }
-            
-            const avatarStyle = message.avatarUrl 
-                ? `background-image: url(${message.avatarUrl}); background-size: cover; background-position: center;`
-                : '';
-            const avatarIcon = message.avatarUrl ? '' : '👤';
-            
-            const time = message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : '';
-            
-            messageEl.innerHTML = `
-                <div class="message-avatar" style="${avatarStyle}">${avatarIcon}</div>
-                <div class="message-content">
-                    <div class="message-header">
-                        <span class="message-username">${message.displayName || 'Аноним'}</span>
-                        <span class="message-role">${message.role || 'покупатель'}</span>
-                        <span class="message-time">${time}</span>
-                    </div>
-                    <div class="message-text">${escapeHtml(message.text)}</div>
-                </div>
-            `;
-            
-            chatMessages.appendChild(messageEl);
+            hasNewMessages = true;
+            const messageEl = createMessageElement(message);
+            fragment.appendChild(messageEl);
             existingIds.add(message.id);
         }
     });
+    
+    // Добавляем все новые сообщения одним батчем
+    if (hasNewMessages) {
+        chatMessages.appendChild(fragment);
+        
+        // Ограничиваем количество DOM элементов для производительности
+        const maxMessages = window.mobileOptimization?.isLowPerformance ? 50 : 100;
+        const messageElements = chatMessages.querySelectorAll('[data-message-id]');
+        if (messageElements.length > maxMessages) {
+            // Удаляем старые сообщения
+            const toRemove = messageElements.length - maxMessages;
+            for (let i = 0; i < toRemove; i++) {
+                if (!messageElements[i].getAttribute('data-message-id').startsWith('temp-')) {
+                    messageElements[i].remove();
+                }
+            }
+        }
+    }
     
     // Автоскролл только если был внизу
     if (wasAtBottom) {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+}
+
+// Вспомогательная функция для создания элемента сообщения
+function createMessageElement(message) {
+    const messageEl = document.createElement('div');
+    messageEl.className = 'chat-message';
+    messageEl.setAttribute('data-message-id', message.id);
+    
+    if (message.userId === currentUser?.uid) {
+        messageEl.classList.add('own-message');
+    }
+    
+    const avatarStyle = message.avatarUrl 
+        ? `background-image: url(${message.avatarUrl}); background-size: cover; background-position: center;`
+        : '';
+    const avatarIcon = message.avatarUrl ? '' : '👤';
+    
+    const time = message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : '';
+    
+    messageEl.innerHTML = `
+        <div class="message-avatar" style="${avatarStyle}">${avatarIcon}</div>
+        <div class="message-content">
+            <div class="message-header">
+                <span class="message-username">${message.displayName || 'Аноним'}</span>
+                <span class="message-role">${message.role || 'покупатель'}</span>
+                <span class="message-time">${time}</span>
+            </div>
+            <div class="message-text">${escapeHtml(message.text)}</div>
+        </div>
+    `;
+    
+    return messageEl;
 }
 
 async function sendMessage() {
@@ -410,36 +505,11 @@ async function sendMessage() {
 
 // Функция для добавления одного сообщения в UI
 function addMessageToUI(message) {
-    const messageEl = document.createElement('div');
-    messageEl.className = 'chat-message';
-    messageEl.setAttribute('data-message-id', message.id);
-    
-    if (message.userId === currentUser?.uid) {
-        messageEl.classList.add('own-message');
-    }
+    const messageEl = createMessageElement(message);
     
     if (message.isTemp) {
         messageEl.style.opacity = '0.7';
     }
-    
-    const avatarStyle = message.avatarUrl 
-        ? `background-image: url(${message.avatarUrl}); background-size: cover; background-position: center;`
-        : '';
-    const avatarIcon = message.avatarUrl ? '' : '👤';
-    
-    const time = message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : '';
-    
-    messageEl.innerHTML = `
-        <div class="message-avatar" style="${avatarStyle}">${avatarIcon}</div>
-        <div class="message-content">
-            <div class="message-header">
-                <span class="message-username">${message.displayName || 'Аноним'}</span>
-                <span class="message-role">${message.role || 'покупатель'}</span>
-                <span class="message-time">${time}</span>
-            </div>
-            <div class="message-text">${escapeHtml(message.text)}</div>
-        </div>
-    `;
     
     chatMessages.appendChild(messageEl);
     chatMessages.scrollTop = chatMessages.scrollHeight;

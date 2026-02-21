@@ -731,6 +731,13 @@ footer a {
     animation: fadeInModal 0.3s ease;
 }
 
+/* Центрирование для GTA модального окна */
+#gtaAccountsModal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
 @keyframes fadeInModal {
     from {
         opacity: 0;
@@ -751,6 +758,12 @@ footer a {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     border: 2px solid rgba(100, 100, 100, 0.3);
     backdrop-filter: blur(20px);
+}
+
+/* Центрирование контента для GTA модального окна */
+#gtaAccountsModal .modal-content {
+    margin: 0;
+    width: 90%;
 }
 
 .modal-content h2 {
@@ -1082,6 +1095,30 @@ footer a {
 }
 
 .form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 2px solid rgba(100, 100, 100, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    resize: vertical;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #404040;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(100, 100, 100, 0.4);
+}
+
+.form-group textarea::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
@@ -2935,6 +2972,29 @@ footer a {
     padding: 1.5rem;
     text-align: center;
     border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+    position: relative;
+}
+
+.clear-chat-btn {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(239, 68, 68, 0.2);
+    border: 2px solid rgba(239, 68, 68, 0.4);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.clear-chat-btn:hover {
+    background: rgba(239, 68, 68, 0.4);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
 .chat-header h2 {
@@ -3035,6 +3095,24 @@ footer a {
     gap: 0.5rem;
     margin-bottom: 0.5rem;
     flex-wrap: wrap;
+    position: relative;
+}
+
+.toggle-message-btn {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.toggle-message-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
 }
 
 .message-username {
@@ -3180,6 +3258,12 @@ footer a {
     overflow: hidden;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     animation: slideDown 0.5s ease;
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    right: 20px;
+    z-index: 100;
+    max-width: 600px;
 }
 
 .chat-pinned-box .pinned-box-header {
@@ -3189,6 +3273,34 @@ footer a {
     align-items: center;
     gap: 0.8rem;
     border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+    cursor: move;
+    user-select: none;
+    position: relative;
+}
+
+.toggle-pinned-btn {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.toggle-pinned-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.toggle-pinned-btn.collapsed {
+    transform: rotate(-90deg);
+}
+
+.toggle-pinned-btn.collapsed:hover {
+    transform: rotate(-90deg) scale(1.1);
 }
 
 .chat-pinned-box .pinned-box-icon {
@@ -5174,4 +5286,407 @@ body {
     .chat-message {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
+}
+
+
+/* ============================================
+   ОПТИМИЗАЦИЯ ДЛЯ СЛАБЫХ УСТРОЙСТВ
+   ============================================ */
+
+/* Отключаем тяжелые эффекты на слабых устройствах */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+    /* Убираем все backdrop-filter (очень тяжелый эффект) */
+    .navbar,
+    .modal,
+    .modal-content,
+    .profile-modal,
+    .modal-chat-overlay,
+    .modal-messages-overlay {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    
+    /* Упрощаем фон навигации */
+    .navbar {
+        background: rgba(0, 0, 0, 0.95);
+    }
+    
+    /* Убираем градиенты на фоне */
+    body {
+        background: #1a1a1a;
+        background-image: none;
+    }
+    
+    /* Упрощаем тени */
+    .modal-content,
+    .profile-modal,
+    .ticket-card,
+    .chat-message,
+    .navbar {
+        box-shadow: none !important;
+    }
+    
+    /* Отключаем transitions для лучшей производительности */
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    /* Упрощаем кнопки */
+    button,
+    .btn-primary,
+    .btn-danger {
+        box-shadow: none !important;
+    }
+    
+    /* Убираем сложные border-radius */
+    .modal-content,
+    .profile-modal {
+        border-radius: 0;
+    }
+}
+
+/* Оптимизация для очень слабых устройств */
+.low-performance-mode {
+    /* Отключаем все анимации */
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    /* Убираем все эффекты размытия */
+    .navbar,
+    .modal,
+    .modal-content,
+    .profile-modal {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    
+    /* Упрощаем фон */
+    body {
+        background: #1a1a1a !important;
+        background-image: none !important;
+    }
+    
+    /* Убираем все тени */
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    
+    /* Упрощаем градиенты */
+    .btn-primary,
+    .hero {
+        background: #3b82f6 !important;
+    }
+    
+    .btn-danger {
+        background: #ef4444 !important;
+    }
+    
+    /* Отключаем transform для лучшей производительности */
+    * {
+        transform: none !important;
+    }
+}
+
+/* Оптимизация рендеринга */
+.modal-content,
+.profile-modal,
+.modal-chat-container,
+.messages-modal-container {
+    contain: layout style paint;
+    content-visibility: auto;
+}
+
+/* Оптимизация скроллинга */
+.modal-chat-messages,
+.messages-chat-body,
+.users-table-container {
+    will-change: scroll-position;
+    contain: layout style paint;
+}
+
+/* Уменьшаем сложность для GPU */
+@media (max-width: 768px) {
+    /* Отключаем 3D transforms */
+    * {
+        transform-style: flat !important;
+        backface-visibility: hidden;
+        perspective: none !important;
+    }
+    
+    /* Оптимизация для списков */
+    .chat-messages-list,
+    .modal-messages-list {
+        contain: layout style;
+    }
+}
+
+/* Оптимизация для устройств с низким FPS */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Оптимизация памяти - ограничиваем количество элементов */
+.chat-messages-list {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-messages-list {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* Упрощенные стили для слабых устройств */
+@media (max-width: 480px) {
+    /* Убираем сложные эффекты */
+    .hero {
+        background: linear-gradient(135deg, #1e3a8a, #1e40af);
+        box-shadow: none;
+    }
+    
+    /* Упрощаем карточки */
+    .feature,
+    .review-card,
+    .ticket-card {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Убираем hover эффекты на мобильных */
+    .feature:hover,
+    .review-card:hover,
+    button:hover {
+        transform: none !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    }
+}
+
+/* Оптимизация изображений */
+img {
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+/* Оптимизация текста */
+body {
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Принудительное использование GPU только для критичных элементов */
+.modal-chat-overlay.active,
+.modal-messages-overlay.active {
+    transform: translateZ(0);
+    will-change: opacity;
+}
+
+/* Отключаем GPU acceleration для остальных элементов на слабых устройствах */
+@media (max-width: 768px) {
+    * {
+        will-change: auto !important;
+    }
+}
+
+
+/* Стили для выбора платформы GTA */
+#gtaPlatformSelect,
+#steamAccountTypeSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1.2rem;
+    padding-right: 2.5rem;
+}
+
+#gtaPlatformSelect:focus,
+#steamAccountTypeSelect:focus {
+    outline: none;
+    border-color: #404040;
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 15px rgba(100, 100, 100, 0.4);
+}
+
+#gtaPlatformSelect option,
+#steamAccountTypeSelect option {
+    background: #2d2d2d;
+    color: #fff;
+    padding: 0.5rem;
+}
+
+#gtaPlatformSelect:hover,
+#steamAccountTypeSelect:hover {
+    border-color: rgba(150, 150, 150, 0.5);
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+
+/* Кнопки выбора платформы GTA */
+.platform-btn {
+    background: linear-gradient(135deg, rgba(100, 100, 255, 0.2), rgba(150, 100, 255, 0.2));
+    border: 2px solid rgba(100, 100, 255, 0.3);
+    border-radius: 15px;
+    padding: 2rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #fff;
+    text-align: center;
+}
+
+.platform-btn:hover {
+    background: linear-gradient(135deg, rgba(100, 100, 255, 0.4), rgba(150, 100, 255, 0.4));
+    border-color: rgba(100, 100, 255, 0.6);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(100, 100, 255, 0.3);
+}
+
+.platform-btn:active {
+    transform: translateY(-2px);
+}
+
+/* Список лотов GTA */
+#gtaLotsList {
+    display: grid;
+    gap: 1rem;
+}
+
+.gta-lot-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.gta-lot-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(100, 100, 255, 0.4);
+    transform: translateX(5px);
+}
+
+.gta-lot-info h4 {
+    margin-bottom: 0.5rem;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.gta-lot-info p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.gta-lot-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4ade80;
+    margin-right: 1rem;
+}
+
+.gta-lot-btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.gta-lot-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+}
+
+
+/* Закрепленное сообщение в чате */
+.chat-pinned-message {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.pinned-message-header {
+    background: rgba(59, 130, 246, 0.3);
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.unpin-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.unpin-btn:hover {
+    background: rgba(255, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.pinned-message-content {
+    padding: 1rem;
+    font-size: 0.95rem;
+}
+
+/* Кнопка закрепления для владельца */
+.pin-message-btn {
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.pin-message-btn:hover {
+    background: rgba(59, 130, 246, 0.4);
+    transform: scale(1.1);
+}
+
+/* Кнопка удаления для владельца */
+.delete-message-btn {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 0.3rem;
+    transition: all 0.3s ease;
+}
+
+.delete-message-btn:hover {
+    background: rgba(239, 68, 68, 0.4);
+    transform: scale(1.1);
 }

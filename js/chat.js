@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, doc, getDoc, updateDoc, deleteDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
@@ -30,6 +30,17 @@ onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         currentUser.userData = userDoc.data();
+        
+        // Показываем кнопку очистки чата для владельца
+        if (currentUser.userData.role === 'владелец') {
+            const clearBtn = document.getElementById('clearChatBtn');
+            if (clearBtn) {
+                clearBtn.style.display = 'block';
+                console.log('Кнопка очистки чата показана для владельца');
+            } else {
+                console.error('Кнопка clearChatBtn не найдена');
+            }
+        }
         
         // Проверяем мут
         if (currentUser.userData.mutedUntil) {
@@ -143,10 +154,34 @@ function displayMessages(messages) {
                     <span class="message-username">${message.displayName || 'Аноним'}</span>
                     <span class="message-role">${message.role || 'покупатель'}</span>
                     <span class="message-time">${time}</span>
+                    ${currentUser?.userData?.role === 'владелец' ? `
+                        <button class="pin-message-btn" data-message-id="${message.id}" title="Закрепить сообщение">📌</button>
+                        <button class="delete-message-btn" data-message-id="${message.id}" title="Удалить сообщение">🗑️</button>
+                    ` : ''}
                 </div>
                 <div class="message-text">${escapeHtml(message.text)}</div>
             </div>
         `;
+        
+        // Добавляем обработчики для кнопок (только для владельца)
+        if (currentUser?.userData?.role === 'владелец') {
+            const pinBtn = messageEl.querySelector('.pin-message-btn');
+            const deleteBtn = messageEl.querySelector('.delete-message-btn');
+            
+            if (pinBtn) {
+                pinBtn.addEventListener('click', () => {
+                    pinMessage(message);
+                });
+            }
+            
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm('Вы уверены, что хотите удалить это сообщение?')) {
+                        await deleteMessage(message.id);
+                    }
+                });
+            }
+        }
         
         chatMessages.appendChild(messageEl);
     });
@@ -230,3 +265,110 @@ window.addEventListener('beforeunload', () => {
         unsubscribe();
     }
 });
+
+
+// Закрепление сообщения
+function pinMessage(message) {
+    const pinnedMessageDiv = document.getElementById('chatPinnedMessage');
+    const pinnedMessageContent = document.getElementById('pinnedMessageContent');
+    
+    pinnedMessageContent.innerHTML = `
+        <div style="font-weight: bold; margin-bottom: 0.5rem;">${message.displayName || 'Аноним'}</div>
+        <div>${escapeHtml(message.text)}</div>
+    `;
+    
+    pinnedMessageDiv.style.display = 'block';
+    
+    // Сохраняем ID закрепленного сообщения в localStorage
+    localStorage.setItem('pinnedMessageId', message.id);
+    localStorage.setItem('pinnedMessageData', JSON.stringify(message));
+}
+
+// Удаление сообщения
+async function deleteMessage(messageId) {
+    try {
+        await deleteDoc(doc(db, 'chat', messageId));
+        
+        // Если удаляем закрепленное сообщение, открепляем его
+        const pinnedMessageId = localStorage.getItem('pinnedMessageId');
+        if (pinnedMessageId === messageId) {
+            unpinMessage();
+        }
+    } catch (error) {
+        console.error('Ошибка при удалении сообщения:', error);
+        alert('Не удалось удалить сообщение');
+    }
+}
+
+// Открепление сообщения
+function unpinMessage() {
+    const pinnedMessageDiv = document.getElementById('chatPinnedMessage');
+    pinnedMessageDiv.style.display = 'none';
+    
+    localStorage.removeItem('pinnedMessageId');
+    localStorage.removeItem('pinnedMessageData');
+}
+
+// Загрузка закрепленного сообщения при загрузке страницы
+function loadPinnedMessage() {
+    const pinnedMessageData = localStorage.getItem('pinnedMessageData');
+    
+    if (pinnedMessageData) {
+        const message = JSON.parse(pinnedMessageData);
+        const pinnedMessageDiv = document.getElementById('chatPinnedMessage');
+        const pinnedMessageContent = document.getElementById('pinnedMessageContent');
+        
+        pinnedMessageContent.innerHTML = `
+            <div style="font-weight: bold; margin-bottom: 0.5rem;">${message.displayName || 'Аноним'}</div>
+            <div>${escapeHtml(message.text)}</div>
+        `;
+        
+        pinnedMessageDiv.style.display = 'block';
+    }
+}
+
+// Обработчик кнопки открепления
+document.getElementById('unpinMessageBtn')?.addEventListener('click', () => {
+    if (currentUser?.userData?.role === 'владелец') {
+        unpinMessage();
+    }
+});
+
+// Загружаем закрепленное сообщение при загрузке страницы
+loadPinnedMessage();
+
+
+// Очистка всего чата
+async function clearAllChat() {
+    if (!currentUser || currentUser.userData.role !== 'владелец') {
+        alert('Только владелец может очистить чат');
+        return;
+    }
+    
+    const confirmed = confirm('Вы уверены, что хотите удалить ВСЕ сообщения из чата? Это действие нельзя отменить!');
+    
+    if (!confirmed) return;
+    
+    try {
+        const q = query(collection(db, 'chat'));
+        const snapshot = await getDocs(q);
+        
+        const deletePromises = [];
+        snapshot.forEach((docSnapshot) => {
+            deletePromises.push(deleteDoc(doc(db, 'chat', docSnapshot.id)));
+        });
+        
+        await Promise.all(deletePromises);
+        
+        // Очищаем закрепленное сообщение
+        unpinMessage();
+        
+        alert(`Успешно удалено ${deletePromises.length} сообщений`);
+    } catch (error) {
+        console.error('Ошибка при очистке чата:', error);
+        alert('Не удалось очистить чат');
+    }
+}
+
+// Обработчик кнопки очистки чата
+document.getElementById('clearChatBtn')?.addEventListener('click', clearAllChat);

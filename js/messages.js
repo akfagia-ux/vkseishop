@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { collection, addDoc, query, where, orderBy, limit, onSnapshot, serverTimestamp, doc, getDoc, updateDoc, getDocs, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { collection, addDoc, query, where, orderBy, limit, onSnapshot, serverTimestamp, doc, getDoc, updateDoc, getDocs, setDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 let currentUser = null;
 let currentChat = null;
@@ -55,6 +55,9 @@ function initModalMessages() {
                                         <p id="modalChatStatus">онлайн</p>
                                     </div>
                                 </div>
+                                <button class="btn-clear-chat" id="btnClearChat" title="Очистить чат" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s;">
+                                    🗑️ Очистить
+                                </button>
                             </div>
                             
                             <div class="modal-messages-chat-body" id="modalChatBody">
@@ -91,6 +94,7 @@ function initModalMessages() {
     });
     document.getElementById('btnNewDM').addEventListener('click', showNewDMScreen);
     document.getElementById('searchUserInput').addEventListener('input', searchUsers);
+    document.getElementById('btnClearChat').addEventListener('click', clearCurrentChat);
 }
 
 // Инициализируем модальное окно сразу
@@ -520,4 +524,202 @@ export async function startChatWithUser(otherUser) {
 // Начать чат с пользователем (внутренняя функция)
 async function startChat(otherUser) {
     return startChatWithUser(otherUser);
+}
+
+
+// Очистка текущего чата
+async function clearCurrentChat() {
+    if (!currentChat) {
+        showCustomAlert('Чат не выбран');
+        return;
+    }
+    
+    const confirmed = await showCustomConfirm(
+        'Вы уверены, что хотите очистить всю переписку?',
+        'Это действие нельзя отменить!'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        // Получаем все сообщения в чате
+        const messagesRef = collection(db, 'chats', currentChat.id, 'messages');
+        const snapshot = await getDocs(messagesRef);
+        
+        // Удаляем все сообщения
+        const deletePromises = [];
+        snapshot.forEach((doc) => {
+            deletePromises.push(deleteDoc(doc.ref));
+        });
+        
+        await Promise.all(deletePromises);
+        
+        // Обновляем последнее сообщение в чате
+        await updateDoc(doc(db, 'chats', currentChat.id), {
+            lastMessage: '',
+            lastMessageTime: serverTimestamp()
+        });
+        
+        showCustomAlert('✅ Чат успешно очищен!');
+    } catch (error) {
+        console.error('Ошибка очистки чата:', error);
+        showCustomAlert('❌ Ошибка при очистке чата');
+    }
+}
+
+// Кастомное модальное окно для alert
+function showCustomAlert(message) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: rgba(30, 30, 30, 0.98);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(100, 100, 255, 0.3);
+            max-width: 400px;
+            animation: slideUp 0.4s ease;
+        ">
+            <p style="color: white; font-size: 1.1rem; margin-bottom: 1.5rem; line-height: 1.6;">${message}</p>
+            <button onclick="this.closest('div').parentElement.remove()" style="
+                background: linear-gradient(45deg, #8b5cf6, #6366f1);
+                color: white;
+                padding: 0.8rem 2rem;
+                border: none;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            ">
+                OK
+            </button>
+        </div>
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { 
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to { 
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Кастомное модальное окно для confirm
+function showCustomConfirm(title, message) {
+    return new Promise((resolve) => {
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        `;
+        
+        modal.innerHTML = `
+            <div style="
+                background: rgba(30, 30, 30, 0.98);
+                padding: 2rem;
+                border-radius: 15px;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                border: 2px solid rgba(100, 100, 255, 0.3);
+                max-width: 450px;
+                animation: slideUp 0.4s ease;
+            ">
+                <h3 style="color: white; font-size: 1.3rem; margin-bottom: 1rem;">${title}</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 1rem; margin-bottom: 2rem; line-height: 1.6;">${message}</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="confirmBtn" style="
+                        background: linear-gradient(45deg, #8b5cf6, #6366f1);
+                        color: white;
+                        padding: 0.8rem 2rem;
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 1rem;
+                        font-weight: bold;
+                        cursor: pointer;
+                        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+                    ">
+                        OK
+                    </button>
+                    <button id="cancelBtn" style="
+                        background: rgba(255, 255, 255, 0.1);
+                        color: white;
+                        padding: 0.8rem 2rem;
+                        border: 2px solid rgba(255, 255, 255, 0.2);
+                        border-radius: 10px;
+                        font-size: 1rem;
+                        font-weight: bold;
+                        cursor: pointer;
+                    ">
+                        Отмена
+                    </button>
+                </div>
+            </div>
+            <style>
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideUp {
+                    from { 
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to { 
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            </style>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            modal.remove();
+            resolve(true);
+        });
+        
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            modal.remove();
+            resolve(false);
+        });
+    });
 }

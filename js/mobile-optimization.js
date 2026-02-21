@@ -4,12 +4,74 @@
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
+// Определение слабого устройства
+let isLowPerformance = false;
+
+// Проверка производительности устройства
+function detectPerformance() {
+    // Проверяем количество ядер процессора
+    const cores = navigator.hardwareConcurrency || 2;
+    
+    // Проверяем память (если доступно)
+    const memory = navigator.deviceMemory || 4;
+    
+    // Проверяем connection (если доступно)
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const effectiveType = connection ? connection.effectiveType : '4g';
+    
+    // Определяем слабое устройство
+    isLowPerformance = (
+        cores <= 2 || 
+        memory <= 2 || 
+        effectiveType === 'slow-2g' || 
+        effectiveType === '2g' ||
+        (isMobile && cores <= 4 && memory <= 3)
+    );
+    
+    // Тест производительности (простой)
+    const start = performance.now();
+    let sum = 0;
+    for (let i = 0; i < 100000; i++) {
+        sum += Math.sqrt(i);
+    }
+    const duration = performance.now() - start;
+    
+    // Если тест занял больше 50ms - устройство слабое
+    if (duration > 50) {
+        isLowPerformance = true;
+    }
+    
+    return isLowPerformance;
+}
+
+// Запускаем определение производительности
+detectPerformance();
+
+// Применяем режим низкой производительности
+if (isLowPerformance) {
+    document.documentElement.classList.add('low-performance-mode');
+    console.log('Low performance mode enabled');
+    
+    // Отключаем некоторые тяжелые функции
+    if (window.CSS && CSS.supports('backdrop-filter', 'blur(10px)')) {
+        // Отключаем backdrop-filter через CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            * {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
 // Добавляем класс для мобильных устройств
 if (isMobile || isTouch) {
     document.documentElement.classList.add('mobile-device');
 }
 
-// Оптимизация скроллинга
+// Оптимизация скроллинга с debounce
 let ticking = false;
 let lastScrollY = window.scrollY;
 
@@ -23,7 +85,7 @@ function optimizeScroll() {
     }
 }
 
-if (isMobile) {
+if (isMobile || isLowPerformance) {
     window.addEventListener('scroll', optimizeScroll, { passive: true });
 }
 
@@ -107,6 +169,7 @@ function throttle(func, limit) {
 window.mobileOptimization = {
     isMobile,
     isTouch,
+    isLowPerformance,
     debounce,
     throttle,
     optimizeModal
