@@ -38,9 +38,21 @@
                     <span class="tab-icon">👥</span>
                     <span>Пользователи</span>
                 </button>
+                <button class="admin-tab-btn" data-tab="orders">
+                    <span class="tab-icon">📦</span>
+                    <span>Заказы</span>
+                </button>
                 <button class="admin-tab-btn" data-tab="discounts">
                     <span class="tab-icon">💰</span>
                     <span>Скидки</span>
+                </button>
+                <button class="admin-tab-btn" data-tab="reviews">
+                    <span class="tab-icon">⭐</span>
+                    <span>Отзывы</span>
+                </button>
+                <button class="admin-tab-btn" data-tab="chat">
+                    <span class="tab-icon">💬</span>
+                    <span>Чат</span>
                 </button>
             </div>
 
@@ -71,6 +83,34 @@
                 </div>
             </div>
 
+            <div id="ordersTab" class="admin-tab-content" style="display:none;">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h2>📦 Управление заказами</h2>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>🆔 ID</th>
+                                    <th>👤 Покупатель</th>
+                                    <th>📦 Товар</th>
+                                    <th>💰 Сумма</th>
+                                    <th>📊 Статус</th>
+                                    <th>📅 Дата</th>
+                                    <th>⚙️ Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 2rem;">Загрузка заказов...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div id="discountsTab" class="admin-tab-content" style="display:none;">
                 <div class="admin-card">
                     <div class="card-header">
@@ -88,6 +128,68 @@
                         <button class="btn-primary btn-apply" id="applyDiscountBtn">
                             ✅ Применить скидку
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reviewsTab" class="admin-tab-content" style="display:none;">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h2>⭐ Управление отзывами</h2>
+                    </div>
+                    
+                    <div class="discount-form">
+                        <h3 style="margin-bottom: 1rem;">➕ Добавить новый отзыв</h3>
+                        <div class="form-group">
+                            <label>👤 Имя пользователя</label>
+                            <input type="text" id="reviewUsername" placeholder="Например: ProGamer2024">
+                        </div>
+                        <div class="form-group">
+                            <label>💬 Текст отзыва</label>
+                            <textarea id="reviewText" placeholder="Отличный сервис!" style="min-height: 80px; resize: vertical;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>🎮 Услуга и цена</label>
+                            <input type="text" id="reviewService" placeholder="Например: Discord, 10 ₽">
+                        </div>
+                        <button class="btn-primary btn-apply" id="addReviewBtn">
+                            ✅ Добавить отзыв
+                        </button>
+                    </div>
+
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid rgba(100, 100, 100, 0.3);">
+                        <h3 style="margin-bottom: 1rem;">📋 Текущие отзывы</h3>
+                        <button class="btn-primary" id="loadReviewsBtn" style="margin-bottom: 1rem;">
+                            🔄 Обновить список
+                        </button>
+                        <div id="reviewsList" style="max-height: 400px; overflow-y: auto;">
+                            <p style="opacity: 0.7;">Нажмите "Обновить список" для загрузки отзывов</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chatTab" class="admin-tab-content" style="display:none;">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h2>💬 Управление чатом</h2>
+                    </div>
+                    
+                    <div class="discount-form">
+                        <div style="background: rgba(239, 68, 68, 0.1); border: 2px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                            <h3 style="color: #ef4444; margin-bottom: 1rem;">⚠️ Опасная зона</h3>
+                            <p style="margin-bottom: 1rem; opacity: 0.9;">Очистка чата удалит ВСЕ сообщения без возможности восстановления!</p>
+                            <button class="btn-danger btn-apply" id="adminClearChatBtn" style="width: 100%;">
+                                🗑️ Очистить весь чат
+                            </button>
+                        </div>
+                        
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 1.5rem;">
+                            <h3 style="margin-bottom: 1rem;">📊 Статистика чата</h3>
+                            <div id="chatStats">
+                                <p style="opacity: 0.7;">Загрузка статистики...</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -185,8 +287,9 @@
     <div id="profileModal" class="modal">
         <div class="modal-content profile-modal">
             <span class="close" id="closeProfile">&times;</span>
+            <div class="profile-banner" id="profileBanner"></div>
             <div class="profile-header">
-                <div class="profile-avatar">
+                <div class="profile-avatar" id="profileAvatar">
                     <span class="avatar-icon">👤</span>
                 </div>
                 <h2 class="profile-title">Мой профиль</h2>
@@ -217,6 +320,18 @@
             </div>
             
             <div class="profile-edit-card">
+                <h3 class="section-title">🎨 Оформление профиля</h3>
+                <div class="input-group">
+                    <label>🖼️ Баннер (ссылка на изображение)</label>
+                    <input type="url" id="bannerUrlInput" placeholder="https://example.com/banner.jpg">
+                    <small style="opacity: 0.7; font-size: 0.75rem;">Вставьте ссылку на изображение или <a href="https://postimages.org/" target="_blank" style="color: #6366f1;">загрузите здесь</a></small>
+                </div>
+                <div class="input-group">
+                    <label>👤 Аватар (ссылка на изображение)</label>
+                    <input type="url" id="avatarUrlInput" placeholder="https://example.com/avatar.jpg">
+                    <small style="opacity: 0.7; font-size: 0.75rem;">Вставьте ссылку на изображение или <a href="https://postimages.org/" target="_blank" style="color: #6366f1;">загрузите здесь</a></small>
+                </div>
+                
                 <h3 class="section-title">✏️ Редактировать</h3>
                 <div class="input-group">
                     <label>🆔 Username</label>
@@ -229,22 +344,6 @@
                 <div class="input-group">
                     <label>📝 Описание</label>
                     <textarea id="userBio" placeholder="О себе" rows="2"></textarea>
-                </div>
-                
-                <h3 class="section-title">🖼️ Оформление профиля</h3>
-                <div class="input-group">
-                    <label>🎨 Баннер (ссылка на изображение)</label>
-                    <input type="url" id="bannerUrlInput" placeholder="https://example.com/banner.jpg">
-                    <small style="opacity: 0.7; font-size: 0.8rem; display: block; margin-top: 0.3rem;">
-                        Рекомендуемый размер: 1200x300px
-                    </small>
-                </div>
-                <div class="input-group">
-                    <label>👤 Аватар (ссылка на изображение)</label>
-                    <input type="url" id="avatarUrlInput" placeholder="https://example.com/avatar.jpg">
-                    <small style="opacity: 0.7; font-size: 0.8rem; display: block; margin-top: 0.3rem;">
-                        Рекомендуемый размер: 200x200px
-                    </small>
                 </div>
                 
                 <h3 class="section-title">🔗 Интеграции</h3>
@@ -304,7 +403,8 @@
     </div>
 
     <script type="module" src="js/firebase-config.js?v=3"></script>
-    <script type="module" src="js/admin.js?v=3"></script>
+    <script type="module" src="js/notifications.js"></script>
+    <script type="module" src="js/admin.js?v=8"></script>
     <script type="module" src="js/search.js?v=7"></script>
     <script type="module" src="js/modal-chat.js"></script>
     <script type="module" src="js/messages.js"></script>
@@ -363,6 +463,18 @@
                 
                 // Загрузка настройки приватности
                 document.getElementById('allowDirectMessages').checked = userData.allowDirectMessages !== false;
+                
+                // Загрузка баннера
+                if (userData.bannerUrl) {
+                    document.getElementById('profileBanner').style.backgroundImage = `url(${userData.bannerUrl})`;
+                }
+                
+                // Загрузка аватара
+                if (userData.avatarUrl) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${userData.avatarUrl})`;
+                    avatar.querySelector('.avatar-icon').style.display = 'none';
+                }
                 
                 // Проверяем привязку Google
                 const providers = user.providerData.map(p => p.providerId);
@@ -452,6 +564,16 @@
                     avatarUrl: avatarUrl,
                     allowDirectMessages: allowDirectMessages
                 });
+                
+                // Обновляем отображение баннера и аватара
+                if (bannerUrl) {
+                    document.getElementById('profileBanner').style.backgroundImage = `url(${bannerUrl})`;
+                }
+                if (avatarUrl) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${avatarUrl})`;
+                    avatar.querySelector('.avatar-icon').style.display = 'none';
+                }
                 
                 saveBtn.innerHTML = '✅ Сохранено!';
                 setTimeout(() => {

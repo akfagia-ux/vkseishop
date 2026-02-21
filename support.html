@@ -243,8 +243,9 @@
     <div id="profileModal" class="modal">
         <div class="modal-content profile-modal">
             <span class="close" id="closeProfile">&times;</span>
+            <div class="profile-banner" id="profileBanner"></div>
             <div class="profile-header">
-                <div class="profile-avatar">
+                <div class="profile-avatar" id="profileAvatar">
                     <span class="avatar-icon">👤</span>
                 </div>
                 <h2 class="profile-title">Мой профиль</h2>
@@ -474,6 +475,18 @@
                 // Загрузка настройки приватности
                 document.getElementById('allowDirectMessages').checked = userData.allowDirectMessages !== false;
                 
+                // Загрузка баннера
+                if (userData.bannerUrl) {
+                    document.getElementById('profileBanner').style.backgroundImage = `url(${userData.bannerUrl})`;
+                }
+                
+                // Загрузка аватара
+                if (userData.avatarUrl) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${userData.avatarUrl})`;
+                    avatar.querySelector('.avatar-icon').style.display = 'none';
+                }
+                
                 // Проверяем привязку Google
                 const providers = user.providerData.map(p => p.providerId);
                 const googleLinked = providers.includes('google.com');
@@ -562,6 +575,16 @@
                     avatarUrl: avatarUrl,
                     allowDirectMessages: allowDirectMessages
                 });
+                
+                // Обновляем отображение баннера и аватара
+                if (bannerUrl) {
+                    document.getElementById('profileBanner').style.backgroundImage = `url(${bannerUrl})`;
+                }
+                if (avatarUrl) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${avatarUrl})`;
+                    avatar.querySelector('.avatar-icon').style.display = 'none';
+                }
                 
                 saveBtn.innerHTML = '✅ Сохранено!';
                 setTimeout(() => {

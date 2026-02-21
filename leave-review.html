@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оставить отзыв - Vkesi Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 3rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .star {
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0.3;
+        }
+        .star:hover,
+        .star.active {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        .star.active {
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Vkesi Shop</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="review-container" style="max-width: 700px; margin: 2rem auto; background: rgba(26, 26, 26, 0.95); padding: 2.5rem; border-radius: 20px; border: 2px solid rgba(100, 100, 255, 0.3);">
+                <h1 style="text-align: center; margin-bottom: 1rem;">⭐ Оставить отзыв</h1>
+                <p style="text-align: center; opacity: 0.8; margin-bottom: 2rem;">Расскажите о вашем опыте покупки</p>
+                
+                <div id="orderInfo" style="background: rgba(59, 130, 246, 0.1); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid rgba(59, 130, 246, 0.3); text-align: center;">
+                    <h3 style="margin-bottom: 0.5rem;">📦 Ваш заказ</h3>
+                    <div id="productName" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">Загрузка...</div>
+                    <div id="orderAmount" style="color: #4ade80; font-weight: bold;">Загрузка...</div>
+                </div>
+
+                <form id="reviewForm">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <label style="display: block; margin-bottom: 1rem; font-weight: bold; font-size: 1.1rem;">Оцените услугу</label>
+                        <div class="star-rating" id="starRating">
+                            <span class="star" data-rating="1">⭐</span>
+                            <span class="star" data-rating="2">⭐</span>
+                            <span class="star" data-rating="3">⭐</span>
+                            <span class="star" data-rating="4">⭐</span>
+                            <span class="star" data-rating="5">⭐</span>
+                        </div>
+                        <div id="ratingText" style="font-size: 1.2rem; font-weight: bold; color: #4ade80; min-height: 1.5rem;"></div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">💬 Ваш отзыв</label>
+                        <textarea id="reviewText" required placeholder="Расскажите о вашем опыте..." rows="6" style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(100, 100, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: #fff; font-size: 1rem; resize: vertical; font-family: inherit;"></textarea>
+                        <small style="opacity: 0.7; font-size: 0.85rem; display: block; margin-top: 0.5rem;">
+                            Минимум 10 символов
+                        </small>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; padding: 1.5rem; font-size: 1.2rem; margin-bottom: 1rem;">
+                        ✅ Отправить отзыв
+                    </button>
+
+                    <button type="button" onclick="window.location.href='index.html'" class="btn-secondary" style="width: 100%; padding: 1rem; font-size: 1rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(100, 100, 255, 0.3);">
+                        ← Вернуться на главную
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Владелец сайта: Елизар Макаров</p>
+            <p>Связь: <a href="mailto:rilikov2000@mail.ru">rilikov2000@mail.ru</a></p>
+            <p style="margin-top: 1rem; opacity: 0.8;">© 2026 Vkesi Shop. Все права защищены. Спонсор: РКН</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { auth, db } from './js/firebase-config.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Получаем ID заказа из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+
+        let selectedRating = 0;
+        let orderData = null;
+
+        if (!orderId) {
+            alert('Ошибка: ID заказа не найден');
+            window.location.href = 'index.html';
+        }
+
+        // Загружаем информацию о заказе
+        async function loadOrderInfo() {
+            try {
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+                
+                if (!orderDoc.exists()) {
+                    alert('Заказ не найден');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                orderData = orderDoc.data();
+                
+                // Проверяем, что заказ выполнен
+                if (!orderData.completed) {
+                    alert('Этот заказ еще не выполнен. Вы сможете оставить отзыв после выполнения.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Проверяем, не оставлен ли уже отзыв
+                if (orderData.reviewSubmitted) {
+                    alert('Вы уже оставили отзыв на этот заказ. Спасибо!');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                document.getElementById('productName').textContent = orderData.productName;
+                document.getElementById('orderAmount').textContent = `Сумма заказа: ${orderData.amount} ₽`;
+            } catch (error) {
+                console.error('Ошибка загрузки заказа:', error);
+                alert('Произошла ошибка при загрузке заказа');
+            }
+        }
+
+        loadOrderInfo();
+
+        // Обработка выбора рейтинга
+        const stars = document.querySelectorAll('.star');
+        const ratingText = document.getElementById('ratingText');
+        const ratingTexts = {
+            1: '😞 Плохо',
+            2: '😐 Удовлетворительно',
+            3: '🙂 Хорошо',
+            4: '😊 Отлично',
+            5: '🤩 Превосходно!'
+        };
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = parseInt(star.dataset.rating);
+                updateStars();
+                ratingText.textContent = ratingTexts[selectedRating];
+            });
+
+            star.addEventListener('mouseenter', () => {
+                const rating = parseInt(star.dataset.rating);
+                stars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.style.opacity = '1';
+                    } else {
+                        s.style.opacity = '0.3';
+                    }
+                });
+            });
+        });
+
+        document.getElementById('starRating').addEventListener('mouseleave', () => {
+            updateStars();
+        });
+
+        function updateStars() {
+            stars.forEach((star, index) => {
+                if (index < selectedRating) {
+                    star.classList.add('active');
+                    star.style.opacity = '1';
+                } else {
+                    star.classList.remove('active');
+                    star.style.opacity = '0.3';
+                }
+            });
+        }
+
+        // Обработка отправки отзыва
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const reviewText = document.getElementById('reviewText').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+
+            if (!selectedRating) {
+                alert('Пожалуйста, выберите оценку');
+                return;
+            }
+
+            if (reviewText.length < 10) {
+                alert('Отзыв должен содержать минимум 10 символов');
+                return;
+            }
+
+            try {
+                submitBtn.innerHTML = '⏳ Отправка...';
+                submitBtn.disabled = true;
+
+                // Получаем текущего пользователя
+                const user = auth.currentUser;
+                let username = orderData.firstName;
+                let userRole = 'пользователь';
+
+                if (user) {
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        username = userData.username || userData.displayName || orderData.firstName;
+                        userRole = userData.role || 'пользователь';
+                    }
+                }
+
+                // Добавляем отзыв в Firebase
+                await addDoc(collection(db, 'reviews'), {
+                    username: username,
+                    text: reviewText,
+                    rating: selectedRating,
+                    service: orderData.productName,
+                    amount: orderData.amount,
+                    orderId: orderId,
+                    timestamp: serverTimestamp(),
+                    role: userRole
+                });
+
+                // Отмечаем, что отзыв оставлен
+                await updateDoc(doc(db, 'orders', orderId), {
+                    reviewSubmitted: true,
+                    reviewSubmittedAt: serverTimestamp()
+                });
+
+                submitBtn.innerHTML = '✅ Отзыв отправлен!';
+                submitBtn.style.background = 'rgba(34, 197, 94, 0.8)';
+
+                setTimeout(() => {
+                    alert('✅ Спасибо за ваш отзыв!\n\nОн появится на главной странице.');
+                    window.location.href = 'index.html#reviews';
+                }, 1500);
+            } catch (error) {
+                console.error('Ошибка отправки отзыва:', error);
+                alert('Произошла ошибка. Попробуйте еще раз.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

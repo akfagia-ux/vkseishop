@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инициализация отзывов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        button {
+            background: linear-gradient(45deg, #2d2d2d, #404040);
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .status.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+        }
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+        }
+        .review-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Инициализация отзывов</h1>
+        <p>Эта страница загрузит текущие отзывы в Firebase базу данных.</p>
+        
+        <button onclick="initializeReviews()">📥 Загрузить отзывы в Firebase</button>
+        <button onclick="viewReviews()">👁️ Посмотреть отзывы</button>
+        <button onclick="clearReviews()">🗑️ Очистить все отзывы</button>
+        
+        <div id="status" class="status"></div>
+        <div id="reviewsList"></div>
+    </div>
+
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const reviews = [
+            {
+                username: 'Sexapility',
+                text: 'топ',
+                service: 'Steam, 400 ₽',
+                date: '2026-02-19T19:30:00'
+            },
+            {
+                username: 'CelestieHorn',
+                text: 'имба',
+                service: 'Discord, 10 ₽',
+                date: '2026-02-18T18:13:00'
+            },
+            {
+                username: 'Darkergame',
+                text: '+rep лучший',
+                service: 'Telegram, 10 ₽',
+                date: '2026-02-17T11:49:00'
+            },
+            {
+                username: 'xdead113',
+                text: 'мясо',
+                service: 'Minecraft, 10 ₽',
+                date: '2026-02-16T20:37:00'
+            },
+            {
+                username: 'TireksShop',
+                text: 'быстро',
+                service: 'Discord, 10 ₽',
+                date: '2026-02-16T18:56:00'
+            },
+            {
+                username: 'Leontev101',
+                text: 'Тоа',
+                service: 'Discord, 10 ₽',
+                date: '2026-02-14T22:42:00'
+            },
+            {
+                username: 'ProGamer2024',
+                text: 'top',
+                service: 'Discord, 10 ₽',
+                date: '2026-02-13T15:30:00'
+            },
+            {
+                username: 'MegaUser777',
+                text: 'Все ок, но перед покупкой пишите ему выйти со всех войсов, и оффать демку)',
+                service: 'GTA 5 RP, SAMP, 100 ₽',
+                date: '2026-02-12T14:20:00'
+            },
+            {
+                username: 'CoolDude123',
+                text: 'красивые и хорошие рп',
+                service: 'Minecraft, 10 ₽',
+                date: '2026-02-11T13:45:00'
+            },
+            {
+                username: 'BestBuyer2026',
+                text: 'всё топ',
+                service: 'Discord, 10 ₽',
+                date: '2026-02-10T18:10:00'
+            },
+            {
+                username: 'FastGamer',
+                text: '5',
+                service: 'Discord, 10 ₽',
+                date: '2026-02-09T16:55:00'
+            },
+            {
+                username: 'HappyClient',
+                text: 'Лучший',
+                service: 'Telegram, 10 ₽',
+                date: '2026-02-08T15:30:00'
+            }
+        ];
+
+        window.initializeReviews = async function() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status';
+            statusDiv.innerHTML = '⏳ Загрузка отзывов...';
+
+            try {
+                const reviewsRef = collection(db, 'reviews');
+                let count = 0;
+
+                for (const review of reviews) {
+                    await addDoc(reviewsRef, {
+                        username: review.username,
+                        text: review.text,
+                        service: review.service,
+                        date: review.date,
+                        timestamp: serverTimestamp()
+                    });
+                    count++;
+                }
+
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✅ Успешно загружено ${count} отзывов в Firebase!`;
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Ошибка: ${error.message}`;
+                console.error('Ошибка:', error);
+            }
+        };
+
+        window.viewReviews = async function() {
+            const statusDiv = document.getElementById('status');
+            const reviewsList = document.getElementById('reviewsList');
+            
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status';
+            statusDiv.innerHTML = '⏳ Загрузка...';
+
+            try {
+                const reviewsRef = collection(db, 'reviews');
+                const snapshot = await getDocs(reviewsRef);
+                
+                reviewsList.innerHTML = '<h3>Отзывы в базе данных:</h3>';
+                
+                if (snapshot.empty) {
+                    reviewsList.innerHTML += '<p>Нет отзывов в базе данных</p>';
+                } else {
+                    snapshot.forEach((doc) => {
+                        const review = doc.data();
+                        reviewsList.innerHTML += `
+                            <div class="review-item">
+                                <strong>${review.username}</strong>: ${review.text}<br>
+                                <small>${review.service}</small>
+                            </div>
+                        `;
+                    });
+                }
+
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✅ Найдено ${snapshot.size} отзывов`;
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Ошибка: ${error.message}`;
+                console.error('Ошибка:', error);
+            }
+        };
+
+        window.clearReviews = async function() {
+            if (!confirm('Вы уверены, что хотите удалить все отзывы?')) {
+                return;
+            }
+
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status';
+            statusDiv.innerHTML = '⏳ Удаление...';
+
+            try {
+                const reviewsRef = collection(db, 'reviews');
+                const snapshot = await getDocs(reviewsRef);
+                
+                let count = 0;
+                for (const docSnapshot of snapshot.docs) {
+                    await deleteDoc(doc(db, 'reviews', docSnapshot.id));
+                    count++;
+                }
+
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✅ Удалено ${count} отзывов`;
+                document.getElementById('reviewsList').innerHTML = '';
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Ошибка: ${error.message}`;
+                console.error('Ошибка:', error);
+            }
+        };
+    </script>
+</body>
+</html>

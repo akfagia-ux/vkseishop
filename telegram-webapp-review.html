@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оставить отзыв</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .star {
+            font-size: 40px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .star:hover {
+            transform: scale(1.2);
+        }
+        
+        .star.active {
+            color: #FFD700;
+        }
+        
+        .star.inactive {
+            color: #ccc;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid var(--tg-theme-hint-color, #ccc);
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+        }
+        
+        .info {
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 10px;
+        }
+        
+        .error {
+            color: #ff3b30;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⭐ Оставьте отзыв</h1>
+        
+        <div class="info" id="orderInfo">
+            <div>📦 Загрузка...</div>
+        </div>
+        
+        <div class="stars" id="stars">
+            <span class="star inactive" data-rating="1">⭐</span>
+            <span class="star inactive" data-rating="2">⭐</span>
+            <span class="star inactive" data-rating="3">⭐</span>
+            <span class="star inactive" data-rating="4">⭐</span>
+            <span class="star inactive" data-rating="5">⭐</span>
+        </div>
+        
+        <textarea id="comment" placeholder="Напишите ваш отзыв..."></textarea>
+        
+        <div class="error" id="error"></div>
+    </div>
+
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { doc, getDoc, addDoc, collection, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        let selectedRating = 0;
+        let orderId = null;
+
+        // Получаем orderId из параметров
+        const urlParams = new URLSearchParams(window.location.search);
+        orderId = urlParams.get('orderId') || tg.initDataUnsafe?.start_parameter;
+
+        if (!orderId) {
+            document.getElementById('error').textContent = 'Ошибка: ID заказа не найден';
+            tg.close();
+        }
+
+        // Загружаем информацию о заказе
+        async function loadOrderInfo() {
+            try {
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+                
+                if (orderDoc.exists()) {
+                    const orderData = orderDoc.data();
+                    document.getElementById('orderInfo').innerHTML = `
+                        <div><strong>Товар:</strong> ${orderData.productName}</div>
+                        <div><strong>Сумма:</strong> ${orderData.amount}₽</div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки заказа:', error);
+            }
+        }
+
+        loadOrderInfo();
+
+        // Обработка выбора звезд
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = parseInt(star.dataset.rating);
+                
+                document.querySelectorAll('.star').forEach((s, index) => {
+                    if (index < selectedRating) {
+                        s.classList.remove('inactive');
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                        s.classList.add('inactive');
+                    }
+                });
+            });
+        });
+
+        // Кнопка отправки
+        tg.MainButton.text = 'Отправить отзыв';
+        tg.MainButton.show();
+        
+        tg.MainButton.onClick(async () => {
+            const comment = document.getElementById('comment').value.trim();
+            
+            if (selectedRating === 0) {
+                document.getElementById('error').textContent = 'Выберите оценку';
+                return;
+            }
+            
+            if (!comment) {
+                document.getElementById('error').textContent = 'Напишите отзыв';
+                return;
+            }
+
+            tg.MainButton.showProgress();
+
+            try {
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+                const orderData = orderDoc.data();
+
+                await addDoc(collection(db, 'reviews'), {
+                    orderId: orderId,
+                    rating: selectedRating,
+                    comment: comment,
+                    productName: orderData.productName,
+                    amount: orderData.amount,
+                    buyerName: `${orderData.firstName} ${orderData.lastName}`,
+                    createdAt: serverTimestamp()
+                });
+
+                await updateDoc(doc(db, 'orders', orderId), {
+                    reviewSubmitted: true
+                });
+
+                tg.showAlert('Спасибо за отзыв!', () => {
+                    tg.close();
+                });
+            } catch (error) {
+                console.error('Ошибка отправки отзыва:', error);
+                document.getElementById('error').textContent = 'Ошибка отправки';
+                tg.MainButton.hideProgress();
+            }
+        });
+    </script>
+</body>
+</html>

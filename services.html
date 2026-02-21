@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vkesi Shop - Услуги</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
@@ -80,16 +81,24 @@
             <div id="gtaTab" class="service-tab-content" style="display:none;">
                 <div class="services-grid">
                     <div class="service-card">
+                        <div class="service-icon">👤</div>
+                        <h3>Аккаунты GTA 5 RP</h3>
+                        <p>Чистые аккаунты для РП без привязок</p>
+                        <button class="btn-primary" onclick="openGtaAccountsModal()" style="width: 100%; margin-top: 1rem;">Выбрать платформу</button>
+                    </div>
+                    <div class="service-card" style="opacity: 0.6; position: relative;">
+                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(239, 68, 68, 0.8); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">Временно недоступно</div>
                         <div class="service-icon">🚔</div>
                         <h3>Отсижу деморган GTA 5 RP</h3>
                         <p>Любой сервер, быстро и качественно</p>
-                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63844588">Заказать</a>
+                        <button class="btn-primary" disabled style="width: 100%; margin-top: 1rem; opacity: 0.5; cursor: not-allowed;">Недоступно</button>
                     </div>
                     <div class="service-card">
                         <div class="service-icon">🤖</div>
                         <h3>Скрипт на деморган GTA 5 RP</h3>
                         <p>Автоматизация процесса отсидки</p>
-                        <a href="#" class="btn-primary service-link" data-url="https://funpay.com/lots/offer?id=63880150">Заказать</a>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #4ade80; margin: 1rem 0;">100 ₽</div>
+                        <a href="order.html" class="btn-primary" style="width: 100%; text-align: center; display: block; text-decoration: none;">Заказать</a>
                     </div>
                 </div>
             </div>
@@ -203,6 +212,21 @@
             <div id="steamTab" class="service-tab-content" style="display:none;">
                 <div class="services-grid">
                     <div class="service-card">
+                        <div class="service-icon">👤</div>
+                        <h3>Аккаунты Steam</h3>
+                        <p>Готовые аккаунты Steam</p>
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.9rem;">Тип аккаунта:</label>
+                            <select id="steamAccountTypeSelect" style="width: 100%; padding: 0.7rem; border-radius: 8px; border: 2px solid rgba(100, 100, 100, 0.3); background: rgba(255, 255, 255, 0.1); color: #fff; font-size: 0.9rem; cursor: pointer;">
+                                <option value="games">🎮 С играми</option>
+                                <option value="empty">📦 Пустой аккаунт</option>
+                                <option value="prime">⭐ Prime аккаунт</option>
+                                <option value="level">📊 С уровнем</option>
+                            </select>
+                        </div>
+                        <a href="#" class="btn-primary service-link steam-account-link" data-games="https://funpay.com/chips/1/" data-empty="https://funpay.com/chips/1/" data-prime="https://funpay.com/chips/1/" data-level="https://funpay.com/chips/1/">Заказать</a>
+                    </div>
+                    <div class="service-card">
                         <div class="service-icon">💰</div>
                         <h3>Пополнение Steam аккаунта RUB</h3>
                         <p>Быстрое пополнение баланса Steam</p>
@@ -240,8 +264,9 @@
     <div id="profileModal" class="modal">
         <div class="modal-content profile-modal">
             <span class="close" id="closeProfile">&times;</span>
+            <div class="profile-banner" id="profileBanner"></div>
             <div class="profile-header">
-                <div class="profile-avatar">
+                <div class="profile-avatar" id="profileAvatar">
                     <span class="avatar-icon">👤</span>
                 </div>
                 <h2 class="profile-title">Мой профиль</h2>
@@ -358,6 +383,37 @@
         </div>
     </div>
 
+    <!-- Модальное окно выбора платформы GTA -->
+    <div id="gtaAccountsModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 900px;">
+            <span class="close" onclick="closeGtaAccountsModal()">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 2rem;">Выберите платформу</h2>
+            
+            <div class="platform-selection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                <button class="platform-btn" data-platform="steam" onclick="selectPlatform('steam')">
+                    <i class="fa-brands fa-steam" style="font-size: 3.5rem; margin-bottom: 0.5rem; color: #1b2838;"></i>
+                    <div style="font-size: 1.2rem; font-weight: bold;">Steam</div>
+                </button>
+                <button class="platform-btn" data-platform="social" onclick="selectPlatform('social')">
+                    <svg style="width: 60px; height: 60px; margin-bottom: 0.5rem;" viewBox="0 0 100 100" fill="none">
+                        <circle cx="50" cy="50" r="45" fill="#F7931E"/>
+                        <path d="M50 20 L60 40 L82 43 L66 58 L70 80 L50 69 L30 80 L34 58 L18 43 L40 40 Z" fill="#FFF"/>
+                    </svg>
+                    <div style="font-size: 1.2rem; font-weight: bold;">Social Club</div>
+                </button>
+                <button class="platform-btn" data-platform="epic" onclick="selectPlatform('epic')">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000'/%3E%3Ctext x='50' y='42' font-family='Arial Black' font-size='18' font-weight='900' fill='%23fff' text-anchor='middle'%3EEPIC%3C/text%3E%3Ctext x='50' y='65' font-family='Arial Black' font-size='18' font-weight='900' fill='%23fff' text-anchor='middle'%3EEPIC%3C/text%3E%3C/svg%3E" alt="Epic Games" style="width: 60px; height: 60px; margin-bottom: 0.5rem;">
+                    <div style="font-size: 1.2rem; font-weight: bold;">Epic Games</div>
+                </button>
+            </div>
+            
+            <div id="gtaLotsContainer" style="display: none;">
+                <h3 style="margin-bottom: 1rem;">📋 Доступные лоты</h3>
+                <div id="gtaLotsList"></div>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="js/firebase-config.js?v=4"></script>
     <script type="module" src="js/auth.js?v=4"></script>
     <script type="module" src="js/search.js?v=7"></script>
@@ -418,6 +474,18 @@
                 
                 // Загрузка настройки приватности
                 document.getElementById('allowDirectMessages').checked = userData.allowDirectMessages !== false;
+                
+                // Загрузка баннера
+                if (userData.bannerUrl) {
+                    document.getElementById('profileBanner').style.backgroundImage = `url(${userData.bannerUrl})`;
+                }
+                
+                // Загрузка аватара
+                if (userData.avatarUrl) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${userData.avatarUrl})`;
+                    avatar.querySelector('.avatar-icon').style.display = 'none';
+                }
                 
                 // Проверяем привязку Google
                 const providers = user.providerData.map(p => p.providerId);
@@ -507,6 +575,16 @@
                     avatarUrl: avatarUrl,
                     allowDirectMessages: allowDirectMessages
                 });
+                
+                // Обновляем отображение баннера и аватара
+                if (bannerUrl) {
+                    document.getElementById('profileBanner').style.backgroundImage = `url(${bannerUrl})`;
+                }
+                if (avatarUrl) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${avatarUrl})`;
+                    avatar.querySelector('.avatar-icon').style.display = 'none';
+                }
                 
                 saveBtn.innerHTML = '✅ Сохранено!';
                 setTimeout(() => {
@@ -711,6 +789,127 @@
                 // Показываем нужную вкладку
                 document.getElementById(tab + 'Tab').style.display = 'block';
             });
+        });
+        
+        // Обработка выбора платформы для GTA аккаунтов
+        const gtaPlatformSelect = document.getElementById('gtaPlatformSelect');
+        const gtaAccountLink = document.querySelector('.gta-account-link');
+        
+        if (gtaPlatformSelect && gtaAccountLink) {
+            gtaPlatformSelect.addEventListener('change', (e) => {
+                const platform = e.target.value;
+                const url = gtaAccountLink.dataset[platform];
+                gtaAccountLink.dataset.url = url;
+            });
+            
+            // Устанавливаем начальную ссылку
+            gtaAccountLink.dataset.url = gtaAccountLink.dataset.steam;
+        }
+        
+        // Обработка выбора типа аккаунта Steam
+        const steamAccountTypeSelect = document.getElementById('steamAccountTypeSelect');
+        const steamAccountLink = document.querySelector('.steam-account-link');
+        
+        if (steamAccountTypeSelect && steamAccountLink) {
+            steamAccountTypeSelect.addEventListener('change', (e) => {
+                const accountType = e.target.value;
+                const url = steamAccountLink.dataset[accountType];
+                steamAccountLink.dataset.url = url;
+            });
+            
+            // Устанавливаем начальную ссылку
+            steamAccountLink.dataset.url = steamAccountLink.dataset.games;
+        }
+    </script>
+    
+    <script>
+        // Данные лотов GTA по платформам
+        const gtaLotsData = {
+            steam: [
+                {
+                    title: "⭐ Grand Theft Auto V Enhanced + Legacy | 0 часов в игре | Новый аккаунт | для РП | Не привязан RS ⭐",
+                    description: "Продажа",
+                    price: "970.00 ₽",
+                    url: "https://funpay.com/lots/offer?id=51700265"
+                }
+            ],
+            social: [
+                {
+                    title: "💎【Social Club】💎 🔥【GTA 5】🔥 👍【ПОЛНАЯ СМЕНА ДАННЫХ】【RP/ONLINE】【ВАШ ЛИЧНЫЙ АККАУНТ】_US 💎 Продажа",
+                    description: "Продажа",
+                    price: "1454 ₽",
+                    url: "https://funpay.com/lots/offer?id=56340685"
+                }
+            ],
+            epic: [
+                {
+                    title: "►【Grand Theft Auto V】✦ ✦ ✦【🔥 ПОЛНЫЙ ДОСТУП + СМЕНА ПОЧТЫ🔥 🔥】【EPIC】, Продажа",
+                    description: "Продажа",
+                    price: "1333 ₽",
+                    url: "https://funpay.com/lots/offer?id=59935977"
+                }
+            ]
+        };
+        
+        // Открыть модальное окно GTA
+        function openGtaAccountsModal() {
+            const modal = document.getElementById('gtaAccountsModal');
+            const lotsContainer = document.getElementById('gtaLotsContainer');
+            const lotsList = document.getElementById('gtaLotsList');
+            
+            // Скрываем список лотов при открытии
+            lotsContainer.style.display = 'none';
+            lotsList.innerHTML = '';
+            
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Закрыть модальное окно GTA
+        function closeGtaAccountsModal() {
+            const modal = document.getElementById('gtaAccountsModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Выбор платформы и отображение лотов
+        function selectPlatform(platform) {
+            const lotsContainer = document.getElementById('gtaLotsContainer');
+            const lotsList = document.getElementById('gtaLotsList');
+            
+            // Получаем лоты для выбранной платформы
+            const lots = gtaLotsData[platform] || [];
+            
+            // Очищаем список
+            lotsList.innerHTML = '';
+            
+            // Добавляем лоты
+            lots.forEach(lot => {
+                const lotItem = document.createElement('div');
+                lotItem.className = 'gta-lot-item';
+                lotItem.innerHTML = `
+                    <div class="gta-lot-info">
+                        <h4>${lot.title}</h4>
+                        <p>${lot.description}</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="gta-lot-price">${lot.price}</div>
+                        <a href="${lot.url}" target="_blank" class="gta-lot-btn">Купить</a>
+                    </div>
+                `;
+                lotsList.appendChild(lotItem);
+            });
+            
+            // Показываем контейнер с лотами
+            lotsContainer.style.display = 'block';
+        }
+        
+        // Закрытие модального окна при клике вне его
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('gtaAccountsModal');
+            if (e.target === modal) {
+                closeGtaAccountsModal();
+            }
         });
     </script>
 </body>

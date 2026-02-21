@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата заказа - Vkesi Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Vkesi Shop</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="payment-container" style="max-width: 700px; margin: 2rem auto; background: rgba(26, 26, 26, 0.95); padding: 2.5rem; border-radius: 20px; border: 2px solid rgba(100, 100, 255, 0.3);">
+                <h1 style="text-align: center; margin-bottom: 2rem;">💳 Оплата заказа</h1>
+                
+                <div id="orderInfo" style="background: rgba(59, 130, 246, 0.1); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid rgba(59, 130, 246, 0.3);">
+                    <h2 style="margin-bottom: 1rem; font-size: 1.3rem;">📦 Ваш заказ</h2>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="opacity: 0.8;">Товар:</span>
+                        <span id="productName" style="font-weight: bold;">Загрузка...</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="opacity: 0.8;">Покупатель:</span>
+                        <span id="buyerName" style="font-weight: bold;">Загрузка...</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-top: 2px solid rgba(100, 100, 255, 0.3); padding-top: 1rem; margin-top: 1rem;">
+                        <span style="font-size: 1.2rem; font-weight: bold;">К оплате:</span>
+                        <span id="orderAmount" style="font-size: 1.5rem; font-weight: bold; color: #4ade80;">Загрузка...</span>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2)); padding: 2rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid rgba(139, 92, 246, 0.4); text-align: center;">
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">📱 Переведите на номер</h3>
+                    <div style="background: rgba(0, 0, 0, 0.3); padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #4ade80; letter-spacing: 2px;">+7 921 804 85 83</div>
+                    </div>
+                    <p style="opacity: 0.9; font-size: 0.95rem; line-height: 1.6;">
+                        💡 Переведите указанную сумму на этот номер через СБП или любой банк.<br>
+                        После перевода нажмите кнопку "Я оплатил" ниже.
+                    </p>
+                </div>
+
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid rgba(239, 68, 68, 0.3);">
+                    <h4 style="margin-bottom: 1rem; color: #fca5a5;">⚠️ Важно!</h4>
+                    <p style="opacity: 0.9; font-size: 0.9rem; line-height: 1.6;">
+                        Если вы не оплатили заказ и деньги не пришли на номер, то заказ не будет выполнен. 
+                        Если произошла проблема, то напишите в Telegram владельцу - <a href="https://t.me/vkesi" target="_blank" style="color: #60a5fa; text-decoration: underline;">@vkesi</a>
+                    </p>
+                </div>
+
+                <a href="#" id="telegramBtn" target="_blank" class="btn-primary" style="width: 100%; padding: 1.5rem; font-size: 1.2rem; margin-bottom: 1rem; display: block; text-align: center; text-decoration: none;">
+                    ✈️ Открыть Telegram бот
+                </a>
+                
+                <button id="confirmPaymentBtn" class="btn-primary" style="width: 100%; padding: 1.5rem; font-size: 1.2rem; margin-bottom: 1rem; background: rgba(34, 197, 94, 0.8);">
+                    ✅ Я оплатил и открыл бот
+                </button>
+
+                <button onclick="window.location.href='services.html'" class="btn-secondary" style="width: 100%; padding: 1rem; font-size: 1rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(100, 100, 255, 0.3);">
+                    ← Вернуться к услугам
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Владелец сайта: Елизар Макаров</p>
+            <p>Связь: <a href="mailto:rilikov2000@mail.ru">rilikov2000@mail.ru</a></p>
+            <p style="margin-top: 1rem; opacity: 0.8;">© 2026 Vkesi Shop. Все права защищены. Спонсор: РКН</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { doc, getDoc, updateDoc, collection, addDoc, serverTimestamp, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Получаем ID заказа из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+
+        if (!orderId) {
+            alert('Ошибка: ID заказа не найден');
+            window.location.href = 'services.html';
+        }
+
+        // Загружаем информацию о заказе
+        async function loadOrderInfo() {
+            try {
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+                
+                if (!orderDoc.exists()) {
+                    console.error('Заказ не найден');
+                    document.getElementById('productName').textContent = 'Заказ не найден';
+                    document.getElementById('buyerName').textContent = 'Ошибка';
+                    document.getElementById('orderAmount').textContent = '0 ₽';
+                    return;
+                }
+
+                const orderData = orderDoc.data();
+                
+                document.getElementById('productName').textContent = orderData.productName || 'Неизвестно';
+                document.getElementById('buyerName').textContent = `${orderData.firstName || ''} ${orderData.lastName || ''}`;
+                document.getElementById('orderAmount').textContent = `${orderData.amount || 0} ₽`;
+            } catch (error) {
+                console.error('Ошибка загрузки заказа:', error);
+                document.getElementById('productName').textContent = 'Ошибка загрузки';
+                document.getElementById('buyerName').textContent = 'Ошибка';
+                document.getElementById('orderAmount').textContent = '0 ₽';
+            }
+        }
+
+        // Отправка уведомления владельцу в ЛС
+        async function sendOwnerNotification(orderId) {
+            try {
+                // Получаем данные заказа
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+                if (!orderDoc.exists()) {
+                    console.error('Заказ не найден');
+                    return;
+                }
+                
+                const orderData = orderDoc.data();
+
+                // Находим владельца (роль "владелец")
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where('role', '==', 'владелец'));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    console.error('Владелец не найден в базе данных');
+                    return;
+                }
+
+                const ownerDoc = snapshot.docs[0];
+                const ownerId = ownerDoc.id;
+                
+                // Если покупатель не авторизован, создаем системный чат только с владельцем
+                const buyerUserId = orderData.userId || `order_${orderId}`;
+
+                // Проверяем, есть ли уже чат
+                const chatsRef = collection(db, 'chats');
+                const chatsQuery = query(chatsRef, where('participants', 'array-contains', ownerId));
+                const chatsSnapshot = await getDocs(chatsQuery);
+                
+                let chatId = null;
+                
+                // Ищем существующий чат
+                for (const chatDoc of chatsSnapshot.docs) {
+                    const chatData = chatDoc.data();
+                    if (chatData.type === 'direct' && chatData.participants.includes(buyerUserId)) {
+                        chatId = chatDoc.id;
+                        break;
+                    }
+                }
+
+                // Если чата нет, создаем новый
+                if (!chatId) {
+                    const newChatRef = await addDoc(collection(db, 'chats'), {
+                        type: 'direct',
+                        participants: [ownerId, buyerUserId],
+                        createdAt: serverTimestamp(),
+                        lastMessage: '',
+                        lastMessageTime: serverTimestamp(),
+                        unreadCount: {
+                            [ownerId]: 0,
+                            [buyerUserId]: 0
+                        }
+                    });
+                    chatId = newChatRef.id;
+                }
+
+                // Отправляем сообщение в чат
+                const messagesRef = collection(db, 'chats', chatId, 'messages');
+                await addDoc(messagesRef, {
+                    text: `🔔 Новый заказ!\n\n🆔 ID: ${orderId}\n👤 Покупатель: ${orderData.firstName} ${orderData.lastName}\n📦 Товар: ${orderData.productName}\n💰 Сумма: ${orderData.amount}₽\n📧 Email: ${orderData.email || 'Не указан'}\n\n⚠️ Проверьте поступление оплаты на номер +79218048583\n\nПосле выполнения заказа подтвердите его в админ-панели.`,
+                    userId: 'system',
+                    displayName: 'Система',
+                    timestamp: serverTimestamp()
+                });
+
+                // Обновляем последнее сообщение в чате
+                const currentChatDoc = await getDoc(doc(db, 'chats', chatId));
+                const currentChatData = currentChatDoc.data();
+                
+                await updateDoc(doc(db, 'chats', chatId), {
+                    lastMessage: '🔔 Новый заказ!',
+                    lastMessageTime: serverTimestamp(),
+                    [`unreadCount.${ownerId}`]: (currentChatData.unreadCount?.[ownerId] || 0) + 1
+                });
+
+                // Сохраняем chatId в заказе
+                await updateDoc(doc(db, 'orders', orderId), {
+                    chatId: chatId,
+                    userId: buyerUserId
+                });
+
+                console.log('✅ Уведомление владельцу отправлено в чат:', chatId);
+
+            } catch (error) {
+                console.error('Ошибка отправки уведомления владельцу:', error);
+            }
+        }
+
+        loadOrderInfo();
+
+        // Функция показа модального окна успеха
+        function showSuccessModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(10px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(22, 163, 74, 0.95) 100%);
+                    padding: 3rem;
+                    border-radius: 20px;
+                    text-align: center;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                    border: 2px solid rgba(134, 239, 172, 0.3);
+                    max-width: 500px;
+                    animation: slideUp 0.4s ease;
+                ">
+                    <div style="font-size: 5rem; margin-bottom: 1rem;">✅</div>
+                    <h2 style="color: white; font-size: 2rem; margin-bottom: 1rem;">Заказ успешно оформлен!</h2>
+                    <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; margin-bottom: 1rem; line-height: 1.6;">
+                        Ожидайте подтверждения от владельца.
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.9); font-size: 1rem; margin-bottom: 2rem; line-height: 1.6;">
+                        Вы можете написать владельцу в личные сообщения на сайте.
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; font-weight: bold; margin-bottom: 2rem;">
+                        Спасибо за покупку! 🎉
+                    </p>
+                    <button onclick="window.location.href='messages.html'" style="
+                        background: rgba(255, 255, 255, 0.9);
+                        color: #16a34a;
+                        padding: 1rem 2.5rem;
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 1.1rem;
+                        font-weight: bold;
+                        cursor: pointer;
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                        transition: all 0.3s;
+                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        Перейти к сообщениям
+                    </button>
+                </div>
+                <style>
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes slideUp {
+                        from { 
+                            opacity: 0;
+                            transform: translateY(30px);
+                        }
+                        to { 
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                </style>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Обработка подтверждения оплаты
+        document.getElementById('confirmPaymentBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('confirmPaymentBtn');
+            const originalText = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = '⏳ Обработка...';
+                btn.disabled = true;
+
+                // Обновляем статус заказа
+                await updateDoc(doc(db, 'orders', orderId), {
+                    paymentConfirmed: true,
+                    paymentConfirmedAt: serverTimestamp()
+                });
+
+                // Отправляем уведомление владельцу в ЛС
+                await sendOwnerNotification(orderId);
+
+                // Показываем сообщение об успехе
+                btn.innerHTML = '✅ Заказ оформлен!';
+                btn.style.background = 'rgba(34, 197, 94, 0.8)';
+                
+                setTimeout(() => {
+                    showSuccessModal();
+                }, 1000);
+            } catch (error) {
+                console.error('Ошибка подтверждения оплаты:', error);
+                alert('Произошла ошибка. Попробуйте еще раз.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

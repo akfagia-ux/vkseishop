@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата заказа - Vkesi Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Vkesi Shop</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="payment-container" style="max-width: 700px; margin: 2rem auto; background: rgba(26, 26, 26, 0.95); padding: 2.5rem; border-radius: 20px; border: 2px solid rgba(100, 100, 255, 0.3);">
+                <h1 style="text-align: center; margin-bottom: 2rem;">💳 Оплата заказа</h1>
+                
+                <div id="orderInfo" style="background: rgba(59, 130, 246, 0.1); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid rgba(59, 130, 246, 0.3);">
+                    <h2 style="margin-bottom: 1rem; font-size: 1.3rem;">📦 Ваш заказ</h2>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="opacity: 0.8;">Товар:</span>
+                        <span id="productName" style="font-weight: bold;">Скрипт на деморган GTA 5 RP</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="opacity: 0.8;">Покупатель:</span>
+                        <span id="buyerName" style="font-weight: bold;">Загрузка...</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-top: 2px solid rgba(100, 100, 255, 0.3); padding-top: 1rem; margin-top: 1rem;">
+                        <span style="font-size: 1.2rem; font-weight: bold;">К оплате:</span>
+                        <span id="orderAmount" style="font-size: 1.5rem; font-weight: bold; color: #4ade80;">100 ₽</span>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2)); padding: 2rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid rgba(139, 92, 246, 0.4); text-align: center;">
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">📱 Переведите на номер</h3>
+                    <div style="background: rgba(0, 0, 0, 0.3); padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #4ade80; letter-spacing: 2px;">+7 921 804 85 83</div>
+                    </div>
+                    <p style="opacity: 0.9; font-size: 0.95rem; line-height: 1.6;">
+                        💡 Переведите указанную сумму на этот номер через СБП или любой банк.<br>
+                        После перевода откройте Telegram бот и нажмите "Я оплатил".
+                    </p>
+                </div>
+
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid rgba(239, 68, 68, 0.3);">
+                    <h4 style="margin-bottom: 1rem; color: #fca5a5;">⚠️ Важно!</h4>
+                    <p style="opacity: 0.9; font-size: 0.9rem; line-height: 1.6;">
+                        Если вы не оплатили заказ и деньги не пришли на номер, то заказ не будет выполнен. 
+                        Если произошла проблема, то напишите в Telegram владельцу - <a href="https://t.me/vkesi" target="_blank" style="color: #60a5fa; text-decoration: underline;">@vkesi</a>
+                    </p>
+                </div>
+
+                <a href="#" id="telegramBtn" target="_blank" class="btn-primary" style="width: 100%; padding: 1.5rem; font-size: 1.2rem; margin-bottom: 1rem; display: block; text-align: center; text-decoration: none;">
+                    ✈️ Открыть Telegram бот
+                </a>
+
+                <button onclick="window.location.href='services.html'" class="btn-secondary" style="width: 100%; padding: 1rem; font-size: 1rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(100, 100, 255, 0.3);">
+                    ← Вернуться к услугам
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Владелец сайта: Елизар Макаров</p>
+            <p>Связь: <a href="mailto:rilikov2000@mail.ru">rilikov2000@mail.ru</a></p>
+            <p style="margin-top: 1rem; opacity: 0.8;">© 2026 Vkesi Shop. Все права защищены. Спонсор: РКН</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Получаем ID заказа из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+
+        if (!orderId) {
+            window.location.href = 'services.html';
+        }
+
+        // Устанавливаем ссылку на Telegram бот с orderId
+        document.getElementById('telegramBtn').href = `https://t.me/vkesi_pay_bot?start=${orderId}`;
+
+        // Загружаем информацию о заказе
+        async function loadOrderInfo() {
+            try {
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+                
+                if (orderDoc.exists()) {
+                    const orderData = orderDoc.data();
+                    document.getElementById('buyerName').textContent = `${orderData.firstName || ''} ${orderData.lastName || ''}`;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки заказа:', error);
+            }
+        }
+
+        loadOrderInfo();
+    </script>
+</body>
+</html>
